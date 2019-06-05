@@ -221,6 +221,16 @@ class ArticleReaderFragment extends StatelessWidget {
                       ),
                       Card(
                         child: Padding(
+                            padding: const EdgeInsets.all(8.0),
+                            child: Text(
+                              article.title,
+                              style: TextStyle(color: Colors.white),
+                              textAlign: TextAlign.center,
+                            )),
+                        color: Constants.colorAccent,
+                      ),
+                      Card(
+                        child: Padding(
                           padding: const EdgeInsets.all(8.0),
                           child: ListView.builder(
                             shrinkWrap: true, // todo comment this out and check the result
