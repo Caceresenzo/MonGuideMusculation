@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mon_guide_musculation/models/article.dart';
+import 'package:mon_guide_musculation/ui/arc_clipper.dart';
 import 'package:mon_guide_musculation/ui/widgets/common_divider.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -153,6 +154,8 @@ class ArticleReaderFragment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var deviceSize = MediaQuery.of(context).size;
+
     return Scaffold(
       appBar: AppBar(
         title: Text(article.title),
@@ -172,28 +175,70 @@ class ArticleReaderFragment extends StatelessWidget {
           )
         ],
       ),
-      body: ListView(
+      body: Stack(
+        fit: StackFit.expand,
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.symmetric(vertical: 16.0),
-            child: Column(
-              children: <Widget>[
-                Text(
-                  'HEADER',
-                  style: Theme.of(context).textTheme.body2,
+          Column(
+            children: <Widget>[
+              Flexible(
+                flex: 2,
+                child: ClipPath(
+                  clipper: new ArcClipper(),
+                  child: Stack(
+                    children: <Widget>[
+                      new Container(
+                          width: double.infinity,
+                          child: CachedNetworkImage(
+                            imageUrl: Constants.formatStaticWixImageUrl(article.coverImageSource),
+                            placeholder: (context, url) => new CircularProgressIndicator(),
+                            errorWidget: (context, url, error) => new Icon(Icons.error),
+                            fit: BoxFit.cover,
+                          ))
+                    ],
+                  ),
                 ),
-                ListView.builder(
-                  shrinkWrap: true, // todo comment this out and check the result
-                  physics: ClampingScrollPhysics(),
-                  itemCount: article.content.items.length,
-                  itemBuilder: (context, position) {
-                    var item = article.content.items[position];
+              ),
+              new Flexible(
+                flex: 3,
+                child: new Container(),
+              )
+            ],
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 18.0),
+            child: ListView(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                  child: Column(
+                    children: <Widget>[
+                      /*Text(
+                        'HEADER',
+                        style: Theme.of(context).textTheme.body2,
+                      ),*/
+                      SizedBox(
+                        height: deviceSize.height / 5,
+                      ),
+                      Card(
+                        child: Padding(
+                          padding: const EdgeInsets.all(8.0),
+                          child: ListView.builder(
+                            shrinkWrap: true, // todo comment this out and check the result
+                            physics: ClampingScrollPhysics(),
+                            itemCount: article.content.items.length,
+                            itemBuilder: (context, position) {
+                              var item = article.content.items[position];
 
-                    return Padding(
-                      padding: EdgeInsets.all(0),
-                      child: item.toWidget(context),
-                    );
-                  },
+                              return Padding(
+                                padding: EdgeInsets.all(0),
+                                child: item.toWidget(context),
+                              );
+                            },
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
