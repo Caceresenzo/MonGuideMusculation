@@ -172,15 +172,33 @@ class ArticleReaderFragment extends StatelessWidget {
           )
         ],
       ),
-      body: Center(
-        child: ListView.builder(
-          itemCount: article.content.items.length,
-          itemBuilder: (context, position) {
-            var item = article.content.items[position];
+      body: ListView(
+        children: <Widget>[
+          Padding(
+            padding: EdgeInsets.symmetric(vertical: 16.0),
+            child: Column(
+              children: <Widget>[
+                Text(
+                  'HEADER',
+                  style: Theme.of(context).textTheme.body2,
+                ),
+                ListView.builder(
+                  shrinkWrap: true, // todo comment this out and check the result
+                  physics: ClampingScrollPhysics(),
+                  itemCount: article.content.items.length,
+                  itemBuilder: (context, position) {
+                    var item = article.content.items[position];
 
-            return item.toWidget(context);
-          },
-        ),
+                    return Padding(
+                      padding: EdgeInsets.all(0),
+                      child: item.toWidget(context),
+                    );
+                  },
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

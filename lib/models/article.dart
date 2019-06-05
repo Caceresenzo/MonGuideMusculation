@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mon_guide_musculation/ui/widgets/common_divider.dart';
@@ -136,8 +137,6 @@ class ArticleContentItem {
           case "wix-draft-plugin-image":
             String fileName = entity["data"]["src"]["file_name"];
 
-            print(Constants.formatStaticWixImageUrl(fileName));
-
             //widget = Image.network();
             widget = CachedNetworkImage(
               imageUrl: Constants.formatStaticWixImageUrl(fileName),
@@ -177,16 +176,52 @@ class ArticleContentItem {
           case "ordered-list-item":
             ORDERED_LIST_COUNTER = ORDERED_LIST_COUNTER + 1;
 
-            finalText = "\t\t\t${ArticleContentItem.ORDERED_LIST_COUNTER}. " + text;
+            widget = Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  "\t\t\t${ArticleContentItem.ORDERED_LIST_COUNTER}.\t",
+                  style: TextStyle(fontSize: fontSize),
+                  textAlign: textAlign,
+                ),
+                Expanded(
+                  child: Text(
+                    text,
+                    style: TextStyle(fontSize: fontSize),
+                    textAlign: textAlign,
+                  ),
+                ),
+              ],
+            );
             break;
 
           case "unordered-list-item":
-            finalText = "\t\t\t\u2B24 " + text;
+            widget = Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(
+                  "\t\t\t\u25CF\t",
+                  style: TextStyle(fontSize: fontSize - 3),
+                  textAlign: textAlign,
+                ),
+                Expanded(
+                  child: Text(
+                    text,
+                    style: TextStyle(fontSize: fontSize),
+                    textAlign: textAlign,
+                  ),
+                ),
+              ],
+            );
             break;
 
           case "blockquote":
             widget = Container(
-                child: Text(text),
+                child: Text(
+                  text,
+                  style: TextStyle(fontStyle: FontStyle.italic),
+                  textAlign: textAlign,
+                ),
                 padding: EdgeInsets.only(left: 5),
                 decoration: new BoxDecoration(
                   border: Border(
@@ -214,7 +249,7 @@ class ArticleContentItem {
     }
 
     return Container(
-      child: Padding(padding: EdgeInsets.fromLTRB(4, 2, 4, 2), child: widget),
+      child: Padding(padding: EdgeInsets.fromLTRB(8, 2, 8, 2), child: widget),
       //width: double.infinity,
     );
   }
