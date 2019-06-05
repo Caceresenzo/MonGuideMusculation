@@ -3,8 +3,10 @@ import 'package:mon_guide_musculation/logic/article_processor/article_processor.
 import 'package:mon_guide_musculation/models/article.dart';
 import 'package:mon_guide_musculation/ui/arc_clipper.dart';
 import 'package:mon_guide_musculation/ui/widgets/common_divider.dart';
+import 'package:mon_guide_musculation/ui/widgets/top_round_background.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:mon_guide_musculation/utils/functions.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ArticlesListFragment extends StatelessWidget {
@@ -116,59 +118,54 @@ class ArticlesListFragment extends StatelessWidget {
 
   //post cards
   Widget postCard(BuildContext context, WebArticle article) {
-    return GestureDetector(
-      child: Card(
-        elevation: 2.0,
-        child: Column(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: profileColumn(context, article),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Text(
-                article.seoDescription,
-                style: TextStyle(fontWeight: FontWeight.normal),
-                textAlign: TextAlign.justify,
-              ),
-            ),
-            SizedBox(
-              height: 10.0,
-            ),
-            article.coverImageSource != null
-                ? CachedNetworkImage(
-                    imageUrl: Constants.formatStaticWixImageUrl(article.coverImageSource),
-                    placeholder: (context, url) => new CircularProgressIndicator(),
-                    errorWidget: (context, url, error) => new Icon(Icons.error),
-                    fit: BoxFit.cover,
-                  )
-                /*Image.network(
-                    Constants.formatStaticWixImageUrl(article.coverImageSource),
-                    fit: BoxFit.cover,
-                  ) */
-                : Container(),
-            article.coverImageSource != null ? Container() : CommonDivider(),
-            actionColumn(article),
-          ],
-        ),
-      ),
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
+    return Card(
+      elevation: 2.0,
+      child: InkWell(
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
               builder: (context) => ArticleReaderFragment(
                     article: article,
-                  )),
-        );
-      },
+                  ),
+            ),
+          );
+        },
+        child: Container(
+          child: Column(
+            children: <Widget>[
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: profileColumn(context, article),
+              ),
+              Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Text(
+                  article.seoDescription,
+                  style: TextStyle(fontWeight: FontWeight.normal),
+                  textAlign: TextAlign.justify,
+                ),
+              ),
+              SizedBox(
+                height: 10.0,
+              ),
+              article.coverImageSource != null ? networkImage(Constants.formatStaticWixImageUrl(article.coverImageSource)) : Container(),
+              article.coverImageSource != null ? Container() : CommonDivider(),
+              actionColumn(article),
+            ],
+          ),
+        ),
+      ),
     );
   }
 
   Widget bodyList(List<WebArticle> posts) => SliverList(
         delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
           return Padding(
-            padding: const EdgeInsets.all(8.0),
+            padding: const EdgeInsets.symmetric(
+              horizontal: 8.0,
+              vertical: 4.0,
+            ),
             child: postCard(context, posts[index]),
           );
         }, childCount: posts.length),
@@ -205,12 +202,6 @@ class ArticleReaderFragment extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<List<ArticleContentItem>> allItems = ArticleProcessor(article: article).organize(context);
-    int allItemsCount = 0;
-    allItems.forEach((partWidgets) {
-      partWidgets.forEach((widget) {
-        allItemsCount = allItemsCount + 1;
-      });
-    });
 
     var deviceSize = MediaQuery.of(context).size;
 
@@ -236,34 +227,11 @@ class ArticleReaderFragment extends StatelessWidget {
       body: Stack(
         fit: StackFit.expand,
         children: <Widget>[
-          Column(
-            children: <Widget>[
-              Flexible(
-                flex: 2,
-                child: ClipPath(
-                  clipper: new ArcClipper(),
-                  child: Stack(
-                    children: <Widget>[
-                      new Container(
-                          width: double.infinity,
-                          child: CachedNetworkImage(
-                            imageUrl: Constants.formatStaticWixImageUrl(article.coverImageSource),
-                            placeholder: (context, url) => new CircularProgressIndicator(),
-                            errorWidget: (context, url, error) => new Icon(Icons.error),
-                            fit: BoxFit.cover,
-                          ))
-                    ],
-                  ),
-                ),
-              ),
-              new Flexible(
-                flex: 3,
-                child: new Container(),
-              )
-            ],
+          TopRoundBackground(
+            widget: networkImage(Constants.formatStaticWixImageUrl(article.coverImageSource)),
           ),
           Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 18.0),
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: ListView(
               children: <Widget>[
                 Padding(

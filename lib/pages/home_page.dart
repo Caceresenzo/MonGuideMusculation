@@ -1,4 +1,5 @@
 import 'package:mon_guide_musculation/fragments/articles/articles.dart';
+import 'package:mon_guide_musculation/fragments/contact/contact.dart';
 import 'package:mon_guide_musculation/ui/dialogs/about_dialog.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 
@@ -47,6 +48,9 @@ class HomePageState extends State<HomePage> {
     switch (position) {
       case 2:
         return new ArticlesListFragment();
+
+      case 4:
+        return new ContactWidget();
 
       default:
         return _widgetOptions.elementAt(_selectedIndex);

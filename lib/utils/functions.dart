@@ -6,6 +6,6 @@ CachedNetworkImage networkImage(String imageUrl) {
     imageUrl: imageUrl,
     placeholder: (context, url) => new CircularProgressIndicator(),
     errorWidget: (context, url, error) => new Icon(Icons.error),
-    fit: BoxFit.fill,
+    fit: BoxFit.fitWidth,
   );
 }
