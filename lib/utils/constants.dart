@@ -22,3 +22,11 @@ class Texts {
 
   static const String tooltipAbout = "A Propos";
 }
+
+class WixData {
+  static const String typeAtomicLink = "LINK";
+  static const String typeAtomicDevider = "wix-draft-plugin-divider";
+  static const String typeAtomicImage = "wix-draft-plugin-image";
+  static const String typeAtomicVideo = "wix-draft-plugin-video";
+
+}

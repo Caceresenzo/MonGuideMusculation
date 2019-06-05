@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
+import 'package:mon_guide_musculation/logic/article_processor/article_widget_creator.dart';
 import 'package:mon_guide_musculation/ui/widgets/common_divider.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
@@ -96,8 +97,6 @@ class ArticleContent {
 }
 
 class ArticleContentItem {
-  static int ORDERED_LIST_COUNTER = 1;
-
   Map<String, dynamic> rawContentJson;
   Map<String, dynamic> rawBlockJson;
   String text;
@@ -109,7 +108,7 @@ class ArticleContentItem {
     String text = data["text"];
     String type = data["type"];
 
-    if (text == "" && type == "unstyled") {
+    if (text == "" && (type == "unstyled" || type.startsWith("header-"))) {
       return null;
     }
 
@@ -121,136 +120,13 @@ class ArticleContentItem {
     );
   }
 
+  /// Shortcut for [ArticleWidgetCreator.toWidget(context, item)].
   Widget toWidget(BuildContext context) {
-    Widget widget;
-
-    switch (type) {
-      case "atomic":
-        String entityId = "${rawBlockJson["entityRanges"][0]["key"]}";
-        print(rawBlockJson["entityRanges"]);
-        Map<String, dynamic> entity = rawContentJson["entityMap"][entityId];
-
-        String entityType = entity["type"];
-        switch (entityType) {
-          case "LINK":
-            break;
-          case "wix-draft-plugin-image":
-            String fileName = entity["data"]["src"]["file_name"];
-
-            //widget = Image.network();
-            widget = CachedNetworkImage(
-              imageUrl: Constants.formatStaticWixImageUrl(fileName),
-              placeholder: (context, url) => new CircularProgressIndicator(),
-              errorWidget: (context, url, error) => new Icon(Icons.error),
-              fit: BoxFit.fill,
-            );
-            break;
-          case "wix-draft-plugin-divider":
-            widget = CommonDivider();
-            break;
-          case "wix-draft-plugin-video":
-            String youtubeLink = entity["data"]["src"];
-
-            widget = YoutubePlayer(
-              context: context,
-              source: youtubeLink,
-              quality: YoutubeQuality.HIGH,
-              autoPlay: false,
-              showThumbnail: true,
-            );
-            break;
-        }
-        break;
-
-      default:
-        String finalText = text;
-        double fontSize = 12;
-        TextAlign textAlign = TextAlign.justify;
-
-        switch (type) {
-          case "header-two":
-            fontSize = 18;
-            textAlign = TextAlign.center;
-            break;
-
-          case "ordered-list-item":
-            ORDERED_LIST_COUNTER = ORDERED_LIST_COUNTER + 1;
-
-            widget = Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  "\t\t\t${ArticleContentItem.ORDERED_LIST_COUNTER}.\t",
-                  style: TextStyle(fontSize: fontSize),
-                  textAlign: textAlign,
-                ),
-                Expanded(
-                  child: Text(
-                    text,
-                    style: TextStyle(fontSize: fontSize),
-                    textAlign: textAlign,
-                  ),
-                ),
-              ],
-            );
-            break;
-
-          case "unordered-list-item":
-            widget = Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  "\t\t\t\u25CF\t",
-                  style: TextStyle(fontSize: fontSize - 3),
-                  textAlign: textAlign,
-                ),
-                Expanded(
-                  child: Text(
-                    text,
-                    style: TextStyle(fontSize: fontSize),
-                    textAlign: textAlign,
-                  ),
-                ),
-              ],
-            );
-            break;
-
-          case "blockquote":
-            widget = Container(
-                child: Text(
-                  text,
-                  style: TextStyle(fontStyle: FontStyle.italic),
-                  textAlign: textAlign,
-                ),
-                padding: EdgeInsets.only(left: 5),
-                decoration: new BoxDecoration(
-                  border: Border(
-                      left: BorderSide(
-                    color: Constants.colorAccent,
-                    width: 4.0,
-                  )),
-                ));
-            break;
-        }
-
-        /* Reset */
-        if (type != "ordered-list-item") {
-          ORDERED_LIST_COUNTER = 0;
-        }
-
-        if (widget == null) {
-          widget = Text(
-            finalText,
-            style: TextStyle(fontSize: fontSize),
-            textAlign: textAlign,
-          );
-        }
-        break;
-    }
-
-    return Container(
-      child: Padding(padding: EdgeInsets.fromLTRB(8, 2, 8, 2), child: widget),
-      //width: double.infinity,
-    );
+    return ArticleWidgetCreator.toWidget(context, this);
   }
+
+  bool isTitle() {
+    return type.startsWith("header-");
+  }
+
 }

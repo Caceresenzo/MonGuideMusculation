@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mon_guide_musculation/logic/article_processor/article_processor.dart';
 import 'package:mon_guide_musculation/models/article.dart';
 import 'package:mon_guide_musculation/ui/arc_clipper.dart';
 import 'package:mon_guide_musculation/ui/widgets/common_divider.dart';
@@ -45,21 +46,70 @@ class ArticlesListFragment extends StatelessWidget {
           alignment: MainAxisAlignment.center,
           children: <Widget>[
             // Text("${article.viewCount} Vues"),
-            FlatButton.icon(icon: Icon(Icons.remove_red_eye), label: Text("${article.viewCount}")),
-            /*LabelIcon(
-              label: "${article.likesCount} Likes",
-              icon: FontAwesomeIcons.solidThumbsUp,
-              iconColor: Colors.green,
-            ), */
-            //Text("${article.likeCount} J'Aime"),
-            FlatButton.icon(icon: Icon(Icons.thumb_up), label: Text("${article.likeCount}")),
-            /*LabelIcon(
-              label: "${article.commentsCount} Comments",
-              icon: FontAwesomeIcons.comment,
-              iconColor: Colors.blue,
-            ), */
-            //Text("${article.totalComments} Commentaire"),
-            FlatButton.icon(icon: Icon(Icons.comment), label: Text("${article.totalComments}")),
+            GestureDetector(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 2.0,
+                ),
+                child: Row(
+                  children: <Widget>[
+                    Icon(Icons.remove_red_eye),
+                    Container(
+                      width: 8,
+                    ),
+                    Text(article.viewCount.toString()),
+                  ],
+                ),
+              ),
+            ),
+            GestureDetector(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 2.0,
+                ),
+                child: Row(
+                  children: <Widget>[
+                    Icon(Icons.thumb_up),
+                    Container(
+                      width: 8,
+                    ),
+                    Text(article.likeCount.toString()),
+                  ],
+                ),
+              ),
+            ),
+            GestureDetector(
+              child: Padding(
+                padding: EdgeInsets.symmetric(
+                  horizontal: 2.0,
+                ),
+                child: Row(
+                  children: <Widget>[
+                    Icon(Icons.comment),
+                    Container(
+                      width: 8,
+                    ),
+                    Text(article.totalComments.toString()),
+                  ],
+                ),
+              ),
+            )
+            /*FlatButton.icon(
+                onPressed: null,
+                icon: Icon(Icons.remove_red_eye),
+                label: Text(
+                  "${article.viewCount}",
+                )),
+            FlatButton.icon(
+              onPressed: null,
+              icon: Icon(Icons.thumb_up),
+              label: Text("${article.likeCount}"),
+            ),
+            FlatButton.icon(
+              onPressed: null,
+              icon: Icon(Icons.comment),
+              label: Text("${article.totalComments}"),
+            ),*/
           ],
         ),
       );
@@ -154,6 +204,14 @@ class ArticleReaderFragment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List<List<ArticleContentItem>> allItems = ArticleProcessor(article: article).organize(context);
+    int allItemsCount = 0;
+    allItems.forEach((partWidgets) {
+      partWidgets.forEach((widget) {
+        allItemsCount = allItemsCount + 1;
+      });
+    });
+
     var deviceSize = MediaQuery.of(context).size;
 
     return Scaffold(
@@ -219,7 +277,45 @@ class ArticleReaderFragment extends StatelessWidget {
                       SizedBox(
                         height: deviceSize.height / 5,
                       ),
-                      Card(
+                      ListView.builder(
+                        shrinkWrap: true, // todo comment this out and check the result
+                        physics: ClampingScrollPhysics(),
+                        itemBuilder: (context, position) {
+                          List<ArticleContentItem> widgets = allItems[position];
+
+                          return Card(
+                            child: Column(
+                              children: <Widget>[
+                                Card(
+                                  child: Container(
+                                    width: double.infinity,
+                                    child: widgets[0].toWidget(context),
+                                  ),
+                                  color: Constants.colorAccent,
+                                ),
+                                Padding(
+                                  padding: EdgeInsets.only(
+                                    bottom: 5.0,
+                                  ),
+                                  child: ListView.builder(
+                                    shrinkWrap: true, // todo comment this out and check the result
+                                    physics: ClampingScrollPhysics(),
+                                    itemBuilder: (context, position) {
+                                      Widget widget = widgets[position + 1].toWidget(context);
+
+                                      return widget;
+                                    },
+                                    itemCount: widgets.length - 1,
+                                  ),
+                                )
+                              ],
+                            ),
+                            color: Colors.white,
+                          );
+                        },
+                        itemCount: allItems.length,
+                      ),
+                      /*Card(
                         child: Padding(
                             padding: const EdgeInsets.all(8.0),
                             child: Text(
@@ -246,7 +342,7 @@ class ArticleReaderFragment extends StatelessWidget {
                             },
                           ),
                         ),
-                      ),
+                      ),*/
                     ],
                   ),
                 ),
