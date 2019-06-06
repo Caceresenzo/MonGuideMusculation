@@ -1,22 +1,22 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mon_guide_musculation/models/article.dart';
+import 'package:mon_guide_musculation/models/wix.dart';
 import 'package:mon_guide_musculation/ui/widgets/common_divider.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 import 'package:mon_guide_musculation/utils/functions.dart';
 import 'package:youtube_player/youtube_player.dart';
 
-class ArticleWidgetCreator {
+class WixBlockWidgetCreator {
   static int _orderedListCounter = 1;
   static List<String> _numbers = ["one", "two", "three", "four", "five", "six"];
 
-  static Widget toWidget(BuildContext context, ArticleContentItem item) {
+  static Widget toWidget(BuildContext context, WixBlockItem item) {
     return Container(
       child: Padding(padding: EdgeInsets.fromLTRB(8, 2, 8, 2), child: _createByType(context, item) ?? Text("???")),
     );
   }
 
-  static Widget _createByType(BuildContext context, ArticleContentItem item) {
+  static Widget _createByType(BuildContext context, WixBlockItem item) {
     switch (item.type) {
       case "atomic":
         return _createAtomic(context, item);
@@ -26,7 +26,7 @@ class ArticleWidgetCreator {
     }
   }
 
-  static Widget _createAtomic(BuildContext context, ArticleContentItem item) {
+  static Widget _createAtomic(BuildContext context, WixBlockItem item) {
     String entityId = item.rawBlockJson["entityRanges"][0]["key"].toString();
     Map<String, dynamic> entity = item.rawContentJson["entityMap"][entityId];
 
@@ -60,7 +60,7 @@ class ArticleWidgetCreator {
     }
   }
 
-  static Widget _createFormatted(BuildContext context, ArticleContentItem item) {
+  static Widget _createFormatted(BuildContext context, WixBlockItem item) {
     if (item.type != "ordered-list-item") {
       /* Reset */
       _orderedListCounter = 0;

@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
-import 'package:mon_guide_musculation/logic/article_processor/article_processor.dart';
 import 'package:mon_guide_musculation/logic/managers/base_manager.dart';
+import 'package:mon_guide_musculation/logic/wix_block_processor/wix_block_processor.dart';
 import 'package:mon_guide_musculation/models/article.dart';
+import 'package:mon_guide_musculation/models/wix.dart';
 import 'package:mon_guide_musculation/ui/widgets/common_divider.dart';
 import 'package:mon_guide_musculation/ui/widgets/top_round_background.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
@@ -14,9 +15,7 @@ class ArticlesListFragment extends StatelessWidget {
   Widget profileColumn(BuildContext context, WebArticle article) => Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          CircleAvatar(
-              //NetworkImage(Constants.formatStaticWixImageUrl(article.authorProfilePictureSource)),
-              backgroundImage: CachedNetworkImageProvider(Constants.formatStaticWixImageUrl(article.authorProfilePictureSource))),
+          CircleAvatar(backgroundImage: CachedNetworkImageProvider(Constants.formatStaticWixImageUrl(article.authorProfilePictureSource))),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -96,23 +95,7 @@ class ArticlesListFragment extends StatelessWidget {
                   ],
                 ),
               ),
-            )
-            /*FlatButton.icon(
-                onPressed: null,
-                icon: Icon(Icons.remove_red_eye),
-                label: Text(
-                  "${article.viewCount}",
-                )),
-            FlatButton.icon(
-              onPressed: null,
-              icon: Icon(Icons.thumb_up),
-              label: Text("${article.likeCount}"),
             ),
-            FlatButton.icon(
-              onPressed: null,
-              icon: Icon(Icons.comment),
-              label: Text("${article.totalComments}"),
-            ),*/
           ],
         ),
       );
@@ -185,7 +168,9 @@ class ArticlesListFragment extends StatelessWidget {
                     bodyList(snapshot.data),
                   ],
                 )
-              : Center(child: CircularProgressIndicator());
+              : Center(
+                  child: CircularProgressIndicator(),
+                );
         },
       ),
       onRefresh: () async {
@@ -209,7 +194,7 @@ class ArticleReaderFragment extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    List<List<ArticleContentItem>> allItems = ArticleProcessor(article: article).organize(context);
+    List<List<WixBlockItem>> allItems = WixBlockProcessor(blocks: article.content.items).organize(context);
 
     var deviceSize = MediaQuery.of(context).size;
 
@@ -257,7 +242,7 @@ class ArticleReaderFragment extends StatelessWidget {
                         shrinkWrap: true, // todo comment this out and check the result
                         physics: ClampingScrollPhysics(),
                         itemBuilder: (context, position) {
-                          List<ArticleContentItem> widgets = allItems[position];
+                          List<WixBlockItem> widgets = allItems[position];
 
                           return Card(
                             child: Column(
@@ -291,34 +276,6 @@ class ArticleReaderFragment extends StatelessWidget {
                         },
                         itemCount: allItems.length,
                       ),
-                      /*Card(
-                        child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Text(
-                              article.title,
-                              style: TextStyle(color: Colors.white),
-                              textAlign: TextAlign.center,
-                            )),
-                        color: Constants.colorAccent,
-                      ),
-                      Card(
-                        child: Padding(
-                          padding: const EdgeInsets.all(8.0),
-                          child: ListView.builder(
-                            shrinkWrap: true, // todo comment this out and check the result
-                            physics: ClampingScrollPhysics(),
-                            itemCount: article.content.items.length,
-                            itemBuilder: (context, position) {
-                              var item = article.content.items[position];
-
-                              return Padding(
-                                padding: EdgeInsets.all(0),
-                                child: item.toWidget(context),
-                              );
-                            },
-                          ),
-                        ),
-                      ),*/
                     ],
                   ),
                 ),

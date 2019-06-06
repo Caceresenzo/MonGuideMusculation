@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:mon_guide_musculation/logic/article_processor/article_widget_creator.dart';
+import 'package:mon_guide_musculation/models/wix.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 
 class WebArticle {
@@ -41,18 +41,18 @@ class WebArticle {
 
 class ArticleContent {
   WebArticle parentArticle;
-  List<ArticleContentItem> items;
+  List<WixBlockItem> items;
 
   ArticleContent({@required this.parentArticle, this.items});
 
   factory ArticleContent.fromJson(WebArticle parent, Map<String, dynamic> data) {
-    List<ArticleContentItem> items = [];
+    List<WixBlockItem> items = [];
 
     Map<String, dynamic> content = data["content"];
     List<dynamic> blocks = content["blocks"];
 
     blocks.forEach((block) {
-      var contentItem = ArticleContentItem.fromJson(content, block);
+      var contentItem = WixBlockItem.fromJson(content, block);
 
       if (contentItem != null) {
         items.add(contentItem);
@@ -64,39 +64,4 @@ class ArticleContent {
       items: items,
     );
   }
-}
-
-class ArticleContentItem {
-  Map<String, dynamic> rawContentJson;
-  Map<String, dynamic> rawBlockJson;
-  String text;
-  String type;
-
-  ArticleContentItem({@required this.rawContentJson, @required this.rawBlockJson, this.text, this.type});
-
-  factory ArticleContentItem.fromJson(Map<String, dynamic> baseContent, Map<String, dynamic> data) {
-    String text = data["text"];
-    String type = data["type"];
-
-    if (text == "" && (type == "unstyled" || type.startsWith("header-"))) {
-      return null;
-    }
-
-    return ArticleContentItem(
-      rawContentJson: baseContent,
-      rawBlockJson: data,
-      text: text,
-      type: type,
-    );
-  }
-
-  /// Shortcut for [ArticleWidgetCreator.toWidget(context, item)].
-  Widget toWidget(BuildContext context) {
-    return ArticleWidgetCreator.toWidget(context, this);
-  }
-
-  bool isTitle() {
-    return type.startsWith("header-");
-  }
-
 }
