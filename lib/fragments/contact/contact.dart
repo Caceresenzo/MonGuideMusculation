@@ -14,11 +14,11 @@ class ContactWidget extends StatelessWidget {
             widget: networkImage("https://static.wixstatic.com/media/1bf8c6_93938e2c2d1a4f6aab8bccf32a262750~mv2.jpeg"),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: 8.0),
+            padding: EdgeInsets.zero,
             child: ListView(
               children: <Widget>[
                 SizedBox(
-                  height: MediaQuery.of(context).size.height / 5,
+                  height: MediaQuery.of(context).size.height / 4,
                 ),
                 Column(
                   children: <Widget>[

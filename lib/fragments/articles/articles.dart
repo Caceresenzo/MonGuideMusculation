@@ -138,14 +138,16 @@ class ArticlesListFragment extends StatelessWidget {
                 padding: const EdgeInsets.all(8.0),
                 child: profileColumn(context, article),
               ),
-              Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Text(
-                  article.seoDescription,
-                  style: TextStyle(fontWeight: FontWeight.normal),
-                  textAlign: TextAlign.justify,
-                ),
-              ),
+              article.seoDescription != null
+                  ? Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Text(
+                        article.seoDescription,
+                        style: TextStyle(fontWeight: FontWeight.normal),
+                        textAlign: TextAlign.justify,
+                      ),
+                    )
+                  : Container(),
               SizedBox(
                 height: 10.0,
               ),

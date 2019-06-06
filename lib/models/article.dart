@@ -3,10 +3,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mon_guide_musculation/logic/article_processor/article_widget_creator.dart';
-import 'package:mon_guide_musculation/ui/widgets/common_divider.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
-import 'package:cached_network_image/cached_network_image.dart';
-import 'package:youtube_player/youtube_player.dart';
 
 class WebArticle {
   String slug;
@@ -30,7 +27,7 @@ class WebArticle {
       author: json['owner']['name'],
       authorProfilePictureSource: json['owner']['image']['file_name'],
       title: json['title'].replaceAll(new RegExp(r'\n'), ''),
-      seoDescription: json['seoDescription'],
+      seoDescription: json['seoDescription'], // ?? "<no desc>",
       viewCount: json['viewCount'],
       likeCount: json['likeCount'],
       totalComments: json['totalComments'],
