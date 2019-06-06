@@ -1,4 +1,4 @@
-package com.example.mon_guide_musculation;
+package caceresenzo.apps.guidemusculation;
 
 import android.os.Bundle;
 import io.flutter.app.FlutterActivity;
