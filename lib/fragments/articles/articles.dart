@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mon_guide_musculation/logic/article_processor/article_processor.dart';
+import 'package:mon_guide_musculation/logic/managers/base_manager.dart';
 import 'package:mon_guide_musculation/models/article.dart';
-import 'package:mon_guide_musculation/ui/arc_clipper.dart';
 import 'package:mon_guide_musculation/ui/widgets/common_divider.dart';
 import 'package:mon_guide_musculation/ui/widgets/top_round_background.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
@@ -18,26 +18,27 @@ class ArticlesListFragment extends StatelessWidget {
               //NetworkImage(Constants.formatStaticWixImageUrl(article.authorProfilePictureSource)),
               backgroundImage: CachedNetworkImageProvider(Constants.formatStaticWixImageUrl(article.authorProfilePictureSource))),
           Expanded(
-              child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20.0),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(
-                  article.title,
-                  style: Theme.of(context).textTheme.body1.apply(fontWeightDelta: 700),
-                ),
-                SizedBox(
-                  height: 5.0,
-                ),
-                Text(
-                  "Écrit par ${article.author}",
-                  style: Theme.of(context).textTheme.caption.apply(color: Colors.pink),
-                )
-              ],
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 20.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(
+                    article.title,
+                    style: Theme.of(context).textTheme.body1.apply(fontWeightDelta: 700),
+                  ),
+                  SizedBox(
+                    height: 5.0,
+                  ),
+                  Text(
+                    "Écrit par ${article.author}",
+                    style: Theme.of(context).textTheme.caption.apply(color: Colors.pink),
+                  )
+                ],
+              ),
             ),
-          ))
+          )
         ],
       );
 
@@ -174,16 +175,21 @@ class ArticlesListFragment extends StatelessWidget {
       );
 
   Widget bodySliverList() {
-    return FutureBuilder<List<WebArticle>>(
-      future: WebArticle.fetchPost(),
-      builder: (context, snapshot) {
-        return snapshot.hasData
-            ? CustomScrollView(
-                slivers: <Widget>[
-                  bodyList(snapshot.data),
-                ],
-              )
-            : Center(child: CircularProgressIndicator());
+    return RefreshIndicator(
+      child: FutureBuilder<List<WebArticle>>(
+        future: Managers.articleManager.fetchPost(true),
+        builder: (context, snapshot) {
+          return snapshot.hasData
+              ? CustomScrollView(
+                  slivers: <Widget>[
+                    bodyList(snapshot.data),
+                  ],
+                )
+              : Center(child: CircularProgressIndicator());
+        },
+      ),
+      onRefresh: () async {
+        await Managers.articleManager.fetchPost(false);
       },
     );
   }

@@ -1,3 +1,5 @@
+import 'package:mon_guide_musculation/logic/managers/base_manager.dart';
+
 import 'pages/home_page.dart';
 import 'package:flutter/material.dart';
 
@@ -9,6 +11,8 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    Managers.initialize();
+
     return new MaterialApp(
       title: 'NavigationDrawer Demo',
       theme: new ThemeData(
