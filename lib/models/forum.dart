@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:mon_guide_musculation/logic/wix_block_processor/wix_block_extractor.dart';
+import 'package:mon_guide_musculation/logic/wix_block_processor/wix_block_processor.dart';
 import 'package:mon_guide_musculation/models/user.dart';
 import 'package:mon_guide_musculation/models/wix.dart';
 
@@ -31,6 +32,12 @@ class ForumThreadContent {
       parentArticle: parent,
       items: WixBlockExtractor.extractFromJson(data["content"]),
       totalComments: data["totalComments"],
+    );
+  }
+
+  WixBlockProcessor autoProcessor() {
+    return WixBlockProcessor(
+      blocks: items,
     );
   }
 }

@@ -1,10 +1,10 @@
-import 'dart:math';
-
 import 'package:flutter/material.dart';
+import 'package:flutter/painting.dart';
 import 'package:mon_guide_musculation/logic/managers/base_manager.dart';
 import 'package:mon_guide_musculation/models/forum.dart';
-import 'package:mon_guide_musculation/models/user.dart';
 import 'package:mon_guide_musculation/ui/widgets/circular_user_avatar.dart';
+import 'package:mon_guide_musculation/ui/widgets/common_divider.dart';
+import 'package:mon_guide_musculation/ui/widgets/wix_block_list.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 
 class ForumThreadWidget extends StatelessWidget {
@@ -131,7 +131,88 @@ class _ForumScreenReadingState extends State<ForumScreen> {
         title: Text(forumThread.title),
         backgroundColor: Constants.colorAccent,
       ),
-      body: Text(forumThread.title),
+      body: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: ListView(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                  child: Column(
+                    children: <Widget>[
+                      _buildThreadInfoCard(context),
+                      WixBlockList(
+                        allItems: forumThread.content.autoProcessor().organize(context),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildIconValue(IconData icon, dynamic value) {
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: 2.0,
+      ),
+      child: Row(
+        children: <Widget>[
+          Icon(icon),
+          Container(
+            width: 8,
+          ),
+          Text(value.toString()),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildThreadInfoCard(BuildContext context) {
+    return Card(
+      child: Container(
+        width: double.infinity,
+        child: Column(
+          children: <Widget>[
+            SizedBox(
+              height: 8.0,
+            ),
+            Center(
+              child: CircularUserAvatar(
+                user: forumThread.owner,
+              ),
+            ),
+            SizedBox(
+              height: 4.0,
+            ),
+            Text(
+              forumThread.owner.name,
+              style: TextStyle(
+                fontSize: 18,
+              ),
+              textAlign: TextAlign.center,
+            ),
+            SizedBox(
+              height: 8.0,
+            ),
+            CommonDivider(),
+            ButtonBar(
+              alignment: MainAxisAlignment.center,
+              children: <Widget>[
+                _buildIconValue(Icons.thumb_up, 10),
+                _buildIconValue(Icons.remove_red_eye, 8),
+                _buildIconValue(Icons.comment, 1),
+              ],
+            )
+          ],
+        ),
+      ),
     );
   }
 }

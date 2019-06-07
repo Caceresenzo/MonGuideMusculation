@@ -5,6 +5,7 @@ import 'package:mon_guide_musculation/models/article.dart';
 import 'package:mon_guide_musculation/models/wix.dart';
 import 'package:mon_guide_musculation/ui/widgets/common_divider.dart';
 import 'package:mon_guide_musculation/ui/widgets/top_round_background.dart';
+import 'package:mon_guide_musculation/ui/widgets/wix_block_list.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:mon_guide_musculation/utils/functions.dart';
@@ -239,43 +240,8 @@ class ArticleReaderFragment extends StatelessWidget {
                       SizedBox(
                         height: deviceSize.height / 5,
                       ),
-                      ListView.builder(
-                        shrinkWrap: true, // todo comment this out and check the result
-                        physics: ClampingScrollPhysics(),
-                        itemBuilder: (context, position) {
-                          List<WixBlockItem> widgets = allItems[position];
-
-                          return Card(
-                            child: Column(
-                              children: <Widget>[
-                                Card(
-                                  child: Container(
-                                    width: double.infinity,
-                                    child: widgets[0].toWidget(context),
-                                  ),
-                                  color: Constants.colorAccent,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                    bottom: 5.0,
-                                  ),
-                                  child: ListView.builder(
-                                    shrinkWrap: true, // todo comment this out and check the result
-                                    physics: ClampingScrollPhysics(),
-                                    itemBuilder: (context, position) {
-                                      Widget widget = widgets[position + 1].toWidget(context);
-
-                                      return widget;
-                                    },
-                                    itemCount: widgets.length - 1,
-                                  ),
-                                )
-                              ],
-                            ),
-                            color: Colors.white,
-                          );
-                        },
-                        itemCount: allItems.length,
+                      WixBlockList(
+                        allItems: allItems,
                       ),
                     ],
                   ),
