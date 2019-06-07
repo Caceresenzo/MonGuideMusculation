@@ -7,14 +7,16 @@ import 'package:mon_guide_musculation/models/wix.dart';
 class ForumThread {
   String title;
   User owner;
+  WixBasicStatistics stats;
   ForumThreadContent content;
 
-  ForumThread({@required this.title, @required this.owner, @required this.content});
+  ForumThread({@required this.title, @required this.owner, this.stats, @required this.content});
 
   factory ForumThread.fromJson(Map<String, dynamic> data) {
     return new ForumThread(
       title: data["title"],
       owner: User.fromJson(data["owner"]),
+      stats: WixBasicStatistics.fromJson(data),
       content: ForumThreadContent.fromJson(null, data),
     );
   }

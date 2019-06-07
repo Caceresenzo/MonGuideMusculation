@@ -124,39 +124,6 @@ class _ForumScreenReadingState extends State<ForumScreen> {
     this.forumThread,
   });
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(forumThread.title),
-        backgroundColor: Constants.colorAccent,
-      ),
-      body: Stack(
-        fit: StackFit.expand,
-        children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: ListView(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16.0),
-                  child: Column(
-                    children: <Widget>[
-                      _buildThreadInfoCard(context),
-                      WixBlockList(
-                        allItems: forumThread.content.autoProcessor().organize(context),
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   Widget _buildIconValue(IconData icon, dynamic value) {
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -205,13 +172,46 @@ class _ForumScreenReadingState extends State<ForumScreen> {
             ButtonBar(
               alignment: MainAxisAlignment.center,
               children: <Widget>[
-                _buildIconValue(Icons.thumb_up, 10),
-                _buildIconValue(Icons.remove_red_eye, 8),
-                _buildIconValue(Icons.comment, 1),
+                _buildIconValue(Icons.comment, forumThread.stats.totalComments),
+                _buildIconValue(Icons.thumb_up, forumThread.stats.likeCount),
+                _buildIconValue(Icons.remove_red_eye, forumThread.stats.viewCount),
               ],
             )
           ],
         ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text(forumThread.title),
+        backgroundColor: Constants.colorAccent,
+      ),
+      body: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: ListView(
+              children: <Widget>[
+                Padding(
+                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                  child: Column(
+                    children: <Widget>[
+                      _buildThreadInfoCard(context),
+                      WixBlockList(
+                        allItems: forumThread.content.autoProcessor().organize(context),
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }
