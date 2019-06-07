@@ -8,6 +8,8 @@ class Texts {
   static const String applicationName = "Mon Guide Musculation";
   static const String applicationVersion = "1.0.0";
   static const String applicationDeveloper = "par Enzo CACERES";
+  
+  static const String pageNoContent = "Aucun contenu.";
 
   static const String buttonClose = "FERMER";
 
