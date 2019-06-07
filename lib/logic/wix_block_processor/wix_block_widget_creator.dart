@@ -4,6 +4,7 @@ import 'package:mon_guide_musculation/models/wix.dart';
 import 'package:mon_guide_musculation/ui/widgets/common_divider.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 import 'package:mon_guide_musculation/utils/functions.dart';
+import 'package:mon_guide_musculation/utils/wix_utils.dart';
 import 'package:youtube_player/youtube_player.dart';
 
 class WixBlockWidgetCreator {
@@ -39,7 +40,7 @@ class WixBlockWidgetCreator {
       case WixData.typeAtomicImage:
         String fileName = entity["data"]["src"]["file_name"];
 
-        return networkImage(Constants.formatStaticWixImageUrl(fileName));
+        return networkImage(WixUtils.formatStaticWixImageUrl(fileName));
 
       case WixData.typeAtomicDevider:
         return CommonDivider();

@@ -8,6 +8,7 @@ import 'package:mon_guide_musculation/ui/widgets/top_round_background.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:mon_guide_musculation/utils/functions.dart';
+import 'package:mon_guide_musculation/utils/wix_utils.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 class ArticlesListFragment extends StatelessWidget {
@@ -15,7 +16,7 @@ class ArticlesListFragment extends StatelessWidget {
   Widget profileColumn(BuildContext context, WebArticle article) => Row(
         mainAxisAlignment: MainAxisAlignment.start,
         children: <Widget>[
-          CircleAvatar(backgroundImage: CachedNetworkImageProvider(Constants.formatStaticWixImageUrl(article.authorProfilePictureSource))),
+          CircleAvatar(backgroundImage: CachedNetworkImageProvider(WixUtils.formatStaticWixImageUrl(article.authorProfilePictureSource))),
           Expanded(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -135,7 +136,7 @@ class ArticlesListFragment extends StatelessWidget {
               SizedBox(
                 height: 10.0,
               ),
-              article.coverImageSource != null ? networkImage(Constants.formatStaticWixImageUrl(article.coverImageSource)) : Container(),
+              article.coverImageSource != null ? networkImage(WixUtils.formatStaticWixImageUrl(article.coverImageSource)) : Container(),
               article.coverImageSource != null ? Container() : CommonDivider(),
               actionColumn(article),
             ],
@@ -221,7 +222,7 @@ class ArticleReaderFragment extends StatelessWidget {
         fit: StackFit.expand,
         children: <Widget>[
           TopRoundBackground(
-            widget: networkImage(Constants.formatStaticWixImageUrl(article.coverImageSource)),
+            widget: networkImage(WixUtils.formatStaticWixImageUrl(article.coverImageSource)),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),

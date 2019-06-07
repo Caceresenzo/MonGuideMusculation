@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:mon_guide_musculation/logic/wix_block_processor/wix_block_extractor.dart';
 import 'package:mon_guide_musculation/models/wix.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
+import 'package:mon_guide_musculation/utils/wix_utils.dart';
 
 class WebArticle {
   String slug;
@@ -35,7 +37,7 @@ class WebArticle {
   }
 
   String toRemoteUrl() {
-    return Constants.formatStaticWixPostUrl(slug);
+    return WixUtils.formatStaticWixPostUrl(slug);
   }
 }
 
@@ -46,22 +48,9 @@ class ArticleContent {
   ArticleContent({@required this.parentArticle, this.items});
 
   factory ArticleContent.fromJson(WebArticle parent, Map<String, dynamic> data) {
-    List<WixBlockItem> items = [];
-
-    Map<String, dynamic> content = data["content"];
-    List<dynamic> blocks = content["blocks"];
-
-    blocks.forEach((block) {
-      var contentItem = WixBlockItem.fromJson(content, block);
-
-      if (contentItem != null) {
-        items.add(contentItem);
-      }
-    });
-
     return ArticleContent(
       parentArticle: parent,
-      items: items,
+      items: WixBlockExtractor.extractFromJson(data["content"]),
     );
   }
 }
