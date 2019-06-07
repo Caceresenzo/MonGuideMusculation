@@ -142,6 +142,16 @@ class WixBlockWidgetCreator {
           ),
         );
 
+      case "code-block":
+        return Container(
+          padding: EdgeInsets.all(5.0),
+          child: Text(
+            item.text,
+            textAlign: TextAlign.left,
+          ),
+          color: Constants.colorCodeblock,
+        );
+
       default:
         return Text(
           item.text,

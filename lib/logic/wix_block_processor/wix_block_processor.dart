@@ -1,5 +1,4 @@
 import 'package:flutter/cupertino.dart';
-import 'package:mon_guide_musculation/models/article.dart';
 import 'package:mon_guide_musculation/models/wix.dart';
 
 class WixBlockProcessor {
@@ -11,15 +10,11 @@ class WixBlockProcessor {
     List<List<WixBlockItem>> items = [];
 
     List<WixBlockItem> currentItems = [];
-    WixBlockItem lastTitle;
 
     blocks.forEach((block) {
       if (block.isTitle()) {
-        if (lastTitle != null) {
-          items.add(currentItems);
-        }
+        items.add(currentItems);
 
-        lastTitle = block;
         currentItems = [block];
       } else {
         currentItems.add(block);
