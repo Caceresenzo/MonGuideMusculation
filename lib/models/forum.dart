@@ -22,13 +22,15 @@ class ForumThread {
 class ForumThreadContent {
   ForumThread parentArticle;
   List<WixBlockItem> items;
+  int totalComments;
 
-  ForumThreadContent({@required this.parentArticle, this.items});
+  ForumThreadContent({@required this.parentArticle, this.items, this.totalComments});
 
   factory ForumThreadContent.fromJson(ForumThread parent, Map<String, dynamic> data) {
     return new ForumThreadContent(
       parentArticle: parent,
       items: WixBlockExtractor.extractFromJson(data["content"]),
+      totalComments: data["totalComments"],
     );
   }
 }

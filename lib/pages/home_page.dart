@@ -2,6 +2,7 @@ import 'package:mon_guide_musculation/fragments/articles/articles.dart';
 import 'package:mon_guide_musculation/fragments/contact/contact.dart';
 import 'package:mon_guide_musculation/fragments/forum/forum.dart';
 import 'package:mon_guide_musculation/ui/dialogs/about_dialog.dart';
+import 'package:mon_guide_musculation/ui/pages/page_forum.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -47,7 +48,7 @@ class HomePageState extends State<HomePage> {
         return new ArticlesListFragment();
 
       case 3:
-        return new ForumWidget();
+        return new ForumScreen();
 
       case 4:
         return new ContactWidget();

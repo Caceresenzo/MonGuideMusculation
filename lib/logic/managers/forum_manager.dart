@@ -29,6 +29,7 @@ class ForumManager extends BaseManager {
       );
 
       var match = regExp.firstMatch(response.body);
+      print(response.body.length);
 
       Map<String, dynamic> data = json.decode(match.group(1));
       cachedThreads.clear();

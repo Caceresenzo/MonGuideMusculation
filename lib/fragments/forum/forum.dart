@@ -10,7 +10,7 @@ String camelUrl = 'https://i.stack.imgur.com/YN0m7.png';
 String sheepUrl = 'https://i.stack.imgur.com/wKzo8.png';
 String goatUrl = 'https://i.stack.imgur.com/Qt4JP.png';
 
-class ForumWidget extends StatelessWidget {
+class XForumWidget extends StatelessWidget {
   Widget bodyList(List<ForumThread> threads) => SliverList(
         delegate: SliverChildBuilderDelegate((BuildContext context, int index) {
           ForumThread thread = threads[index];
