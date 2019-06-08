@@ -3,7 +3,15 @@ import 'package:mon_guide_musculation/ui/widgets/top_round_background.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 import 'package:mon_guide_musculation/utils/functions.dart';
 
-class ContactWidget extends StatelessWidget {
+class ContactScreen extends StatelessWidget {
+  Widget _buildBigText(String text) {
+    return Text(
+      text.toUpperCase(),
+      style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0),
+      textAlign: TextAlign.center,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -25,68 +33,35 @@ class ContactWidget extends StatelessWidget {
                     Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Card(
-                        elevation: 2.0,
+                        elevation: 0.0,
                         child: Padding(
                           padding: const EdgeInsets.all(16.0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
-                              Text(
-                                "Mahé RUISI".toUpperCase(),
-                                style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0),
-                                textAlign: TextAlign.center,
-                              ),
+                              _buildBigText(Texts.ruisiFullName),
                               SizedBox(
                                 height: 10.0,
                               ),
-                              Text("4 North Joy Ridge St.\nRoswell, GA 30075\nFrance"),
+                              Text(Texts.ruisiAddress),
                             ],
                           ),
                         ),
                       ),
                     ),
-                    Container(
-                      width: double.infinity,
+                    Padding(
                       padding: const EdgeInsets.symmetric(horizontal: 8.0),
                       child: Card(
+                        elevation: 0.0,
                         child: Padding(
-                          padding: const EdgeInsets.all(8.0),
+                          padding: const EdgeInsets.all(16.0),
                           child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
-                              /*Container(
-                                width: double.infinity,
-                                child: RaisedButton.icon(
-                                  onPressed: () {},
-                                  color: Constants.colorAccent,
-                                  label: Text(
-                                    "Passer un appel",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  icon: Icon(
-                                    Icons.call,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
+                              _buildBigText(Texts.contactMe),
                               SizedBox(
-                                height: 5.0,
+                                height: 10.0,
                               ),
-                              Container(
-                                width: double.infinity,
-                                child: RaisedButton.icon(
-                                  onPressed: () {},
-                                  color: Constants.colorAccent,
-                                  label: Text(
-                                    "Envoyer un mail",
-                                    style: TextStyle(color: Colors.white),
-                                  ),
-                                  icon: Icon(
-                                    Icons.mail,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ), */
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
@@ -114,6 +89,50 @@ class ContactWidget extends StatelessWidget {
                         ),
                       ),
                     ),
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                      child: Card(
+                        elevation: 0.0,
+                        child: Padding(
+                          padding: const EdgeInsets.all(16.0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: <Widget>[
+                              _buildBigText(Texts.contactSocialNetworks),
+                              SizedBox(
+                                height: 10.0,
+                              ),
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                children: <Widget>[
+                                  FloatingActionButton(
+                                    onPressed: () {},
+                                    backgroundColor: Constants.colorAccent,
+                                    child: Icon(
+                                      MyIcons.instagram,
+                                    ),
+                                  ),
+                                  FloatingActionButton(
+                                    onPressed: () {},
+                                    backgroundColor: Constants.colorAccent,
+                                    child: Icon(
+                                      MyIcons.facebook,
+                                    ),
+                                  ),
+                                  FloatingActionButton(
+                                    onPressed: () {},
+                                    backgroundColor: Constants.colorAccent,
+                                    child: Icon(
+                                      MyIcons.youtube,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                   ],
                 ),
               ],
@@ -122,18 +141,5 @@ class ContactWidget extends StatelessWidget {
         ],
       ),
     );
-
-    /*Scaffold(
-      body: Padding(
-        padding: EdgeInsets.all(5.0),
-        child: ListView(
-          children: <Widget>[
-            TopRoundBackground(
-              widget: networkImage("https://static.wixstatic.com/media/1bf8c6_93938e2c2d1a4f6aab8bccf32a262750~mv2.jpeg"),
-            ),
-          ],
-        ),
-      ),
-    ); */
   }
 }

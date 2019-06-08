@@ -1,5 +1,5 @@
 import 'package:flutter/widgets.dart';
-import 'package:mon_guide_musculation/ui/arc_clipper.dart';
+import 'package:mon_guide_musculation/ui/tools/arc_clipper.dart';
 
 class TopRoundBackground extends StatelessWidget {
   final Widget widget;

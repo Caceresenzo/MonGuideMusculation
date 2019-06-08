@@ -10,7 +10,6 @@ import 'package:mon_guide_musculation/utils/constants.dart';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:mon_guide_musculation/utils/functions.dart';
 import 'package:mon_guide_musculation/utils/wix_utils.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 class ArticlesListFragment extends StatelessWidget {
   //column1
