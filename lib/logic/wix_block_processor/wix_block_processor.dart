@@ -13,7 +13,9 @@ class WixBlockProcessor {
 
     blocks.forEach((block) {
       if (block.isTitle()) {
-        items.add(currentItems);
+        if (currentItems.isNotEmpty) {
+          items.add(currentItems);
+        }
 
         currentItems = [block];
       } else {

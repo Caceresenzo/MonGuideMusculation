@@ -1,3 +1,4 @@
+import 'package:mon_guide_musculation/models/forum.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 
 class WixUtils {
@@ -11,5 +12,11 @@ class WixUtils {
   
   static String formatMediaFileUrl(file) {
     return WixUrls.mediaStaticPrefix + file;
+  }
+  
+  
+  static String formatForumUrl(ForumThread forumThread) {
+    print(WixUrls.forumPage + "/discussions-generales/${forumThread.slug}");
+    return WixUrls.forumPage + "/discussions-generales/${forumThread.slug}";
   }
 }

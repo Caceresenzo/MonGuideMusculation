@@ -19,7 +19,20 @@ class WebArticle {
   String coverImageSource;
   ArticleContent content;
 
-  WebArticle({this.slug, this.author, this.authorProfilePictureSource, this.releaseDate, this.readingTimeEstimation, this.title, this.seoDescription, this.viewCount, this.likeCount, this.totalComments, this.coverImageSource, @required this.content});
+  WebArticle({
+    this.slug,
+    this.author,
+    this.authorProfilePictureSource,
+    this.releaseDate,
+    this.readingTimeEstimation,
+    this.title,
+    this.seoDescription,
+    this.viewCount,
+    this.likeCount,
+    this.totalComments,
+    this.coverImageSource,
+    @required this.content,
+  });
 
   factory WebArticle.fromJson(Map<String, dynamic> json) {
     return WebArticle(
@@ -45,7 +58,10 @@ class ArticleContent {
   WebArticle parentArticle;
   List<WixBlockItem> items;
 
-  ArticleContent({@required this.parentArticle, this.items});
+  ArticleContent({
+    @required this.parentArticle,
+    this.items,
+  });
 
   factory ArticleContent.fromJson(WebArticle parent, Map<String, dynamic> data) {
     return ArticleContent(

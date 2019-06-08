@@ -2,15 +2,10 @@ import 'package:mon_guide_musculation/logic/managers/article_manager.dart';
 import 'package:mon_guide_musculation/logic/managers/forum_manager.dart';
 
 abstract class BaseManager {
-
-  void initialize() {
-    ;
-  }
-  
+  void initialize() {}
 }
 
 class Managers {
-
   static List<BaseManager> managers = [];
 
   static ArticleManager articleManager;
@@ -20,9 +15,8 @@ class Managers {
     managers.add(articleManager = new ArticleManager());
     managers.add(forumManager = new ForumManager());
 
-    managers.forEach((manager){
+    managers.forEach((manager) {
       manager.initialize();
     });
   }
-
 }

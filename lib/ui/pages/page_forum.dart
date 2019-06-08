@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:mon_guide_musculation/logic/managers/base_manager.dart';
+import 'package:mon_guide_musculation/logic/wix_block_processor/wix_block_processor.dart';
 import 'package:mon_guide_musculation/models/forum.dart';
 import 'package:mon_guide_musculation/ui/widgets/circular_user_avatar.dart';
 import 'package:mon_guide_musculation/ui/widgets/common_divider.dart';
@@ -22,7 +23,7 @@ class ForumThreadWidget extends StatelessWidget {
           user: forumThread.owner,
         ),
         title: Text(forumThread.title),
-        subtitle: Text(forumThread.owner.name + "\n" + Texts.responseCount(forumThread.content.totalComments)),
+        subtitle: Text(forumThread.owner.name + "\n" + Texts.answerCount(forumThread.content.totalComments)),
         trailing: Icon(Icons.keyboard_arrow_right),
         onTap: () {
           Navigator.push(
@@ -107,7 +108,7 @@ class _ForumScreenListingState extends State<ForumScreen> {
     });
   }
 
-  Widget buildItem(BuildContext context, int index) {
+  Widget _buildItem(BuildContext context, int index) {
     return SizedBox(
       child: ForumThreadWidget(
         forumThread: items[index],
@@ -125,7 +126,7 @@ class _ForumScreenListingState extends State<ForumScreen> {
         child: ListView.builder(
           itemCount: items.length,
           itemBuilder: (context, index) {
-            return buildItem(context, index);
+            return _buildItem(context, index);
           },
         ),
         onRefresh: () async {
@@ -143,6 +144,63 @@ class _ForumScreenReadingState extends State<ForumScreen> {
   _ForumScreenReadingState({
     this.forumThread,
   });
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(forumThread.title),
+          backgroundColor: Constants.colorAccent,
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.open_in_browser),
+              onPressed: () {},
+              tooltip: Texts.tooltipOpenInBrowser,
+            ),
+          ],
+          bottom: TabBar(
+            tabs: [
+              Tab(icon: Icon(Icons.forum)),
+              Tab(icon: Icon(Icons.comment)),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            _ForumThreadTab(forumThread),
+            _ForumAnwserTab(forumThread),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ForumThreadTab extends StatefulWidget {
+  final ForumThread forumThread;
+
+  const _ForumThreadTab(
+    this.forumThread, {
+    Key key,
+  }) : super(key: key);
+
+  @override
+  State<_ForumThreadTab> createState() => _ForumThreadTabState(forumThread);
+}
+
+class _ForumThreadTabState extends State<_ForumThreadTab> with AutomaticKeepAliveClientMixin<_ForumThreadTab> {
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = new GlobalKey<RefreshIndicatorState>();
+  bool _initialized = false;
+
+  final ForumThread forumThread;
+  List<ForumThreadAnswer> items = new List();
+
+  _ForumThreadTabState(this.forumThread);
+
+  @override
+  bool get wantKeepAlive => true;
 
   Widget _buildIconValue(IconData icon, dynamic value) {
     return Padding(
@@ -205,11 +263,9 @@ class _ForumScreenReadingState extends State<ForumScreen> {
 
   @override
   Widget build(BuildContext context) {
+    print("building comment: " + items.length.toString());
+
     return Scaffold(
-      appBar: AppBar(
-        title: Text(forumThread.title),
-        backgroundColor: Constants.colorAccent,
-      ),
       body: Stack(
         fit: StackFit.expand,
         children: <Widget>[
@@ -234,5 +290,179 @@ class _ForumScreenReadingState extends State<ForumScreen> {
         ],
       ),
     );
+  }
+}
+
+class _ForumAnwserTab extends StatefulWidget {
+  final ForumThread forumThread;
+
+  const _ForumAnwserTab(
+    this.forumThread, {
+    Key key,
+  }) : super(key: key);
+
+  @override
+  State<_ForumAnwserTab> createState() => _ForumAnwserTabState(forumThread);
+}
+
+class _ForumAnwserTabState extends State<_ForumAnwserTab> with AutomaticKeepAliveClientMixin<_ForumAnwserTab> {
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = new GlobalKey<RefreshIndicatorState>();
+  bool _initialized = false;
+
+  final ForumThread forumThread;
+  List<ForumThreadAnswer> items = new List();
+
+  _ForumAnwserTabState(this.forumThread);
+
+  @override
+  bool get wantKeepAlive => true;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _updateItem();
+    /*WidgetsBinding.instance.addPostFrameCallback((Duration duration) {
+      this._refreshIndicatorKey.currentState.show();
+    });*/
+  }
+
+  Future<void> _updateItem() {
+    return Managers.forumManager.fetchPostAnswer(forumThread, !_initialized).then((results) {
+      if (this.mounted) {
+        setState(() {
+          items = results;
+        });
+
+        _initialized = true;
+      }
+    }).catchError((error) {
+      print(error);
+
+      setState(() {
+        items = [];
+
+        _initialized = false;
+      });
+
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text('Erreur'),
+        action: SnackBarAction(
+          label: 'FERMER',
+          onPressed: () {
+            // Some code to undo the change!
+          },
+        ),
+      ));
+    });
+  }
+
+  Widget _buildAnswerWidget(BuildContext context, ForumThreadAnswer answer) {
+    bool hasParent = answer.parent != 0;
+    bool hasChildren = answer.children.length != 0;
+
+    return Card(
+      child: Padding(
+        padding: EdgeInsets.all(4.0),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            SizedBox(
+              height: 48.0,
+              child: Padding(
+                padding: EdgeInsets.all(8.0),
+                child: Row(
+                  children: <Widget>[
+                    CircularUserAvatar(
+                      user: answer.owner,
+                    ),
+                    Padding(
+                      padding: EdgeInsets.only(left: 16.0),
+                      child: Text(answer.owner.name),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+            CommonDivider(),
+            WixBlockList(
+              allItems: WixBlockProcessor(
+                blocks: answer.items,
+              ).organize(context),
+            ),
+            hasChildren ? CommonDivider() : Container(),
+            hasChildren
+                ? ExpansionTile(
+                    title: Text(Texts.answerCount(answer.children.length)),
+                    children: <Widget>[
+                      Container(
+                        child: ListView.builder(
+                          shrinkWrap: true,
+                          physics: ClampingScrollPhysics(),
+                          itemCount: answer.children.length,
+                          itemBuilder: (context, index) {
+                            return _buildAnswerWidget(context, answer.children[index]);
+                          },
+                        ),
+                        decoration: new BoxDecoration(
+                          border: Border(
+                            left: BorderSide(
+                              color: Constants.colorAccent,
+                              width: 2.0,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  )
+                : Container()
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildSubItem(BuildContext context, ForumThreadAnswer child) {
+    return SizedBox(
+      child: Text(child.items[0].text),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    print("building comment: " + items.length.toString());
+
+    return Scaffold(
+      body: Stack(
+        fit: StackFit.expand,
+        children: <Widget>[
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: ListView.builder(
+              itemCount: items.length,
+              itemBuilder: (context, index) {
+                return _buildAnswerWidget(context, items[index]);
+              },
+            ),
+          ),
+        ],
+      ),
+    );
+
+    /*return Scaffold(
+      body: RefreshIndicator(
+        key: _refreshIndicatorKey,
+        color: Constants.colorAccent,
+        child: ListView.builder(
+          itemCount: items.length,
+          itemBuilder: (context, index) {
+            return _buildAnswerWidget(context, items[index]);
+          },
+        ),
+        onRefresh: () async {
+          await _updateItem();
+        },
+      ),
+    ); */
   }
 }
