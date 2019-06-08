@@ -2,7 +2,6 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mon_guide_musculation/logic/wix_block_processor/wix_block_extractor.dart';
 import 'package:mon_guide_musculation/models/wix.dart';
-import 'package:mon_guide_musculation/utils/constants.dart';
 import 'package:mon_guide_musculation/utils/wix_utils.dart';
 
 class WebArticle {

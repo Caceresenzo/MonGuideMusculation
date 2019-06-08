@@ -1,10 +1,9 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:mon_guide_musculation/logic/managers/base_manager.dart';
 import 'package:mon_guide_musculation/logic/wix_block_processor/wix_block_processor.dart';
 import 'package:mon_guide_musculation/models/forum.dart';
+import 'package:mon_guide_musculation/ui/widgets/card_info.dart';
 import 'package:mon_guide_musculation/ui/widgets/circular_user_avatar.dart';
 import 'package:mon_guide_musculation/ui/widgets/common_divider.dart';
 import 'package:mon_guide_musculation/ui/widgets/wix_block_list.dart';
@@ -119,6 +118,7 @@ class _ForumScreenListingState extends State<ForumScreen> {
   @override
   Widget build(BuildContext context) {
     print("building: " + items.length.toString());
+
     return Scaffold(
       body: RefreshIndicator(
         key: _refreshIndicatorKey,
@@ -263,6 +263,8 @@ class _ForumThreadTabState extends State<_ForumThreadTab> with AutomaticKeepAliv
 
   @override
   Widget build(BuildContext context) {
+    super.build(context);
+
     print("building comment: " + items.length.toString());
 
     return Scaffold(
@@ -308,6 +310,7 @@ class _ForumAnwserTab extends StatefulWidget {
 class _ForumAnwserTabState extends State<_ForumAnwserTab> with AutomaticKeepAliveClientMixin<_ForumAnwserTab> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = new GlobalKey<RefreshIndicatorState>();
   bool _initialized = false;
+  bool _error = false;
 
   final ForumThread forumThread;
   List<ForumThreadAnswer> items = new List();
@@ -321,10 +324,9 @@ class _ForumAnwserTabState extends State<_ForumAnwserTab> with AutomaticKeepAliv
   void initState() {
     super.initState();
 
-    _updateItem();
-    /*WidgetsBinding.instance.addPostFrameCallback((Duration duration) {
+    WidgetsBinding.instance.addPostFrameCallback((Duration duration) {
       this._refreshIndicatorKey.currentState.show();
-    });*/
+    });
   }
 
   Future<void> _updateItem() {
@@ -335,6 +337,7 @@ class _ForumAnwserTabState extends State<_ForumAnwserTab> with AutomaticKeepAliv
         });
 
         _initialized = true;
+        _error = false;
       }
     }).catchError((error) {
       print(error);
@@ -343,6 +346,7 @@ class _ForumAnwserTabState extends State<_ForumAnwserTab> with AutomaticKeepAliv
         items = [];
 
         _initialized = false;
+        _error = true;
       });
 
       Scaffold.of(context).showSnackBar(SnackBar(
@@ -358,7 +362,6 @@ class _ForumAnwserTabState extends State<_ForumAnwserTab> with AutomaticKeepAliv
   }
 
   Widget _buildAnswerWidget(BuildContext context, ForumThreadAnswer answer) {
-    bool hasParent = answer.parent != 0;
     bool hasChildren = answer.children.length != 0;
 
     return Card(
@@ -392,28 +395,31 @@ class _ForumAnwserTabState extends State<_ForumAnwserTab> with AutomaticKeepAliv
             ),
             hasChildren ? CommonDivider() : Container(),
             hasChildren
-                ? ExpansionTile(
-                    title: Text(Texts.answerCount(answer.children.length)),
-                    children: <Widget>[
-                      Container(
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          physics: ClampingScrollPhysics(),
-                          itemCount: answer.children.length,
-                          itemBuilder: (context, index) {
-                            return _buildAnswerWidget(context, answer.children[index]);
-                          },
-                        ),
-                        decoration: new BoxDecoration(
-                          border: Border(
-                            left: BorderSide(
-                              color: Constants.colorAccent,
-                              width: 2.0,
+                ? Theme(
+                    data: Theme.of(context).copyWith(dividerColor: Colors.white),
+                    child: ExpansionTile(
+                      title: Text(Texts.answerCount(answer.children.length)),
+                      children: <Widget>[
+                        Container(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            physics: ClampingScrollPhysics(),
+                            itemCount: answer.children.length,
+                            itemBuilder: (context, index) {
+                              return _buildAnswerWidget(context, answer.children[index]);
+                            },
+                          ),
+                          decoration: new BoxDecoration(
+                            border: Border(
+                              left: BorderSide(
+                                color: Constants.colorAccent,
+                                width: 2.0,
+                              ),
                             ),
                           ),
                         ),
-                      ),
-                    ],
+                      ],
+                    ),
                   )
                 : Container()
           ],
@@ -422,47 +428,61 @@ class _ForumAnwserTabState extends State<_ForumAnwserTab> with AutomaticKeepAliv
     );
   }
 
-  Widget _buildSubItem(BuildContext context, ForumThreadAnswer child) {
-    return SizedBox(
-      child: Text(child.items[0].text),
+  Widget _buildAlternativeInfoCard() {
+    Widget widget;
+
+    if ((!_initialized && !_error) || (!_initialized && items.isEmpty && !_error)) {
+      widget = Container();
+    } else {
+      IconData icon = Icons.mode_comment;
+      String text = Texts.pageNoAnswer;
+
+      if (_error) {
+        icon = Icons.bug_report;
+        text = Texts.pageFailedToLoad;
+      }
+
+      widget = InfoCard(
+        icon: icon,
+        text: text,
+      );
+    }
+
+    return ListView(
+      children: <Widget>[
+        widget,
+      ],
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    print("building comment: " + items.length.toString());
+    super.build(context);
 
     return Scaffold(
       body: Stack(
         fit: StackFit.expand,
         children: <Widget>[
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: ListView.builder(
-              itemCount: items.length,
-              itemBuilder: (context, index) {
-                return _buildAnswerWidget(context, items[index]);
-              },
+          RefreshIndicator(
+            key: _refreshIndicatorKey,
+            color: Constants.colorAccent,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8.0),
+              child: items.length == 0
+                  ? _buildAlternativeInfoCard()
+                  : ListView.builder(
+                      itemCount: items.length,
+                      itemBuilder: (context, index) {
+                        return _buildAnswerWidget(context, items[index]);
+                      },
+                    ),
             ),
+            onRefresh: () async {
+              await _updateItem();
+            },
           ),
         ],
       ),
     );
-
-    /*return Scaffold(
-      body: RefreshIndicator(
-        key: _refreshIndicatorKey,
-        color: Constants.colorAccent,
-        child: ListView.builder(
-          itemCount: items.length,
-          itemBuilder: (context, index) {
-            return _buildAnswerWidget(context, items[index]);
-          },
-        ),
-        onRefresh: () async {
-          await _updateItem();
-        },
-      ),
-    ); */
   }
 }

@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mon_guide_musculation/logic/managers/base_manager.dart';
-import 'package:mon_guide_musculation/models/article.dart';
 import 'package:mon_guide_musculation/models/forum.dart';
 import 'package:mon_guide_musculation/ui/widgets/circular_user_avatar.dart';
 

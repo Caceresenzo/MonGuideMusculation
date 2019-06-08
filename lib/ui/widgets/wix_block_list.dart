@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mon_guide_musculation/models/wix.dart';
+import 'package:mon_guide_musculation/ui/widgets/card_info.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 
 class WixBlockList extends StatelessWidget {
@@ -8,26 +9,9 @@ class WixBlockList extends StatelessWidget {
   const WixBlockList({Key key, this.allItems}) : super(key: key);
 
   Widget _buildNoContentCard() {
-    return Card(
-      child: Padding(
-        padding: EdgeInsets.all(18.0),
-        child: Column(
-          children: <Widget>[
-            Icon(
-              Icons.alternate_email,
-              color: Constants.colorAccent,
-              size: 64.0,
-            ),
-            SizedBox(
-              height: 8.0,
-            ),
-            Text(
-              Texts.pageNoContent,
-              style: TextStyle(fontSize: 24.0),
-            )
-          ],
-        ),
-      ),
+    return InfoCard(
+      icon: Icons.alternate_email,
+      text: Texts.pageNoContent,
     );
   }
 
@@ -51,10 +35,12 @@ class WixBlockList extends StatelessWidget {
         int offset = firstIsTitle ? 1 : 0;
 
         return Card(
+          elevation: 0.0,
           child: Column(
             children: <Widget>[
               firstIsTitle
                   ? Card(
+                      elevation: 0.0,
                       child: Container(
                         width: double.infinity,
                         child: widgets[0].toWidget(context),

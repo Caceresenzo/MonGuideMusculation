@@ -2,9 +2,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:mon_guide_musculation/models/wix.dart';
 
 class WixBlockProcessor {
-  List<WixBlockItem> blocks;
+  final List<WixBlockItem> blocks;
 
-  WixBlockProcessor({this.blocks});
+  WixBlockProcessor({
+    this.blocks,
+  });
 
   List<List<WixBlockItem>> organize(BuildContext context) {
     List<List<WixBlockItem>> items = [];

@@ -11,6 +11,8 @@ class Texts {
   static const String applicationDeveloper = "par Enzo CACERES";
   
   static const String pageNoContent = "Aucun contenu.";
+  static const String pageNoAnswer = "Aucune réponse.";
+  static const String pageFailedToLoad = "Chargement échoué.";
 
   static const String buttonClose = "FERMER";
 

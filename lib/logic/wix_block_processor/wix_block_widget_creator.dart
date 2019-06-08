@@ -13,7 +13,10 @@ class WixBlockWidgetCreator {
 
   static Widget toWidget(BuildContext context, WixBlockItem item) {
     return Container(
-      child: Padding(padding: EdgeInsets.fromLTRB(8, 2, 8, 2), child: _createByType(context, item) ?? Text("???")),
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(8, 2, 8, 2),
+        child: _createByType(context, item) ?? Text("???"),
+      ),
     );
   }
 
