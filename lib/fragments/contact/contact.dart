@@ -100,10 +100,13 @@ class ContactWidget extends StatelessWidget {
                                   FloatingActionButton(
                                     onPressed: () {},
                                     backgroundColor: Constants.colorAccent,
-                                    child: Icon(
-                                      Icons.mail
-                                    ),
-                                  )
+                                    child: Icon(Icons.mail),
+                                  ),
+                                  FloatingActionButton(
+                                    onPressed: () {},
+                                    backgroundColor: Constants.colorAccent,
+                                    child: Icon(Icons.web),
+                                  ),
                                 ],
                               ),
                             ],
