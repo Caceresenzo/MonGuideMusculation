@@ -207,14 +207,7 @@ class ArticleReaderFragment extends StatelessWidget {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.open_in_browser),
-            onPressed: () async {
-              String url = article.toRemoteUrl();
-              if (await canLaunch(url)) {
-                await launch(url);
-              } else {
-                throw 'Could not launch $url';
-              }
-            },
+            onPressed: () async => openInBrowser(article.toRemoteUrl()),
             tooltip: Texts.tooltipAbout,
           )
         ],

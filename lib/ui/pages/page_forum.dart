@@ -8,6 +8,8 @@ import 'package:mon_guide_musculation/ui/widgets/circular_user_avatar.dart';
 import 'package:mon_guide_musculation/ui/widgets/common_divider.dart';
 import 'package:mon_guide_musculation/ui/widgets/wix_block_list.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
+import 'package:mon_guide_musculation/utils/functions.dart';
+import 'package:mon_guide_musculation/utils/wix_utils.dart';
 
 class ForumThreadWidget extends StatelessWidget {
   final ForumThread forumThread;
@@ -156,7 +158,7 @@ class _ForumScreenReadingState extends State<ForumScreen> {
           actions: <Widget>[
             IconButton(
               icon: Icon(Icons.open_in_browser),
-              onPressed: () {},
+              onPressed: () async => openInBrowser(WixUtils.formatStaticWixPostUrl(forumThread.slug)),
               tooltip: Texts.tooltipOpenInBrowser,
             ),
           ],
