@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:mon_guide_musculation/logic/managers/base_manager.dart';
@@ -84,6 +86,24 @@ class _ForumScreenListingState extends State<ForumScreen> {
 
         _initialized = true;
       }
+    }).catchError((error) {
+      print(error);
+
+      setState(() {
+        items = [];
+
+        _initialized = false;
+      });
+
+      Scaffold.of(context).showSnackBar(SnackBar(
+        content: Text('Erreur'),
+        action: SnackBarAction(
+          label: 'FERMER',
+          onPressed: () {
+            // Some code to undo the change!
+          },
+        ),
+      ));
     });
   }
 

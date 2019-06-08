@@ -13,34 +13,60 @@ class ForumManager extends BaseManager {
     cachedThreads = [];
   }
 
-
-  Future<List<ForumThread>> fetchPost(bool acceptCache) async {
+  Future<List<ForumThread>> fetchPost(bool acceptCache, {void onError(error)}) async {
     if (cachedThreads.isNotEmpty && acceptCache) {
       return cachedThreads;
     }
 
-    final response = await http.get(WixUrls.forumPage);
+    return http
+        .get(WixUrls.forumPage)
+        .then((response) {
+          return response.statusCode == 200 ? response.body : throw 'Error when getting data';
+        })
+        .then((body) {
+          return RegExp(
+            r'<script type="text\/javascript\">[\n\t ]*var warmupData = ([\w\W]*?);[\n\t ]*<\/script>',
+            multiLine: true,
+            caseSensitive: false,
+          ).firstMatch(body).group(1);
+        })
+        .then((rawJson) => json.decode(rawJson))
+        .then((data) {
+          cachedThreads.clear();
 
-    if (response.statusCode == 200) {
-      RegExp regExp = new RegExp(
-        r'<script type="text\/javascript\">[\n\t ]*var warmupData = ([\w\W]*?);[\n\t ]*<\/script>',
-        multiLine: true,
-        caseSensitive: false,
-      );
+          (data["tpaWidgetNativeInitData"]["TPASection_jrg787fr"]["wixCodeProps"]["state"]["posts"] as Map<String, dynamic>).forEach((key, value) {
+            cachedThreads.add(ForumThread.fromJson(value));
+          });
 
-      var match = regExp.firstMatch(response.body);
-      print(response.body.length);
+          return cachedThreads;
+        });
 
-      Map<String, dynamic> data = json.decode(match.group(1));
-      cachedThreads.clear();
+    /*try {
+      final response = await http.get(WixUrls.forumPage);
 
-      (data["tpaWidgetNativeInitData"]["TPASection_jrg787fr"]["wixCodeProps"]["state"]["posts"] as Map<String, dynamic>).forEach((key, value) {
-        cachedThreads.add(ForumThread.fromJson(value));
-      });
+      if (response.statusCode == 200) {
+        RegExp regExp = new RegExp(
+          r'<script type="text\/javascript\">[\n\t ]*var warmupData = ([\w\W]*?);[\n\t ]*<\/script>',
+          multiLine: true,
+          caseSensitive: false,
+        );
 
-      return cachedThreads;
-    } else {
+        var match = regExp.firstMatch(response.body);
+        print(response.body.length);
+
+        Map<String, dynamic> data = json.decode(match.group(1));
+        cachedThreads.clear();
+
+        (data["tpaWidgetNativeInitData"]["TPASection_jrg787fr"]["wixCodeProps"]["state"]["posts"] as Map<String, dynamic>).forEach((key, value) {
+          cachedThreads.add(ForumThread.fromJson(value));
+        });
+
+        return cachedThreads;
+      }
+
       throw Exception('Failed to load post');
-    }
+    } catch (error) {
+      throw(error);
+    } */
   }
 }
