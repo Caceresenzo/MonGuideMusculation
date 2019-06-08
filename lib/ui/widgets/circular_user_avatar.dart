@@ -17,7 +17,8 @@ class CircularUserAvatar extends StatelessWidget {
     if (user.profilePictureFile == null) {
       return new CircleAvatar(
         child: Icon(
-          Icons.account_circle,
+          MyIcons.emo_happy,
+          size: 16.0,
           color: Colors.white,
         ),
         backgroundColor: Constants.colorAccent,

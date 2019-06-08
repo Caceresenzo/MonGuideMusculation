@@ -15,9 +15,9 @@ class Texts {
   static const String ruisiFullName = "Mahé RUISI";
   static const String ruisiAddress = "4 North Joy Ridge St.\nRoswell, GA 30075\nFrance";
   
-  static const String pageNoContent = "Aucun contenu.";
-  static const String pageNoAnswer = "Aucune réponse.";
-  static const String pageFailedToLoad = "Chargement échoué.";
+  static const String pageNoContent = "Rien à dire frère";
+  static const String pageNoAnswer = "C'est la sèche ici";
+  static const String pageFailedToLoad = "J'ai pas réussi...";
 
   static const String buttonClose = "FERMER";
 

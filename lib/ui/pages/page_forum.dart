@@ -223,6 +223,7 @@ class _ForumThreadTabState extends State<_ForumThreadTab> with AutomaticKeepAliv
 
   Widget _buildThreadInfoCard(BuildContext context) {
     return Card(
+      elevation: 0.0,
       child: Container(
         width: double.infinity,
         child: Column(
@@ -436,11 +437,11 @@ class _ForumAnwserTabState extends State<_ForumAnwserTab> with AutomaticKeepAliv
     if ((!_initialized && !_error) || (!_initialized && items.isEmpty && !_error)) {
       widget = Container();
     } else {
-      IconData icon = Icons.mode_comment;
+      IconData icon = MyIcons.emo_cry;
       String text = Texts.pageNoAnswer;
 
       if (_error) {
-        icon = Icons.bug_report;
+        icon = MyIcons.emo_displeased;
         text = Texts.pageFailedToLoad;
       }
 

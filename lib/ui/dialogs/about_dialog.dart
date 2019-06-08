@@ -84,8 +84,9 @@ class MyAboutDialog extends StatelessWidget {
         return MyAboutDialog(
           applicationName: Texts.applicationName,
           applicationVersion: Texts.applicationVersion,
-          applicationIcon: ImageIcon(
-            AssetImage('icon/luncher.png'),
+          applicationIcon: Image(
+            image: AssetImage('icons/application_short.png'),
+            height: 150,
           ),
           smallText: Texts.applicationDeveloper,
           /*children: <Widget>[

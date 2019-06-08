@@ -22,18 +22,7 @@ dependencies:
   http: ^0.12.0+2
   cached_network_image: ^0.8.0
   youtube_player: ^3.4.1
-  flutter_launcher_icons: "^0.6.1"
   url_launcher: ^5.0.3
-
-
-flutter_icons:
-  image_path: "icon/luncher.png" 
-  android: true
-  ios: true
-
-  # The following adds the Cupertino Icons font to your application.
-  # Use with the CupertinoIcons class for iOS style icons.
-  cupertino_icons: ^0.1.2
 
 dev_dependencies:
   flutter_test:
@@ -46,7 +35,8 @@ dev_dependencies:
 # The following section is specific to Flutter.
 flutter:
   assets:
-    - icon/luncher.png
+    - icons/application.png
+    - icons/application_short.png
   fonts:
    - family:  MyIcons
      fonts:

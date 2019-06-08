@@ -66,7 +66,10 @@ class HomePageState extends State<HomePage> {
         actions: <Widget>[
           // action button
           IconButton(
-            icon: Icon(Icons.info_outline),
+            icon: Icon(
+              MyIcons.emo_beer,
+              size: 16.0,
+            ),
             onPressed: () {
               MyAboutDialog.show(context);
             },

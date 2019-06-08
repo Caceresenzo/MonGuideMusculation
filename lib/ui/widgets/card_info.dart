@@ -14,6 +14,7 @@ class InfoCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 0.0,
       child: Padding(
         padding: EdgeInsets.all(18.0),
         child: Column(

@@ -6,11 +6,14 @@ import 'package:mon_guide_musculation/utils/constants.dart';
 class WixBlockList extends StatelessWidget {
   final List<List<WixBlockItem>> allItems;
 
-  const WixBlockList({Key key, this.allItems}) : super(key: key);
+  const WixBlockList({
+    Key key,
+    @required this.allItems,
+  }) : super(key: key);
 
   Widget _buildNoContentCard() {
     return InfoCard(
-      icon: Icons.alternate_email,
+      icon: MyIcons.emo_sunglasses,
       text: Texts.pageNoContent,
     );
   }
