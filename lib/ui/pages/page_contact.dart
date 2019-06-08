@@ -12,6 +12,25 @@ class ContactScreen extends StatelessWidget {
     );
   }
 
+  Widget _buildIcon(IconData icon, void onPressed()) {
+    return FloatingActionButton(
+      elevation: 0.0,
+      highlightElevation: 0.0,
+      onPressed: onPressed,
+      backgroundColor: Constants.colorAccent,
+      child: Icon(icon),
+    );
+  }
+
+  Widget _buildLinkIcon(IconData icon, String url) {
+    return _buildIcon(icon, () {
+      if (url == null) {
+      } else {
+        openInBrowser(url);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -65,23 +84,9 @@ class ContactScreen extends StatelessWidget {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
-                                  FloatingActionButton(
-                                    onPressed: () {},
-                                    backgroundColor: Constants.colorAccent,
-                                    child: Icon(
-                                      Icons.call,
-                                    ),
-                                  ),
-                                  FloatingActionButton(
-                                    onPressed: () {},
-                                    backgroundColor: Constants.colorAccent,
-                                    child: Icon(Icons.mail),
-                                  ),
-                                  FloatingActionButton(
-                                    onPressed: () {},
-                                    backgroundColor: Constants.colorAccent,
-                                    child: Icon(Icons.web),
-                                  ),
+                                  _buildLinkIcon(Icons.call, Contact.phoneNumber),
+                                  _buildLinkIcon(Icons.mail, Contact.mailAdress),
+                                  _buildLinkIcon(Icons.web, Contact.websiteUrl),
                                 ],
                               ),
                             ],
@@ -105,27 +110,9 @@ class ContactScreen extends StatelessWidget {
                               Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                 children: <Widget>[
-                                  FloatingActionButton(
-                                    onPressed: () {},
-                                    backgroundColor: Constants.colorAccent,
-                                    child: Icon(
-                                      MyIcons.instagram,
-                                    ),
-                                  ),
-                                  FloatingActionButton(
-                                    onPressed: () {},
-                                    backgroundColor: Constants.colorAccent,
-                                    child: Icon(
-                                      MyIcons.facebook,
-                                    ),
-                                  ),
-                                  FloatingActionButton(
-                                    onPressed: () {},
-                                    backgroundColor: Constants.colorAccent,
-                                    child: Icon(
-                                      MyIcons.youtube,
-                                    ),
-                                  ),
+                                  _buildLinkIcon(MyIcons.instagram, Contact.instagramUrl),
+                                  _buildLinkIcon(MyIcons.facebook, Contact.facebookUrl),
+                                  _buildLinkIcon(MyIcons.youtube, Contact.youtubeUrl),
                                 ],
                               ),
                             ],
