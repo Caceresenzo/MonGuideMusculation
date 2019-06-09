@@ -20,11 +20,9 @@ class BodyBuildingManager extends BaseManager {
     cachedMuscles = new List();
 
     cachedLists = [cachedExercices, cachedExercices, cachedExercices];
-
-    fetchPost(false);
   }
 
-  Future<void> fetchPost(bool acceptCache) async {
+  Future<void> fetch(bool acceptCache) async {
     return http
         .get(WixUrls.backendGetExercices)
         .then((response) {
@@ -33,7 +31,7 @@ class BodyBuildingManager extends BaseManager {
         .then((body) => json.decode(body))
         .then((data) => data["error"] == null ? data["payload"] : throw Exception(data["error"]))
         .then((jsonPayload) {
-          cachedLists.forEach((list) => list.clear());
+          [cachedExercices, cachedExerciceTypes, cachedMuscles].forEach((list) => list.clear());
 
           Map<String, BodyBuildingExerciseType> typesMap = new Map();
           Map<String, BodyBuildingMuscle> musclesMap = new Map();
@@ -60,13 +58,9 @@ class BodyBuildingManager extends BaseManager {
           });
         })
         .then((_) {
-          for (BodyBuildingMuscle muscle in cachedMuscles) {
-            print("MUSCLE: " + muscle.title);
-
-            for (BodyBuildingExercise exercise in muscle.exercises) {
-              print("----|> : " + exercise.title + " <> " + exercise.type.title);
-            }
-          }
+          cachedMuscles.sort((a, b) {
+            return a.title.toLowerCase().compareTo(b.title.toLowerCase());
+          });
         });
   }
 }

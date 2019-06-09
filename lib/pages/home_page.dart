@@ -1,5 +1,6 @@
 import 'package:mon_guide_musculation/fragments/articles/articles.dart';
 import 'package:mon_guide_musculation/ui/dialogs/about_dialog.dart';
+import 'package:mon_guide_musculation/ui/pages/page_bodybuilding.dart';
 import 'package:mon_guide_musculation/ui/pages/page_contact.dart';
 import 'package:mon_guide_musculation/ui/pages/page_forum.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
@@ -43,6 +44,9 @@ class HomePageState extends State<HomePage> {
 
   _getDrawerItemWidget(int position) {
     switch (position) {
+      case 1:
+        return new BodyBuildingScreen();
+
       case 2:
         return new ArticlesListFragment();
 

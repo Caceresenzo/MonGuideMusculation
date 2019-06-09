@@ -65,11 +65,17 @@ class WixImageReference {
   ) : assert(wixRessource != null);
 
   /// Get a full url to the read file.
-  String toFullUrl() {
+  String toFullUrl({Size resize}) {
     Match match = extractRegex.firstMatch(wixRessource);
 
     if (match != null) {
-      return WixUtils.formatStaticWixImageUrl(match.group(1));
+      String fullUrl = WixUtils.formatStaticWixImageUrl(match.group(1));
+
+      if (resize != null) {
+        fullUrl += "/v1/fit/w_" + resize.width.toInt().toString() + ",h_" + resize.height.toInt().toString() + ",al_c,q_90/image.jpg";
+      }
+
+      return fullUrl;
     }
 
     return null;

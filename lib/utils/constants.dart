@@ -5,18 +5,20 @@ class Constants {
 
   static const Color colorAccent = const Color(0xFFEF6C00);
   static const Color colorCodeblock = const Color(0xFFF2F2F2);
+  
+  static const Size resizeBodyBuildingMuscleImage = const Size(500, 500);
 }
 
 class Texts {
   static const String applicationName = "Mon Guide Musculation";
   static const String applicationVersion = "1.0.0";
   static const String applicationDeveloper = "par Enzo CACERES";
-  
+
   static const String contactMe = "ME CONTACTER";
   static const String contactSocialNetworks = "RÉSEAUX SOCIAUX";
   static const String ruisiFullName = "Mahé RUISI";
   static const String ruisiAddress = "4 North Joy Ridge St.\nRoswell, GA 30075\nFrance";
-  
+
   static const String pageNoContent = "Rien à dire frère";
   static const String pageNoContentSub = "(aucun contenu disponible)";
   static const String pageNoAnswer = "C'est la sèche ici";
@@ -29,20 +31,16 @@ class Texts {
   static const String tooltipAbout = "A Propos";
   static const String tooltipOpenInBrowser = "Ouvrir dans le navigateur";
 
-  static const String answerCountNone = "Aucune";
-  static const String answerCountWord = "réponse";
-  static const String answerCountWordMultiple = "réponses";
+  static String answerCount(int count) => autoCount(count, "Aucune", "réponse", "réponses");
+  static String exerciseCount(int count) => autoCount(count, "Aucun", "exercice", "exercices");
 
-  static String answerCount(int count) {
-    switch (count) {
-      case 0:
-        return answerCountNone + " " + answerCountWord;
-
-      case 1:
-        return count.toString() + " " + answerCountWord;
-
-      default:
-        return count.toString() + " " + answerCountWordMultiple;
+  static String autoCount(int count, String countNone, String countWord, String countMultipleWord) {
+    if (count == 0) {
+      return countNone + " " + countWord;
+    } else if (count == 1) {
+        return count.toString() + " " + countWord;
+    } else {
+        return count.toString() + " " + countMultipleWord;
     }
   }
 }
@@ -91,7 +89,6 @@ class MyIcons {
   static const IconData crown = const IconData(0xe844, fontFamily: _kFontFam);
 }
 
-
 class WixUrls {
   static const String baseUrl = "https://www.monguidemusculation.com";
 
@@ -99,8 +96,8 @@ class WixUrls {
   static const String articlesPage = "https://social-blog.wix.com/?compId=TPASection_jav3el7a&currency=EUR&dateNumberFormat=fr-fr&deviceType=desktop&height=1738&instance=S4Z6TuF8eiI1wsxFg4f1dJUlWHAFvkZQvyr-UD6--8I.eyJpbnN0YW5jZUlkIjoiYmU4YzE4OTctN2ZmZS00MWYxLWI1MGItZWEzYTIwMTczMGVhIiwiYXBwRGVmSWQiOiIxNGJjZGVkNy0wMDY2LTdjMzUtMTRkNy00NjZjYjNmMDkxMDMiLCJtZXRhU2l0ZUlkIjoiNWVlNzI5ODUtMGQ1Ny00YWU0LWI5YjgtYzFlZjJmY2VhMjc4Iiwic2lnbkRhdGUiOiIyMDE5LTA2LTA0VDE5OjU2OjMxLjI2OVoiLCJ1aWQiOm51bGwsImlwQW5kUG9ydCI6Ijg4LjEyNS4yMTQuNDMvNTIwMTQiLCJ2ZW5kb3JQcm9kdWN0SWQiOm51bGwsImRlbW9Nb2RlIjpmYWxzZSwib3JpZ2luSW5zdGFuY2VJZCI6IjhkZjRkODMzLTUxNWQtNDAxMy05ZmNkLThkNTRhZTUxY2NjYyIsImFpZCI6ImQyZWVkOWM0LWYyNzUtNDM4Yy1iMmU5LTMzZGM0Yjc4YWYxNSIsImJpVG9rZW4iOiJlMDZiMzExMi03MmE5LTBiMTUtMGNiMy0yYmQ1MGZkOTkyOTIiLCJzaXRlT3duZXJJZCI6ImJhODM5MTUzLTAzN2YtNDA2YS1iYWU2LTM2NzRmZmQ5OGFkYiJ9&isPrimaryLanguage=true&lang=fr&locale=fr&pageId=sz0gz&previousPathname=%2F&redirected=true&section-url=https%3A%2F%2Fmahedu974.wixsite.com%2Fmonsite%2Faccueil%2F&siteRevision=131&target=_top&viewMode=site&width=980";
   static const String forumPage = baseUrl + "/forum/";
 
-  static const String backendBase = baseUrl + "/_functions" + (Constants.debug ? "-dev" : "") + "/"; 
-  static const String backendGetExercices = backendBase + "exercices"; 
+  static const String backendBase = baseUrl + "/_functions" + (Constants.debug ? "-dev" : "") + "/";
+  static const String backendGetExercices = backendBase + "exercices";
 }
 
 class WixData {
