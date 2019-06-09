@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mon_guide_musculation/logic/wix_block_processor/wix_block_widget_creator.dart';
+import 'package:mon_guide_musculation/utils/constants.dart';
+import 'package:mon_guide_musculation/utils/wix_utils.dart';
 
 class WixBlockItem {
   Map<String, dynamic> rawContentJson;
@@ -48,5 +50,33 @@ class WixBasicStatistics {
       likeCount: data["likeCount"] ?? -1,
       viewCount: data["viewCount"] ?? -1,
     );
+  }
+}
+
+/// Allow easy conversion bewteen basic Wix's Image Database entry formatted like:
+/// wix:image://v1/<file>.jpg/<garbage>
+@immutable
+class WixImageReference {
+  static final RegExp extractRegex = new RegExp(r"wix:image:\/\/v[\d]\/(.*?)\/");
+  final String wixRessource;
+
+  WixImageReference(
+    this.wixRessource,
+  ) : assert(wixRessource != null);
+
+  /// Get a full url to the read file.
+  String toFullUrl() {
+    Match match = extractRegex.firstMatch(wixRessource);
+
+    if (match != null) {
+      return WixUtils.formatStaticWixImageUrl(match.group(1));
+    }
+
+    return null;
+  }
+
+  /// Safely create a [WixImageReference] instance of return null if the "data" parameter is null.
+  static WixImageReference safe(String data) {
+    return data != null ? WixImageReference(data) : null;
   }
 }
