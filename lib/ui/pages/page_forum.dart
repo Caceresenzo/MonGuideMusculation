@@ -368,6 +368,7 @@ class _ForumAnwserTabState extends State<_ForumAnwserTab> with AutomaticKeepAliv
     bool hasChildren = answer.children.length != 0;
 
     return Card(
+      elevation: 0.0,
       child: Padding(
         padding: EdgeInsets.all(4.0),
         child: Column(

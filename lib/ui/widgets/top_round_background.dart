@@ -4,7 +4,9 @@ import 'package:mon_guide_musculation/ui/tools/arc_clipper.dart';
 class TopRoundBackground extends StatelessWidget {
   final Widget widget;
 
-  TopRoundBackground({this.widget});
+  TopRoundBackground({
+    this.widget,
+  });
 
   @override
   Widget build(BuildContext context) {

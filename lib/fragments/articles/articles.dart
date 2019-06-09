@@ -104,7 +104,7 @@ class ArticlesListFragment extends StatelessWidget {
   //post cards
   Widget postCard(BuildContext context, WebArticle article) {
     return Card(
-      elevation: 2.0,
+      elevation: 0.0,
       child: InkWell(
         onTap: () {
           Navigator.push(
