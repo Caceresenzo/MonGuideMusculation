@@ -60,18 +60,8 @@ class BodyBuildingExerciseWidget extends StatelessWidget {
         super(key: key);
 
   Widget _buildTile(BuildContext context) => ListTile(
-        leading: exercise.pictureImageReference != null
-            ? SizedBox(
-                width: 72,
-                child: networkImage(
-                  exercise.pictureImageReference.toFullUrl(
-                    resize: Constants.resizeBodyBuildingMuscleImage,
-                  ),
-                ),
-              )
-            : null,
         title: Text(exercise.title),
-        subtitle: Text(exercise.richDescription),
+        subtitle: Text(exercise.shortDescription ?? Texts.itemMuscleNoShortDescription),
         trailing: Icon(Icons.keyboard_arrow_right),
         onTap: () {},
       );

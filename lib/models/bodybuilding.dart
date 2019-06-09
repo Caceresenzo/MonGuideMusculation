@@ -6,6 +6,7 @@ class BodyBuildingExercise {
   final String title;
   final BodyBuildingExerciseType type;
   final BodyBuildingMuscle muscle;
+  final String shortDescription;
   final String richDescription;
   final WixImageReference pictureImageReference;
 
@@ -14,6 +15,7 @@ class BodyBuildingExercise {
     @required this.title,
     @required this.type,
     @required this.muscle,
+    @required this.shortDescription,
     @required this.richDescription,
     @required this.pictureImageReference,
   })  : assert(key != null),
@@ -34,6 +36,7 @@ class BodyBuildingExercise {
       title: data["title"],
       type: exersiseType,
       muscle: muscle,
+      shortDescription: data["short_description"],
       richDescription: data["rich_description"],
       pictureImageReference: WixImageReference.safe(data["picture"]),
     ).finishConstruction();
