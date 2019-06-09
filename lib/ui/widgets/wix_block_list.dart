@@ -12,10 +12,7 @@ class WixBlockList extends StatelessWidget {
   }) : super(key: key);
 
   Widget _buildNoContentCard() {
-    return InfoCard(
-      icon: MyIcons.emo_sunglasses,
-      text: Texts.pageNoContent,
-    );
+    return InfoCard.templateNoContent();
   }
 
   @override

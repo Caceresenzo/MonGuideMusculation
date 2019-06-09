@@ -18,8 +18,11 @@ class Texts {
   static const String ruisiAddress = "4 North Joy Ridge St.\nRoswell, GA 30075\nFrance";
   
   static const String pageNoContent = "Rien à dire frère";
+  static const String pageNoContentSub = "(aucun contenu disponible)";
   static const String pageNoAnswer = "C'est la sèche ici";
+  static const String pageNoAnswerSub = "(aucune réponse)";
   static const String pageFailedToLoad = "J'ai pas réussi...";
+  static const String pageFailedToLoadSub = "(chargement échoué)";
 
   static const String buttonClose = "FERMER";
 

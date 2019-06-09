@@ -66,6 +66,7 @@ class ForumScreen extends StatefulWidget {
 
 class _ForumScreenListingState extends State<ForumScreen> {
   final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = new GlobalKey<RefreshIndicatorState>();
+  bool _error = false;
   bool _initialized = false;
 
   List<ForumThread> items = new List();
@@ -86,7 +87,10 @@ class _ForumScreenListingState extends State<ForumScreen> {
           items = results;
         });
 
+        _error = false;
         _initialized = true;
+
+        Scaffold.of(context).hideCurrentSnackBar();
       }
     }).catchError((error) {
       print(error);
@@ -94,9 +98,11 @@ class _ForumScreenListingState extends State<ForumScreen> {
       setState(() {
         items = [];
 
+        _error = true;
         _initialized = false;
       });
 
+      Scaffold.of(context).hideCurrentSnackBar();
       Scaffold.of(context).showSnackBar(SnackBar(
         content: Text('Erreur'),
         action: SnackBarAction(
@@ -125,12 +131,16 @@ class _ForumScreenListingState extends State<ForumScreen> {
       body: RefreshIndicator(
         key: _refreshIndicatorKey,
         color: Constants.colorAccent,
-        child: ListView.builder(
-          itemCount: items.length,
-          itemBuilder: (context, index) {
-            return _buildItem(context, index);
-          },
-        ),
+        child: _error
+            ? ListView(
+                children: <Widget>[InfoCard.templateFailedToLoad()],
+              )
+            : ListView.builder(
+                itemCount: items.length,
+                itemBuilder: (context, index) {
+                  return _buildItem(context, index);
+                },
+              ),
         onRefresh: () async {
           await _updateItem();
         },
@@ -154,6 +164,7 @@ class _ForumScreenReadingState extends State<ForumScreen> {
       child: Scaffold(
         appBar: AppBar(
           title: Text(forumThread.title),
+          elevation: 0.0,
           backgroundColor: Constants.colorAccent,
           actions: <Widget>[
             IconButton(
@@ -279,7 +290,7 @@ class _ForumThreadTabState extends State<_ForumThreadTab> with AutomaticKeepAliv
             child: ListView(
               children: <Widget>[
                 Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16.0),
+                  padding: EdgeInsets.symmetric(vertical: 2.0),
                   child: Column(
                     children: <Widget>[
                       _buildThreadInfoCard(context),
@@ -438,18 +449,11 @@ class _ForumAnwserTabState extends State<_ForumAnwserTab> with AutomaticKeepAliv
     if ((!_initialized && !_error) || (!_initialized && items.isEmpty && !_error)) {
       widget = Container();
     } else {
-      IconData icon = MyIcons.emo_cry;
-      String text = Texts.pageNoAnswer;
-
       if (_error) {
-        icon = MyIcons.emo_displeased;
-        text = Texts.pageFailedToLoad;
+        widget = InfoCard.templateFailedToLoad();
+      } else {
+        widget = InfoCard.templateNoAnswer();
       }
-
-      widget = InfoCard(
-        icon: icon,
-        text: text,
-      );
     }
 
     return ListView(
