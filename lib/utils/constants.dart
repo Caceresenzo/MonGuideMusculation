@@ -27,6 +27,8 @@ class Texts {
   static const String pageFailedToLoadSub = "(chargement échoué)";
   
   static const String itemMuscleNoShortDescription = "Aucune courte description.";
+  static const String itemExerciseNoRichDescription = "Aucune description.";
+  static const String itemExerciseNoPicture = "Aucune image de démonstration.";
 
   static const String buttonClose = "FERMER";
 

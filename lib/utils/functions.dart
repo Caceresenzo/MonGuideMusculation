@@ -6,13 +6,13 @@ import 'package:url_launcher/url_launcher.dart';
 CachedNetworkImage networkImage(String imageUrl) {
   return CachedNetworkImage(
     imageUrl: imageUrl,
-    placeholder: (context, url) => Center(
-          child: new CircularProgressIndicator(),
-        ),
-    errorWidget: (context, url, error) => new Icon(
-          Icons.error,
-          color: Constants.colorAccent,
-        ),
+    placeholder: Center(
+      child: new CircularProgressIndicator(),
+    ),
+    errorWidget: new Icon(
+      Icons.error,
+      color: Constants.colorAccent,
+    ),
     fit: BoxFit.fitWidth,
   );
 }

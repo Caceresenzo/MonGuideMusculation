@@ -37,7 +37,7 @@ class BodyBuildingExercise {
       type: exersiseType,
       muscle: muscle,
       shortDescription: data["short_description"],
-      richDescription: data["rich_description"],
+      richDescription: data["rich_description"] != null ? data["rich_description"].replaceAll("&nbsp;", " ") : null,
       pictureImageReference: WixImageReference.safe(data["picture"]),
     ).finishConstruction();
   }

@@ -10,6 +10,7 @@ import 'package:mon_guide_musculation/ui/widgets/common_divider.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 import 'package:mon_guide_musculation/utils/functions.dart';
 import 'package:mon_guide_musculation/utils/wix_utils.dart';
+import 'package:flutter_html_view/flutter_html_view.dart';
 
 class BodyBuildingMuscleWidget extends StatelessWidget {
   final BodyBuildingMuscle muscle;
@@ -61,9 +62,16 @@ class BodyBuildingExerciseWidget extends StatelessWidget {
 
   Widget _buildTile(BuildContext context) => ListTile(
         title: Text(exercise.title),
-        subtitle: Text(exercise.shortDescription ?? Texts.itemMuscleNoShortDescription),
+        // subtitle: Text(exercise.shortDescription ?? Texts.itemMuscleNoShortDescription),
         trailing: Icon(Icons.keyboard_arrow_right),
-        onTap: () {},
+        onTap: () {
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => BodyBuildingExerciseReadingScreen(exercise),
+            ),
+          );
+        },
       );
 
   @override
@@ -224,6 +232,66 @@ class _BodyBuildingScreenExerciseByMuscleListingState extends State<BodyBuilding
                 return _buildItem(context, items, index);
               },
             ),
+    );
+  }
+}
+
+class BodyBuildingExerciseReadingScreen extends StatelessWidget {
+  final BodyBuildingExercise exercise;
+
+  BodyBuildingExerciseReadingScreen(this.exercise);
+
+  Widget _buildDescriptionTab() {
+    return Padding(
+      padding: EdgeInsets.all(8.0),
+      child: exercise.richDescription != null
+          ? HtmlView(
+              data: exercise.richDescription,
+            )
+          : Text(
+              Texts.itemExerciseNoRichDescription,
+            ),
+    );
+  }
+
+  Widget _buildPictureTab() {
+    return Padding(
+      padding: EdgeInsets.all(8.0),
+      child: Center(
+        child: exercise.pictureImageReference != null
+            ? networkImage(
+                exercise.pictureImageReference.toFullUrl(),
+              )
+            : Text(
+                Texts.itemExerciseNoPicture,
+              ),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(exercise.title),
+          elevation: 0.0,
+          backgroundColor: Constants.colorAccent,
+          bottom: TabBar(
+            tabs: [
+              Tab(icon: Icon(Icons.short_text)),
+              Tab(icon: Icon(Icons.photo_size_select_actual)),
+            ],
+          ),
+        ),
+        body: TabBarView(
+          children: [
+            _buildDescriptionTab(),
+            _buildPictureTab(),
+          ],
+        ),
+      ),
     );
   }
 }
