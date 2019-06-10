@@ -57,9 +57,9 @@ abstract class CommonRefreshableState<T extends StatefulWidget, K> extends State
 
   SnackBar _buildErrorSnackBar() {
     return SnackBar(
-      content: Text('Erreur'),
+      content: Text(Texts.snackBarError),
       action: SnackBarAction(
-        label: 'FERMER',
+        label: Texts.snackBarButtonClose,
         onPressed: () {},
       ),
     );

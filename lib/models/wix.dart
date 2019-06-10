@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:mon_guide_musculation/logic/wix_block_processor/wix_block_widget_creator.dart';
-import 'package:mon_guide_musculation/utils/constants.dart';
 import 'package:mon_guide_musculation/utils/wix_utils.dart';
 
 class WixBlockItem {
@@ -9,7 +8,12 @@ class WixBlockItem {
   String text;
   String type;
 
-  WixBlockItem({@required this.rawContentJson, @required this.rawBlockJson, this.text, this.type});
+  WixBlockItem({
+    @required this.rawContentJson,
+    @required this.rawBlockJson,
+    this.text,
+    this.type,
+  });
 
   factory WixBlockItem.fromJson(Map<String, dynamic> baseContent, Map<String, dynamic> data) {
     String text = data["text"];
@@ -37,12 +41,17 @@ class WixBlockItem {
   }
 }
 
+@immutable
 class WixBasicStatistics {
-  int totalComments;
-  int likeCount;
-  int viewCount;
+  final int totalComments;
+  final int likeCount;
+  final int viewCount;
 
-  WixBasicStatistics({this.totalComments, this.likeCount, this.viewCount});
+  WixBasicStatistics({
+    this.totalComments,
+    this.likeCount,
+    this.viewCount,
+  });
 
   factory WixBasicStatistics.fromJson(Map<String, dynamic> data) {
     return WixBasicStatistics(

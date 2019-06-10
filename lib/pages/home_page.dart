@@ -65,23 +65,23 @@ class HomePageState extends State<HomePage> {
         items: const <BottomNavigationBarItem>[
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_basket),
-            title: Text('Magasin'),
+            title: Text(Texts.navigationShop),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.mouse),
-            title: Text('Muscu'),
+            title: Text(Texts.navigationBodyBuilding),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.rss_feed),
-            title: Text('Articles'),
+            title: Text(Texts.navigationArticles),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.message),
-            title: Text('Forum'),
+            title: Text(Texts.navigationForum),
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.mail),
-            title: Text('Contact'),
+            title: Text(Texts.navigationContact),
           ),
         ],
         currentIndex: _selectedIndex,

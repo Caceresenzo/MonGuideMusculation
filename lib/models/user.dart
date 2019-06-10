@@ -1,9 +1,16 @@
-class User {
-  String wixId;
-  String profilePictureFile;
-  String name;
+import 'package:flutter/widgets.dart';
 
-  User({this.wixId, this.profilePictureFile, this.name});
+@immutable
+class User {
+  final String wixId;
+  final String profilePictureFile;
+  final String name;
+
+  User({
+    this.wixId,
+    this.profilePictureFile,
+    this.name,
+  });
 
   factory User.fromJson(Map<String, dynamic> data) {
     if (data == null) {

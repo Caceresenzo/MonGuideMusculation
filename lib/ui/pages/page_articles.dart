@@ -2,10 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:mon_guide_musculation/logic/managers/base_manager.dart';
 import 'package:mon_guide_musculation/logic/wix_block_processor/wix_block_processor.dart';
 import 'package:mon_guide_musculation/models/article.dart';
-import 'package:mon_guide_musculation/models/bodybuilding.dart';
 import 'package:mon_guide_musculation/models/wix.dart';
 import 'package:mon_guide_musculation/ui/states/common_refreshable_state.dart';
-import 'package:mon_guide_musculation/ui/widgets/circular_user_avatar.dart';
 import 'package:mon_guide_musculation/ui/widgets/common_divider.dart';
 import 'package:mon_guide_musculation/ui/widgets/common_icon_value.dart';
 import 'package:mon_guide_musculation/ui/widgets/top_round_background.dart';
@@ -66,7 +64,7 @@ class ArticleItemWidget extends StatelessWidget {
                                 height: 5.0,
                               ),
                               Text(
-                                "Écrit par ${article.author.name}",
+                                Texts.articleWroteBy + article.author.name,
                                 style: Theme.of(context).textTheme.caption.apply(color: Colors.pink),
                               )
                             ],

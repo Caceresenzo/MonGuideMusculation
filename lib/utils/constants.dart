@@ -13,11 +13,18 @@ class Texts {
   static const String applicationName = "Mon Guide Musculation";
   static const String applicationVersion = "1.0.0";
   static const String applicationDeveloper = "par Enzo CACERES";
+  
+  static const String navigationShop = "Magasin";
+  static const String navigationBodyBuilding = "Muscu";
+  static const String navigationArticles = "Articles";
+  static const String navigationForum = "Forum";
+  static const String navigationContact = "Contact";
 
   static const String contactMe = "ME CONTACTER";
   static const String contactSocialNetworks = "RÉSEAUX SOCIAUX";
   static const String ruisiFullName = "Mahé RUISI";
   static const String ruisiAddress = "4 North Joy Ridge St.\nRoswell, GA 30075\nFrance";
+  static const String ruisiBackgroundContactImageUrl = "https://static.wixstatic.com/media/1bf8c6_93938e2c2d1a4f6aab8bccf32a262750~mv2.jpeg";
 
   static const String pageNoContent = "Rien à dire frère";
   static const String pageNoContentSub = "(aucun contenu disponible)";
@@ -30,7 +37,12 @@ class Texts {
   static const String itemExerciseNoRichDescription = "Aucune description.";
   static const String itemExerciseNoPicture = "Aucune image de démonstration.";
 
+  static const String articleWroteBy = "Écrit par ";
+
   static const String buttonClose = "FERMER";
+
+  static const String snackBarError = "Erreur";
+  static const String snackBarButtonClose = "FERMER";
 
   static const String tooltipAbout = "A Propos";
   static const String tooltipOpenInBrowser = "Ouvrir dans le navigateur";

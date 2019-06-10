@@ -38,7 +38,7 @@ class ContactScreen extends StatelessWidget {
         fit: StackFit.expand,
         children: <Widget>[
           TopRoundBackground(
-            widget: networkImage("https://static.wixstatic.com/media/1bf8c6_93938e2c2d1a4f6aab8bccf32a262750~mv2.jpeg"),
+            widget: networkImage(Texts.ruisiBackgroundContactImageUrl),
           ),
           Padding(
             padding: EdgeInsets.zero,

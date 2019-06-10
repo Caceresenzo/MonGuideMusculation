@@ -105,9 +105,9 @@ class _ForumScreenListingState extends State<ForumScreen> {
 
       Scaffold.of(context).hideCurrentSnackBar();
       Scaffold.of(context).showSnackBar(SnackBar(
-        content: Text('Erreur'),
+        content: Text(Texts.snackBarError),
         action: SnackBarAction(
-          label: 'FERMER',
+          label: Texts.snackBarButtonClose,
           onPressed: () {
             // Some code to undo the change!
           },
