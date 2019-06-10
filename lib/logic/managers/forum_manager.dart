@@ -27,6 +27,8 @@ class ForumManager extends BaseManager {
       return cachedThreads;
     }
 
+    cachedThreads.clear();
+
     return http
         .get(WixUrls.forumPage)
         .then((response) {
@@ -37,8 +39,6 @@ class ForumManager extends BaseManager {
         })
         .then((rawJson) => json.decode(rawJson))
         .then((data) {
-          cachedThreads.clear();
-
           (data["tpaWidgetNativeInitData"]["TPASection_jrg787fr"]["wixCodeProps"]["state"]["posts"] as Map<String, dynamic>).forEach((key, value) {
             cachedThreads.add(ForumThread.fromJson(value));
           });

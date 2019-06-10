@@ -39,6 +39,8 @@ abstract class CommonRefreshableState<T extends StatefulWidget, K> extends State
         _initialized = true;
 
         _scaffoldKey.currentState.hideCurrentSnackBar();
+
+        onItemUpdated(context);
       }
     }).catchError((error) {
       print(error);
@@ -51,13 +53,13 @@ abstract class CommonRefreshableState<T extends StatefulWidget, K> extends State
       });
 
       _scaffoldKey.currentState.hideCurrentSnackBar();
-      _scaffoldKey.currentState.showSnackBar(_buildErrorSnackBar());
+      _scaffoldKey.currentState.showSnackBar(buildErrorSnackBar());
     });
   }
 
-  SnackBar _buildErrorSnackBar() {
+  SnackBar buildErrorSnackBar({String message}) {
     return SnackBar(
-      content: Text(Texts.snackBarError),
+      content: Text(message ?? Texts.snackBarError),
       action: SnackBarAction(
         label: Texts.snackBarButtonClose,
         onPressed: () {},
@@ -73,6 +75,9 @@ abstract class CommonRefreshableState<T extends StatefulWidget, K> extends State
 
   @protected
   Widget buildBottomBar(BuildContext context) => null;
+
+  @protected
+  void onItemUpdated(BuildContext context) => null;
 
   @override
   Widget build(BuildContext context) {

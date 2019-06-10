@@ -11,12 +11,15 @@ class BodyBuildingManager extends BaseManager {
   List<BodyBuildingExercise> cachedExercices;
   List<BodyBuildingExerciseType> cachedExerciceTypes;
   List<BodyBuildingMuscle> cachedMuscles;
+  int invalidEntryCount;
 
   @override
   void initialize() {
     cachedExercices = new List();
     cachedExerciceTypes = new List();
     cachedMuscles = new List();
+
+    invalidEntryCount = 0;
   }
 
   Future<void> fetch(bool acceptCache) async {
@@ -24,11 +27,11 @@ class BodyBuildingManager extends BaseManager {
       return null;
     }
 
+    _cacheIsValid = false;
+
     return http
         .get(WixUrls.backendGetExercices)
         .then((response) {
-          _cacheIsValid = false;
-
           return response.statusCode == 200 ? response.body : throw 'Error when getting data';
         })
         .then((body) => json.decode(body))
@@ -53,18 +56,26 @@ class BodyBuildingManager extends BaseManager {
             cachedMuscles.add(muscle);
           });
 
+          invalidEntryCount = 0;
           (jsonPayload["exercises"]["list"] as Map<String, dynamic>).forEach((key, value) {
             BodyBuildingExerciseType exersiseType = typesMap[value["type"]];
-            BodyBuildingMuscle muscle = musclesMap[value["muscle"]];
+            BodyBuildingMuscle muscle = musclesMap[value["muscle"]];            
 
-            cachedExercices.add(BodyBuildingExercise.fromJson(value, exersiseType, muscle));
+            try {
+              cachedExercices.add(BodyBuildingExercise.fromJson(value, exersiseType, muscle));
+            } catch (error) {
+              invalidEntryCount++;
+              print("Invalid entry: ${value["title"]}");
+              print(error);
+            }
           });
+          print("Invalid entry count: $invalidEntryCount");
         })
         .then((_) {
           cachedMuscles.sort((a, b) {
             return a.title.toLowerCase().compareTo(b.title.toLowerCase());
           });
-          
+
           _cacheIsValid = true;
         });
   }

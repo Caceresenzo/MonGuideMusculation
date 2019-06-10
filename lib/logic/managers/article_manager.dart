@@ -6,6 +6,12 @@ import 'dart:convert';
 import 'package:mon_guide_musculation/utils/constants.dart';
 
 class ArticleManager extends BaseManager {
+  final RegExp articleJsonExtractionRegex = RegExp(
+    r'window\.__INITIAL_STATE__ = ([\w\W]*?);[\n\t ]*window\.__CONFIG__',
+    multiLine: true,
+    caseSensitive: false,
+  );
+
   List<WebArticle> cachedArticles;
 
   @override
@@ -18,27 +24,24 @@ class ArticleManager extends BaseManager {
       return cachedArticles;
     }
 
-    final response = await http.get(WixUrls.articlesPage);
+    cachedArticles.clear();
 
-    if (response.statusCode == 200) {
-      RegExp regExp = new RegExp(
-        r"window\.__INITIAL_STATE__ = ([\w\W]*?);[\n\t ]*window\.__CONFIG__",
-        multiLine: true,
-        caseSensitive: false,
-      );
+    return http
+        .get(WixUrls.articlesPage)
+        .then((response) {
+          return response.statusCode == 200 ? response.body : throw 'Error when getting data';
+        })
+        .then((body) {
+          print(body);
+          return articleJsonExtractionRegex.firstMatch(body).group(1);
+        })
+        .then((rawJson) => json.decode(rawJson))
+        .then((data) {
+          (data["posts"] as Map<String, dynamic>).forEach((key, value) {
+            cachedArticles.add(WebArticle.fromJson(value));
+          });
 
-      var match = regExp.firstMatch(response.body);
-
-      Map<String, dynamic> data = json.decode(match.group(1));
-      cachedArticles.clear();
-
-      (data["posts"] as Map<String, dynamic>).forEach((key, value) {
-        cachedArticles.add(WebArticle.fromJson(value));
-      });
-
-      return cachedArticles;
-    } else {
-      throw Exception('Failed to load post');
-    }
+          return cachedArticles;
+        });
   }
 }

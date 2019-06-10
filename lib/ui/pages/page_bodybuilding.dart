@@ -106,14 +106,22 @@ class _BodyBuildingScreenMuscleListingState extends CommonRefreshableState<BodyB
   }
 
   @override
+  void onItemUpdated(BuildContext context) {
+    int invalidEntryCount = Managers.bodyBuildingManager.invalidEntryCount;
+
+    if (invalidEntryCount != 0) {
+      Scaffold.of(context).showSnackBar(buildErrorSnackBar(
+        message: Texts.invalidEntryCount(invalidEntryCount),
+      ));
+    }
+  }
+
+  @override
   Widget buildItem(BuildContext context, List<BodyBuildingMuscle> items, int index) {
     return SizedBox(
       child: BodyBuildingMuscleWidget(items[index]),
     );
   }
-
-  @override
-  Widget buildAppBar(BuildContext context) => null;
 }
 
 class _BodyBuildingScreenExerciseByMuscleListingState extends State<BodyBuildingScreen> {

@@ -38,6 +38,7 @@ flutter:
   assets:
     - icons/application.png
     - icons/application_short.png
+    - icons/navigation/muscle.png
   fonts:
    - family:  MyIcons
      fonts:

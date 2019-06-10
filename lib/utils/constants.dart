@@ -49,6 +49,7 @@ class Texts {
 
   static String answerCount(int count) => autoCount(count, "Aucune", "réponse", "réponses");
   static String exerciseCount(int count) => autoCount(count, "Aucun", "exercice", "exercices");
+  static String invalidEntryCount(int count) => autoCount(count, null, "entré non valide.", "entrés non valide.");
 
   static String autoCount(int count, String countNone, String countWord, String countMultipleWord) {
     if (count == 0) {

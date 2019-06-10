@@ -14,6 +14,8 @@ class HomePage extends StatefulWidget {
 }
 
 class HomePageState extends State<HomePage> {
+  final GlobalKey<ScaffoldState> _scaffoldStateKey = new GlobalKey();
+
   int _selectedIndex = 2;
 
   void _onItemTapped(int index) {
@@ -22,11 +24,15 @@ class HomePageState extends State<HomePage> {
     });
   }
 
-  _getDrawerItemWidget(int position) {
+  Widget _getDrawerItemWidget(int position) {
+    if (_scaffoldStateKey.currentState != null) {
+      _scaffoldStateKey.currentState.hideCurrentSnackBar();
+    }
+
     switch (position) {
       case 0:
         return new Text("Empty");
-      
+
       case 1:
         return new BodyBuildingScreen();
 
@@ -39,11 +45,14 @@ class HomePageState extends State<HomePage> {
       case 4:
         return new ContactScreen();
     }
+
+    throw Exception("Illegal State -> Position out of range.");
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldStateKey,
       appBar: AppBar(
         title: Text(Texts.applicationName),
         backgroundColor: Constants.colorAccent,
@@ -68,7 +77,7 @@ class HomePageState extends State<HomePage> {
             title: Text(Texts.navigationShop),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.mouse),
+            icon: ImageIcon(AssetImage("icons/navigation/muscle.png")),
             title: Text(Texts.navigationBodyBuilding),
           ),
           BottomNavigationBarItem(
