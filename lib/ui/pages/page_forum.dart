@@ -6,6 +6,7 @@ import 'package:mon_guide_musculation/models/forum.dart';
 import 'package:mon_guide_musculation/ui/widgets/card_info.dart';
 import 'package:mon_guide_musculation/ui/widgets/circular_user_avatar.dart';
 import 'package:mon_guide_musculation/ui/widgets/common_divider.dart';
+import 'package:mon_guide_musculation/ui/widgets/common_icon_value.dart';
 import 'package:mon_guide_musculation/ui/widgets/wix_block_list.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 import 'package:mon_guide_musculation/utils/functions.dart';
@@ -215,22 +216,7 @@ class _ForumThreadTabState extends State<_ForumThreadTab> with AutomaticKeepAliv
   @override
   bool get wantKeepAlive => true;
 
-  Widget _buildIconValue(IconData icon, dynamic value) {
-    return Padding(
-      padding: EdgeInsets.symmetric(
-        horizontal: 2.0,
-      ),
-      child: Row(
-        children: <Widget>[
-          Icon(icon),
-          Container(
-            width: 8,
-          ),
-          Text(value.toString()),
-        ],
-      ),
-    );
-  }
+  
 
   Widget _buildThreadInfoCard(BuildContext context) {
     return Card(
@@ -264,9 +250,9 @@ class _ForumThreadTabState extends State<_ForumThreadTab> with AutomaticKeepAliv
             ButtonBar(
               alignment: MainAxisAlignment.center,
               children: <Widget>[
-                _buildIconValue(Icons.comment, forumThread.stats.totalComments),
-                _buildIconValue(Icons.thumb_up, forumThread.stats.likeCount),
-                _buildIconValue(Icons.remove_red_eye, forumThread.stats.viewCount),
+                IconValue(Icons.comment, forumThread.stats.totalComments),
+                IconValue(Icons.thumb_up, forumThread.stats.likeCount),
+                IconValue(Icons.remove_red_eye, forumThread.stats.viewCount),
               ],
             )
           ],

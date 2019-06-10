@@ -2,30 +2,33 @@ import 'dart:convert';
 
 import 'package:mon_guide_musculation/logic/managers/base_manager.dart';
 import 'package:mon_guide_musculation/models/bodybuilding.dart';
-import 'package:mon_guide_musculation/models/forum.dart';
 import 'package:http/http.dart' as http;
 import 'package:mon_guide_musculation/utils/constants.dart';
 
 class BodyBuildingManager extends BaseManager {
+  bool _cacheIsValid = false;
+
   List<BodyBuildingExercise> cachedExercices;
   List<BodyBuildingExerciseType> cachedExerciceTypes;
   List<BodyBuildingMuscle> cachedMuscles;
-
-  List<List> cachedLists;
 
   @override
   void initialize() {
     cachedExercices = new List();
     cachedExerciceTypes = new List();
     cachedMuscles = new List();
-
-    cachedLists = [cachedExercices, cachedExercices, cachedExercices];
   }
 
   Future<void> fetch(bool acceptCache) async {
+    if (acceptCache && _cacheIsValid) {
+      return null;
+    }
+
     return http
         .get(WixUrls.backendGetExercices)
         .then((response) {
+          _cacheIsValid = false;
+
           return response.statusCode == 200 ? response.body : throw 'Error when getting data';
         })
         .then((body) => json.decode(body))
@@ -61,6 +64,8 @@ class BodyBuildingManager extends BaseManager {
           cachedMuscles.sort((a, b) {
             return a.title.toLowerCase().compareTo(b.title.toLowerCase());
           });
+          
+          _cacheIsValid = true;
         });
   }
 }

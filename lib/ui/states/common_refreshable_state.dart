@@ -12,7 +12,7 @@ abstract class CommonRefreshableState<T extends StatefulWidget, K> extends State
   bool _error = false;
   bool _initialized = false;
 
-  List<K> items = new List();
+  List<K> _items = new List();
 
   @override
   void initState() {
@@ -32,7 +32,7 @@ abstract class CommonRefreshableState<T extends StatefulWidget, K> extends State
     return getFuture().then((_) {
       if (this.mounted) {
         setState(() {
-          items = getNewItemListState();
+          _items = getNewItemListState();
         });
 
         _error = false;
@@ -44,7 +44,7 @@ abstract class CommonRefreshableState<T extends StatefulWidget, K> extends State
       print(error);
 
       setState(() {
-        items = [];
+        _items = [];
 
         _error = true;
         _initialized = false;
@@ -60,9 +60,7 @@ abstract class CommonRefreshableState<T extends StatefulWidget, K> extends State
       content: Text('Erreur'),
       action: SnackBarAction(
         label: 'FERMER',
-        onPressed: () {
-          // Some code to undo the change!
-        },
+        onPressed: () {},
       ),
     );
   }
@@ -71,14 +69,14 @@ abstract class CommonRefreshableState<T extends StatefulWidget, K> extends State
   Widget buildItem(BuildContext context, List<K> items, int index);
 
   @protected
-  Widget buildAppBar(BuildContext context);
+  Widget buildAppBar(BuildContext context) => null;
 
   @protected
   Widget buildBottomBar(BuildContext context) => null;
 
   @override
   Widget build(BuildContext context) {
-    print("building: " + items.length.toString());
+    print("building: " + _items.length.toString());
 
     return Scaffold(
       key: _scaffoldKey,
@@ -94,9 +92,9 @@ abstract class CommonRefreshableState<T extends StatefulWidget, K> extends State
                     children: <Widget>[InfoCard.templateFailedToLoad()],
                   )
                 : ListView.builder(
-                    itemCount: items.length,
+                    itemCount: _items.length,
                     itemBuilder: (context, index) {
-                      return buildItem(context, items, index);
+                      return buildItem(context, _items, index);
                     },
                   ),
             onRefresh: () async {

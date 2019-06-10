@@ -1,5 +1,5 @@
-import 'package:mon_guide_musculation/fragments/articles/articles.dart';
 import 'package:mon_guide_musculation/ui/dialogs/about_dialog.dart';
+import 'package:mon_guide_musculation/ui/pages/page_articles.dart';
 import 'package:mon_guide_musculation/ui/pages/page_bodybuilding.dart';
 import 'package:mon_guide_musculation/ui/pages/page_contact.dart';
 import 'package:mon_guide_musculation/ui/pages/page_forum.dart';
@@ -15,26 +15,6 @@ class HomePage extends StatefulWidget {
 
 class HomePageState extends State<HomePage> {
   int _selectedIndex = 2;
-  static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
-  static const List<Widget> _widgetOptions = <Widget>[
-    Text(
-      'Index 0: Home',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 1: Business',
-      style: optionStyle,
-    ),
-    null,
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
-    Text(
-      'Index 2: School',
-      style: optionStyle,
-    ),
-  ];
 
   void _onItemTapped(int index) {
     setState(() {
@@ -44,20 +24,20 @@ class HomePageState extends State<HomePage> {
 
   _getDrawerItemWidget(int position) {
     switch (position) {
+      case 0:
+        return new Text("Empty");
+      
       case 1:
         return new BodyBuildingScreen();
 
       case 2:
-        return new ArticlesListFragment();
+        return new ArticleScreen();
 
       case 3:
         return new ForumScreen();
 
       case 4:
         return new ContactScreen();
-
-      default:
-        return _widgetOptions.elementAt(_selectedIndex);
     }
   }
 
@@ -68,7 +48,6 @@ class HomePageState extends State<HomePage> {
         title: Text(Texts.applicationName),
         backgroundColor: Constants.colorAccent,
         actions: <Widget>[
-          // action button
           IconButton(
             icon: Icon(
               MyIcons.emo_beer,

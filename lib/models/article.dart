@@ -1,34 +1,29 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:mon_guide_musculation/logic/wix_block_processor/wix_block_extractor.dart';
+import 'package:mon_guide_musculation/models/user.dart';
 import 'package:mon_guide_musculation/models/wix.dart';
 import 'package:mon_guide_musculation/utils/wix_utils.dart';
 
 class WebArticle {
   String slug;
-  String author;
-  String authorProfilePictureSource;
+  User author;
   String releaseDate;
   String readingTimeEstimation;
   String title;
   String seoDescription;
-  int viewCount;
-  int likeCount;
-  int totalComments;
+  WixBasicStatistics stats;
   String coverImageSource;
   ArticleContent content;
 
   WebArticle({
     this.slug,
     this.author,
-    this.authorProfilePictureSource,
     this.releaseDate,
     this.readingTimeEstimation,
     this.title,
     this.seoDescription,
-    this.viewCount,
-    this.likeCount,
-    this.totalComments,
+    this.stats,
     this.coverImageSource,
     @required this.content,
   });
@@ -36,13 +31,10 @@ class WebArticle {
   factory WebArticle.fromJson(Map<String, dynamic> json) {
     return WebArticle(
       slug: json['slug'],
-      author: json['owner']['name'],
-      authorProfilePictureSource: json['owner']['image']['file_name'],
+      author: User.fromJson(json['owner']),
       title: json['title'].replaceAll(new RegExp(r'\n'), ''),
-      seoDescription: json['seoDescription'], // ?? "<no desc>",
-      viewCount: json['viewCount'],
-      likeCount: json['likeCount'],
-      totalComments: json['totalComments'],
+      seoDescription: json['seoDescription'],
+      stats: WixBasicStatistics.fromJson(json),
       coverImageSource: json['coverImage']["src"]["file_name"],
       content: ArticleContent.fromJson(null, json),
     );
