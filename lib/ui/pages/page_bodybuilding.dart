@@ -6,7 +6,8 @@ import 'package:mon_guide_musculation/ui/states/common_refreshable_state.dart';
 import 'package:mon_guide_musculation/ui/widgets/card_info.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 import 'package:mon_guide_musculation/utils/functions.dart';
-import 'package:flutter_html_view/flutter_html_view.dart';
+import 'package:flutter_html/flutter_html.dart';
+//import 'package:flutter_html_view/flutter_html_view.dart';
 
 class BodyBuildingMuscleWidget extends StatelessWidget {
   final BodyBuildingMuscle muscle;
@@ -246,16 +247,23 @@ class BodyBuildingExerciseReadingScreen extends StatelessWidget {
   BodyBuildingExerciseReadingScreen(this.exercise);
 
   Widget _buildDescriptionTab() {
-    return Padding(
-      padding: EdgeInsets.all(8.0),
-      child: exercise.richDescription != null
-          ? HtmlView(
-              data: exercise.richDescription,
-            )
-          : Text(
+    return exercise.richDescription != null
+        ? ListView(
+            children: <Widget>[
+              Padding(
+                  padding: EdgeInsets.all(8.0),
+                  child: Html(
+                    data: exercise.richDescription,
+                    useRichText: true,
+                    showImages: true,
+                  ))
+            ],
+          )
+        : Center(
+            child: Text(
               Texts.itemExerciseNoRichDescription,
             ),
-    );
+          );
   }
 
   Widget _buildPictureTab() {
