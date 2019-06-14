@@ -32,7 +32,6 @@ class ArticleManager extends BaseManager {
           return response.statusCode == 200 ? response.body : throw 'Error when getting data';
         })
         .then((body) {
-          print(body);
           return articleJsonExtractionRegex.firstMatch(body).group(1);
         })
         .then((rawJson) => json.decode(rawJson))

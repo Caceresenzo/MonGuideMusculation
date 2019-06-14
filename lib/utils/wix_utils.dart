@@ -16,7 +16,6 @@ class WixUtils {
   
   
   static String formatForumUrl(ForumThread forumThread) {
-    print(WixUrls.forumPage + "/discussions-generales/${forumThread.slug}");
     return WixUrls.forumPage + "/discussions-generales/${forumThread.slug}";
   }
 }

@@ -62,7 +62,12 @@ class ContactScreen extends StatelessWidget {
                               SizedBox(
                                 height: 10.0,
                               ),
-                              Text(Texts.ruisiAddress),
+                              Center(
+                                child: Text(
+                                  Texts.ruisiAddress,
+                                  textAlign: TextAlign.center,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -77,7 +82,7 @@ class ContactScreen extends StatelessWidget {
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: <Widget>[
-                              _buildBigText(Texts.contactMe),
+                              _buildBigText(Texts.contactCoatching),
                               SizedBox(
                                 height: 10.0,
                               ),
