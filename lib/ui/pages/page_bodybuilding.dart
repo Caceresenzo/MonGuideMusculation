@@ -62,12 +62,7 @@ class BodyBuildingExerciseWidget extends StatelessWidget {
         // subtitle: Text(exercise.shortDescription ?? Texts.itemMuscleNoShortDescription),
         trailing: Icon(Icons.keyboard_arrow_right),
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => BodyBuildingExerciseReadingScreen(exercise),
-            ),
-          );
+          BodyBuildingExerciseReadingScreen.open(context, exercise);
         },
       );
 
@@ -303,6 +298,15 @@ class BodyBuildingExerciseReadingScreen extends StatelessWidget {
             _buildPictureTab(),
           ],
         ),
+      ),
+    );
+  }
+
+  static Future<MaterialPageRoute> open(BuildContext context, BodyBuildingExercise exercise) {
+    return Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => BodyBuildingExerciseReadingScreen(exercise),
       ),
     );
   }

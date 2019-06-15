@@ -3,6 +3,7 @@ import 'package:mon_guide_musculation/ui/pages/page_articles.dart';
 import 'package:mon_guide_musculation/ui/pages/page_bodybuilding.dart';
 import 'package:mon_guide_musculation/ui/pages/page_contact.dart';
 import 'package:mon_guide_musculation/ui/pages/page_forum.dart';
+import 'package:mon_guide_musculation/ui/pages/page_sportprogram.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -31,7 +32,7 @@ class HomePageState extends State<HomePage> {
 
     switch (position) {
       case 0:
-        return new Text("Empty");
+        return new SportProgramScreen();
 
       case 1:
         return new BodyBuildingScreen();

@@ -9,13 +9,16 @@ class WixUtils {
   static String formatStaticWixPostUrl(slug) {
     return WixUrls.baseUrl + "/monguidemusculation/post/" + slug;
   }
-  
+
   static String formatMediaFileUrl(file) {
     return WixUrls.mediaStaticPrefix + file;
   }
-  
-  
+
   static String formatForumUrl(ForumThread forumThread) {
     return WixUrls.forumPage + "/discussions-generales/${forumThread.slug}";
+  }
+
+  static String formatSportProgramUrlByToken(String token) {
+    return WixUrls.backendGetSportProgramBase + token;
   }
 }

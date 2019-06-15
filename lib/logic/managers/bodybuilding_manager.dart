@@ -22,6 +22,18 @@ class BodyBuildingManager extends BaseManager {
     invalidEntryCount = 0;
   }
 
+  Future<BodyBuildingExercise> resolveExerciseByKey(String key, {bool acceptCache = true}) async {
+    return fetch(acceptCache).then((_) {
+      for (BodyBuildingExercise exercise in cachedExercices) {
+        if (exercise.key == key) {
+          return exercise;
+        }
+      }
+
+      return null;
+    });
+  }
+
   Future<void> fetch(bool acceptCache) async {
     if (acceptCache && _cacheIsValid) {
       return null;
@@ -59,7 +71,7 @@ class BodyBuildingManager extends BaseManager {
           invalidEntryCount = 0;
           (jsonPayload["exercises"]["list"] as Map<String, dynamic>).forEach((key, value) {
             BodyBuildingExerciseType exersiseType = typesMap[value["type"]];
-            BodyBuildingMuscle muscle = musclesMap[value["muscle"]];            
+            BodyBuildingMuscle muscle = musclesMap[value["muscle"]];
 
             try {
               cachedExercices.add(BodyBuildingExercise.fromJson(value, exersiseType, muscle));

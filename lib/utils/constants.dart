@@ -115,6 +115,7 @@ class WixUrls {
 
   static const String backendBase = baseUrl + "/_functions" + (Constants.debug ? "-dev" : "") + "/";
   static const String backendGetExercices = backendBase + "exercices";
+  static const String backendGetSportProgramBase = backendBase + "program/";
 }
 
 class WixData {
