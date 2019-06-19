@@ -3,6 +3,7 @@ import 'package:mon_guide_musculation/models/bodybuilding.dart';
 
 @immutable
 class SportProgram {
+  final Map<String, dynamic> source;
   final String id;
   final String createdDate;
   final String token;
@@ -10,6 +11,7 @@ class SportProgram {
   final List<SportProgramItem> items;
 
   SportProgram({
+    this.source,
     this.id,
     this.createdDate,
     this.token,
@@ -22,6 +24,7 @@ class SportProgram {
 
   factory SportProgram.fromJson(Map<String, dynamic> data, List<SportProgramItem> items) {
     return new SportProgram(
+      source: data,
       id: data["_id"],
       createdDate: data["created_date"],
       token: data["token"],
@@ -29,10 +32,20 @@ class SportProgram {
       items: items,
     );
   }
+
+  Map<String, dynamic> toOriginalJson() {
+    Map<String, dynamic> data = new Map();
+
+    data["program"] = source;
+    data["exercises"] = List.generate(items.length, (index) => items[index].source);
+
+    return data;
+  }
 }
 
 @immutable
 class SportProgramItem {
+  final Map<String, dynamic> source;
   final SportProgram parent;
   final BodyBuildingExercise exercise;
   final int series;
@@ -41,6 +54,7 @@ class SportProgramItem {
   final String redactorId;
 
   SportProgramItem({
+    this.source,
     this.parent,
     this.exercise,
     this.series,
@@ -55,11 +69,12 @@ class SportProgramItem {
 
   factory SportProgramItem.fromJson(Map<String, dynamic> data, SportProgram parent, BodyBuildingExercise exercise) {
     return new SportProgramItem(
+      source: data,
       parent: parent,
       exercise: exercise,
-      series: data["series"],
-      repetitions: data["repetitions"],
-      weight: data["weight"],
+      series: int.parse(data["series"].toString()),
+      repetitions: int.parse(data["repetitions"].toString()),
+      weight: int.parse(data["weight"].toString()),
       redactorId: data["redactor_id"],
     );
   }

@@ -19,12 +19,14 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  http: ^0.11.3+14
-  cached_network_image: ^0.4.0
-  youtube_player: ^3.4.1
-  url_launcher: ^5.0.3
-  flutter_html: ^0.10.1+hotfix.1
+  http: 
+  cached_network_image:
+  youtube_player: 
+  url_launcher:
+  flutter_html:
   uni_links:
+  path_provider:
+  date_format:
 
 dev_dependencies:
   flutter_test:

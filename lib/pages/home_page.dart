@@ -9,24 +9,32 @@ import 'package:mon_guide_musculation/utils/constants.dart';
 import 'package:flutter/material.dart';
 
 class HomePage extends StatefulWidget {
+  static final GlobalKey<ScaffoldState> staticScaffoldStateKey = new GlobalKey();
+
   @override
   State<StatefulWidget> createState() {
     return new HomePageState();
   }
-  
+
+  static void hideSnackBar() {
+    if (HomePage.staticScaffoldStateKey.currentState != null) {
+      HomePage.staticScaffoldStateKey.currentState.hideCurrentSnackBar();
+    }
+  }
+
+  static void showSnackBar(SnackBar snackBar, {bool hidePrevious = true}) {
+    if (hidePrevious) {
+      hideSnackBar();
+    }
+
+    if (HomePage.staticScaffoldStateKey.currentState != null) {
+      HomePage.staticScaffoldStateKey.currentState.showSnackBar(snackBar);
+    }
+  }
 }
 
 class HomePageState extends State<HomePage> {
-  final GlobalKey<ScaffoldState> _scaffoldStateKey = new GlobalKey();
-
   int _selectedIndex = 2;
-
-  @override
-  void initState() {
-    super.initState();
-
-
-  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -35,9 +43,7 @@ class HomePageState extends State<HomePage> {
   }
 
   Widget _getDrawerItemWidget(int position) {
-    if (_scaffoldStateKey.currentState != null) {
-      _scaffoldStateKey.currentState.hideCurrentSnackBar();
-    }
+    HomePage.hideSnackBar();
 
     switch (position) {
       case 0:
@@ -64,7 +70,7 @@ class HomePageState extends State<HomePage> {
     MyApp.staticContext = context;
 
     return Scaffold(
-      key: _scaffoldStateKey,
+      key: HomePage.staticScaffoldStateKey,
       appBar: AppBar(
         title: Text(Texts.applicationName),
         backgroundColor: Constants.colorAccent,

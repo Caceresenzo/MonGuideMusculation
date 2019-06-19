@@ -7,6 +7,7 @@ import 'package:mon_guide_musculation/ui/pages/page_bodybuilding.dart';
 import 'package:mon_guide_musculation/ui/states/common_refreshable_state.dart';
 import 'package:mon_guide_musculation/ui/widgets/common_divider.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
+import 'package:date_format/date_format.dart';
 
 class SportProgramItemWidget extends StatelessWidget {
   final SportProgramItem item;
@@ -228,7 +229,11 @@ class _SportProgramScreenSavedItemsListingState extends CommonRefreshableState<S
   Widget buildItem(BuildContext context, List<SportProgram> items, int index) {
     return SizedBox(
       child: ListTile(
-        title: Text(items[index].token),
+        title: Text("Programme sans nom"),
+        subtitle: Text("Contient " + Texts.exerciseCount(items[index].items.length) + "\n" + "Fait le " + formatDate(DateTime.parse(items[index].createdDate), [dd, '/', mm, '/', yyyy, ' à ', HH, ':', nn, ':', ss]) + "\n" + "Pour " + items[index].target),
+        isThreeLine: true,
+        trailing: Icon(Icons.keyboard_arrow_right),
+        onTap: () {},
       ),
     );
   }

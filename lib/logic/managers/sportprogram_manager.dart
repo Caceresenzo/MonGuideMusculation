@@ -1,24 +1,36 @@
 import 'dart:convert';
+import 'dart:developer';
+import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mon_guide_musculation/logic/managers/base_manager.dart';
 import 'package:mon_guide_musculation/models/sportprogram.dart';
+import 'package:mon_guide_musculation/pages/home_page.dart';
 import 'package:mon_guide_musculation/ui/pages/page_sportprogram.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
+import 'package:mon_guide_musculation/utils/functions.dart';
 import 'package:mon_guide_musculation/utils/wix_utils.dart';
 
 import '../../main.dart';
 
 class SportProgramManager extends BaseManager {
+  bool _dialogCurrentlyOpen = false;
+  File _storageFile;
+
   SportProgram cachedProgram;
   List<SportProgram> savedPrograms;
-  bool _dialogCurrentlyOpen = false;
 
   @override
-  void initialize() {}
+  void initialize() async {
+    _storageFile = await getLocalFile("sport-program.json");
+    //_storageFile.deleteSync();
+    _storageFile.createSync(recursive: true);
 
-  Future<void> fetchByToken(String token, {bool acceptCache = false}) async {
+    savedPrograms = new List();
+  }
+
+  Future<SportProgram> fetchByToken(String token, {bool acceptCache = false}) async {
     assert(token != null);
 
     cachedProgram = null;
@@ -32,35 +44,89 @@ class SportProgramManager extends BaseManager {
         })
         .then((body) => json.decode(body))
         .then((data) => data["error"] == null ? data["payload"] : throw Exception(data["error"]))
-        .then((jsonPayload) async {
-          List<SportProgramItem> items = new List();
-
-          print(jsonPayload);
-
-          SportProgram program = SportProgram.fromJson(jsonPayload["program"], items);
-
-          for (dynamic item in (jsonPayload["exercises"] as List<dynamic>)) {
-            try {
-              items.add(SportProgramItem.fromJson(
-                item,
-                program,
-                await Managers.bodyBuildingManager.resolveExerciseByKey(item["exercise"]["key"]),
-              ));
-            } catch (error) {
-              print("Invalid entry with redactor id: ${item["redactor_id"]}");
-              print(error);
-            }
-          }
-
-          return program;
-        })
+        .then((jsonPayload) => _createSportProgram(jsonPayload))
         .then((program) => cachedProgram = program);
   }
 
-  Future<void> retriveSaved() {
-    return Future(() {
-      
+  Future<SportProgram> _createSportProgram(Map<String, dynamic> data) async {
+    List<SportProgramItem> items = new List();
+
+    print(data);
+
+    SportProgram program = SportProgram.fromJson(data["program"], items);
+
+    for (dynamic item in (data["exercises"] as List<dynamic>)) {
+      try {
+        items.add(SportProgramItem.fromJson(
+          item,
+          program,
+          await Managers.bodyBuildingManager.resolveExerciseByKey(item["exercise"]["key"]),
+        ));
+      } catch (error) {
+        print("Invalid entry with redactor id: ${item["redactor_id"]}");
+        print(error);
+      }
+    }
+
+    return program;
+  }
+
+  Future<List<SportProgram>> retriveSaved() {
+    return _retriveFileContent().then((data) {
+      List<dynamic> items = data["saved"];
+
+      if (items != null) {
+        return items;
+      }
+
+      return [];
+    }).then((items) async {
+      savedPrograms.clear();
+      for (Map<String, dynamic> item in items) {
+        savedPrograms.add(await _createSportProgram(item));
+      }
+    }).then((_) => savedPrograms);
+  }
+
+  Future<void> _import(String token) async {
+    assert(token != null);
+
+    if (cachedProgram == null) {
+      HomePage.showSnackBar(SnackBar(
+        content: Text("Erreur: A t-elle charger correctement ?"),
+      ));
+      return null;
+    }
+
+    List<dynamic> newData = await retriveSaved().then((programs) {
+      SportProgram sportProgram = getWithProcessing(programs, (item) => cachedProgram.id == item.id);
+
+      if (sportProgram == null) {
+        programs.insert(0, cachedProgram);
+      } else {
+        programs.remove(sportProgram);
+        programs.insert(0, cachedProgram);
+      }
+
+      return programs;
+    }).then((programs) {
+      List<dynamic> sources = new List();
+      programs.forEach((program) => sources.add(program.toOriginalJson()));
+      return sources;
     });
+
+    return _pushFileContent("saved", newData);
+  }
+
+  Future<Map<String, dynamic>> _retriveFileContent() {
+    return _storageFile.readAsString().then((content) => content != "" ? json.decode(content) : new Map());
+  }
+
+  Future<void> _pushFileContent(String key, dynamic content) {
+    return _retriveFileContent().then((data) {
+      data[key] = content;
+      return json.encode(data);
+    }).then((data) => _storageFile.writeAsStringSync(data));
   }
 
   void onReceivedToken(String token) {
@@ -72,7 +138,7 @@ class SportProgramManager extends BaseManager {
       context: MyApp.staticContext,
       builder: (BuildContext context) {
         _dialogCurrentlyOpen = true;
-        // return object of type Dialog
+
         return AlertDialog(
           title: new Text(
             "Ajouter un programme",
@@ -94,16 +160,23 @@ class SportProgramManager extends BaseManager {
               elevation: 0.0,
               color: Constants.colorAccent,
               onPressed: () {
-                Navigator.of(context).pop();
+                Navigator.of(context).pop(true);
               },
             ),
           ],
         );
       },
     ).then((results) {
-      print("closed");
-      print(results);
       _dialogCurrentlyOpen = false;
+
+      Object response = results;
+      if (response == null) {
+        return null;
+      }
+
+      if (response as bool) {
+        _import(token);
+      }
     });
   }
 }

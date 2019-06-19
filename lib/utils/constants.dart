@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
 class Constants {
-  static const bool debug = true;
+  static const bool debug = false;
 
   static const Color colorAccent = const Color(0xFFEF6C00);
   static const Color colorCodeblock = const Color(0xFFF2F2F2);
