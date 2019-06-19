@@ -33,6 +33,10 @@ abstract class CommonRefreshableState<T extends StatefulWidget, K> extends State
       if (this.mounted) {
         setState(() {
           _items = getNewItemListState();
+
+          if (_items == null) {
+            _items = [];
+          }
         });
 
         _error = false;
@@ -77,11 +81,23 @@ abstract class CommonRefreshableState<T extends StatefulWidget, K> extends State
   Widget buildBottomBar(BuildContext context) => null;
 
   @protected
+  Color getBackgroundColor(BuildContext context) => null;
+
+  @protected
   void onItemUpdated(BuildContext context) => null;
+
+  @protected
+  List<Widget> itemsBefore(BuildContext context) => null;
+
+  @protected
+  List<Widget> itemsAfter(BuildContext context) => null;
 
   @override
   Widget build(BuildContext context) {
-    print("building: " + _items.length.toString());
+    print("Building ${_items.length.toString()} item(s).");
+
+    List<Widget> itemsBefore = this.itemsBefore(context);
+    List<Widget> itemsAfter = this.itemsAfter(context);
 
     return Scaffold(
       key: _scaffoldKey,
@@ -92,16 +108,42 @@ abstract class CommonRefreshableState<T extends StatefulWidget, K> extends State
           return RefreshIndicator(
             key: _refreshIndicatorKey,
             color: Constants.colorAccent,
-            child: _error
-                ? ListView(
-                    children: <Widget>[InfoCard.templateFailedToLoad()],
-                  )
-                : ListView.builder(
-                    itemCount: _items.length,
-                    itemBuilder: (context, index) {
-                      return buildItem(context, _items, index);
-                    },
-                  ),
+            child: Container(
+                color: getBackgroundColor(context),
+                child: ListView(
+                  children: <Widget>[
+                    (itemsBefore != null && itemsBefore.isNotEmpty)
+                        ? Column(
+                            children: itemsBefore,
+                          )
+                        : Container(),
+                    Builder(
+                      builder: (context) {
+                        if (_error) {
+                          return InfoCard.templateFailedToLoad();
+                        }
+
+                        if (_items.isEmpty && _initialized) {
+                          return InfoCard.templateNoContent();
+                        }
+
+                        return ListView.builder(
+                          shrinkWrap: true,
+                          physics: ClampingScrollPhysics(),
+                          itemCount: _items.length,
+                          itemBuilder: (context, index) {
+                            return buildItem(context, _items, index);
+                          },
+                        );
+                      },
+                    ),
+                    (itemsAfter != null && itemsAfter.isNotEmpty)
+                        ? Column(
+                            children: itemsAfter,
+                          )
+                        : Container(),
+                  ],
+                )),
             onRefresh: () async {
               await _updateItem();
             },
@@ -113,4 +155,7 @@ abstract class CommonRefreshableState<T extends StatefulWidget, K> extends State
 
   bool hasInitialized() => _initialized;
   bool hasError() => _error;
+  
+  List<K> get items => _items;
+
 }

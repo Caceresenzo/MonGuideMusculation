@@ -7,6 +7,8 @@ class Constants {
   static const Color colorCodeblock = const Color(0xFFF2F2F2);
   
   static const Size resizeBodyBuildingMuscleImage = const Size(500, 500);
+
+  static const String customScheme = "mgm";
 }
 
 class Texts {

@@ -14,7 +14,8 @@ class SportProgramItemWidget extends StatelessWidget {
   const SportProgramItemWidget(
     this.item, {
     Key key,
-  }) : super(key: key);
+  })  : assert(item != null),
+        super(key: key);
 
   Widget _buildIcon(IconData icon) {
     return Icon(
@@ -129,23 +130,78 @@ class SportProgramItemWidget extends StatelessWidget {
   }
 }
 
+class SimpleSportProgramItemWidget extends StatelessWidget {
+  final SportProgramItem item;
+
+  const SimpleSportProgramItemWidget(
+    this.item, {
+    Key key,
+  })  : assert(item != null),
+        super(key: key);
+
+  Widget _buildTile(BuildContext context) {
+    return ListTile(
+      title: Text(item.exercise.title),
+      subtitle: Text("${item.series} ser. de ${item.repetitions} rep. à ${item.weight} kg"),
+      trailing: GestureDetector(
+        child: Icon(
+          Icons.info_outline,
+          size: 28.0,
+          color: Constants.colorAccent,
+        ),
+        onTap: () => BodyBuildingExerciseReadingScreen.open(context, item.exercise),
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _buildTile(context);
+  }
+}
+
 class SportProgramScreen extends StatefulWidget {
+  final String token;
+
+  SportProgramScreen({this.token});
+
   @override
   State<SportProgramScreen> createState() {
-    return _SportProgramScreenItemsListingState();
+    if (token != null) {
+      return _SportProgramScreenItemsListingState(token);
+    }
+
+    return _SportProgramScreenSavedItemsListingState();
+  }
+}
+
+class SportProgramImportScreen extends SportProgramScreen {
+  SportProgramImportScreen(
+    String token,
+  ) : super(
+          token: token,
+        );
+
+  @override
+  State<SportProgramScreen> createState() {
+    return _SportProgramImportScreenItemsListingState(token);
   }
 }
 
 class _SportProgramScreenItemsListingState extends CommonRefreshableState<SportProgramScreen, SportProgramItem> {
+  final String token;
+
+  _SportProgramScreenItemsListingState(
+    this.token,
+  );
+
   @override
   Future<void> getFuture() {
-    return Managers.sportProgramManager.fetchByToken("JUgNTgJAIVzy6hFBudhy9WrXfpuCYvXxFH9ulMXBHssf47KsiavnOq6brpyAzhs2");
+    return Managers.sportProgramManager.fetchByToken(token);
   }
 
   @override
   List<SportProgramItem> getNewItemListState() {
-    print(Managers.sportProgramManager.cachedProgram.items);
-
     return Managers.sportProgramManager.cachedProgram.items;
   }
 
@@ -153,6 +209,63 @@ class _SportProgramScreenItemsListingState extends CommonRefreshableState<SportP
   Widget buildItem(BuildContext context, List<SportProgramItem> items, int index) {
     return SizedBox(
       child: SportProgramItemWidget(items[index]),
+    );
+  }
+}
+
+class _SportProgramScreenSavedItemsListingState extends CommonRefreshableState<SportProgramScreen, SportProgram> {
+  @override
+  Future<void> getFuture() {
+    return Managers.sportProgramManager.retriveSaved();
+  }
+
+  @override
+  List<SportProgram> getNewItemListState() {
+    return Managers.sportProgramManager.savedPrograms;
+  }
+
+  @override
+  Widget buildItem(BuildContext context, List<SportProgram> items, int index) {
+    return SizedBox(
+      child: ListTile(
+        title: Text(items[index].token),
+      ),
+    );
+  }
+}
+
+class _SportProgramImportScreenItemsListingState extends _SportProgramScreenItemsListingState {
+  _SportProgramImportScreenItemsListingState(String token) : super(token);
+
+  @override
+  Color getBackgroundColor(BuildContext context) => Colors.white;
+
+  @override
+  List<Widget> itemsBefore(BuildContext context) {
+    SportProgram sportProgram = items.isNotEmpty ? items[0].parent : null;
+
+    if (sportProgram == null) {
+      return null;
+    }
+
+    return <Widget>[
+      Container(
+        width: double.infinity,
+        child: Center(
+          child: Text(
+            sportProgram.target,
+            textAlign: TextAlign.center,
+          ),
+        ),
+      ),
+      CommonDivider(),
+    ];
+  }
+
+  @override
+  Widget buildItem(BuildContext context, List<SportProgramItem> items, int index) {
+    return SizedBox(
+      child: SimpleSportProgramItemWidget(items[index]),
     );
   }
 }

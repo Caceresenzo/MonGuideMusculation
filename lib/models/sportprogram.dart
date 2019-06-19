@@ -1,5 +1,4 @@
-import 'package:flutter/cupertino.dart';
-import 'package:mon_guide_musculation/logic/managers/base_manager.dart';
+import 'package:meta/meta.dart';
 import 'package:mon_guide_musculation/models/bodybuilding.dart';
 
 @immutable

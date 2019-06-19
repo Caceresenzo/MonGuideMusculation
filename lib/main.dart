@@ -4,14 +4,16 @@ import 'package:mon_guide_musculation/utils/constants.dart';
 import 'pages/home_page.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async {
   Managers.initialize();
 
   runApp(new MyApp());
 }
 
 class MyApp extends StatelessWidget {
+  static BuildContext staticContext;
   // This widget is the root of your application.
+
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(

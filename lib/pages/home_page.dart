@@ -1,3 +1,4 @@
+import 'package:mon_guide_musculation/main.dart';
 import 'package:mon_guide_musculation/ui/dialogs/about_dialog.dart';
 import 'package:mon_guide_musculation/ui/pages/page_articles.dart';
 import 'package:mon_guide_musculation/ui/pages/page_bodybuilding.dart';
@@ -12,12 +13,20 @@ class HomePage extends StatefulWidget {
   State<StatefulWidget> createState() {
     return new HomePageState();
   }
+  
 }
 
 class HomePageState extends State<HomePage> {
   final GlobalKey<ScaffoldState> _scaffoldStateKey = new GlobalKey();
 
   int _selectedIndex = 2;
+
+  @override
+  void initState() {
+    super.initState();
+
+
+  }
 
   void _onItemTapped(int index) {
     setState(() {
@@ -52,6 +61,8 @@ class HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    MyApp.staticContext = context;
+
     return Scaffold(
       key: _scaffoldStateKey,
       appBar: AppBar(

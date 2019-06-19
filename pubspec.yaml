@@ -24,6 +24,7 @@ dependencies:
   youtube_player: ^3.4.1
   url_launcher: ^5.0.3
   flutter_html: ^0.10.1+hotfix.1
+  uni_links:
 
 dev_dependencies:
   flutter_test:
