@@ -72,6 +72,7 @@ class HomePageState extends State<HomePage> {
     return Scaffold(
       key: HomePage.staticScaffoldStateKey,
       appBar: AppBar(
+        elevation: 0.0,
         title: Text(Texts.applicationName),
         backgroundColor: Constants.colorAccent,
         actions: <Widget>[

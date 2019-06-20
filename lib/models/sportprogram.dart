@@ -1,5 +1,6 @@
 import 'package:meta/meta.dart';
 import 'package:mon_guide_musculation/models/bodybuilding.dart';
+import 'package:mon_guide_musculation/utils/constants.dart';
 
 @immutable
 class SportProgram {
@@ -9,6 +10,7 @@ class SportProgram {
   final String token;
   final String target;
   final List<SportProgramItem> items;
+  String name;
 
   SportProgram({
     this.source,
@@ -17,12 +19,17 @@ class SportProgram {
     this.token,
     this.target,
     this.items,
+    this.name,
   })  : assert(id != null),
         assert(token != null),
         assert(target != null),
         assert(items != null);
 
-  factory SportProgram.fromJson(Map<String, dynamic> data, List<SportProgramItem> items) {
+  factory SportProgram.fromJson(Map<String, dynamic> data, List<SportProgramItem> items, {String name}) {
+    assert(data != null);
+
+    data["name"] = name != null ? name : Texts.defaultSportProgramName;
+
     return new SportProgram(
       source: data,
       id: data["_id"],
@@ -30,6 +37,7 @@ class SportProgram {
       token: data["token"],
       target: data["target"],
       items: items,
+      name: data["name"],
     );
   }
 
@@ -78,4 +86,10 @@ class SportProgramItem {
       redactorId: data["redactor_id"],
     );
   }
+}
+
+enum SportProgramEvolutionType {
+  SERIES,
+  REPETITIONS,
+  WEIGHT,
 }

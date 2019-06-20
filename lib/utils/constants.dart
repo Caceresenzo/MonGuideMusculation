@@ -48,6 +48,8 @@ class Texts {
 
   static const String tooltipAbout = "A Propos";
   static const String tooltipOpenInBrowser = "Ouvrir dans le navigateur";
+  
+  static const String defaultSportProgramName = "Programme sans nom";
 
   static String answerCount(int count) => autoCount(count, "Aucune", "réponse", "réponses");
   static String exerciseCount(int count) => autoCount(count, "Aucun", "exercice", "exercices");

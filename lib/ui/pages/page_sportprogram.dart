@@ -9,6 +9,38 @@ import 'package:mon_guide_musculation/ui/widgets/common_divider.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 import 'package:date_format/date_format.dart';
 
+class SportProgramWidget extends StatelessWidget {
+  final SportProgram sportProgram;
+
+  const SportProgramWidget(
+    this.sportProgram, {
+    Key key,
+  })  : assert(sportProgram != null),
+        super(key: key);
+
+  Widget _buildTile(BuildContext context) {
+    return ListTile(
+      title: Text("Programme sans nom"),
+      subtitle: Text("Contient " + Texts.exerciseCount(sportProgram.items.length) + "\n" + "Fait le " + formatDate(DateTime.parse(sportProgram.createdDate), [dd, '/', mm, '/', yyyy, ' à ', HH, ':', nn, ':', ss]) + "\n" + "Pour " + sportProgram.target),
+      isThreeLine: true,
+      trailing: Icon(Icons.keyboard_arrow_right),
+      onTap: () => Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => SportProgramScreen(
+                    sportProgram: sportProgram,
+                  ),
+            ),
+          ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _buildTile(context);
+  }
+}
+
 class SportProgramItemWidget extends StatelessWidget {
   final SportProgramItem item;
 
@@ -79,7 +111,17 @@ class SportProgramItemWidget extends StatelessWidget {
                       SizedBox(
                         width: 8.0,
                       ),
-                      _buildIcon(Icons.show_chart),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => SportProgramEvolutionScreen(item.parent),
+                            ),
+                          );
+                        },
+                        child: _buildIcon(Icons.show_chart),
+                      ),
                       SizedBox(
                         width: 8.0,
                       ),
@@ -161,55 +203,193 @@ class SimpleSportProgramItemWidget extends StatelessWidget {
   }
 }
 
-class SportProgramScreen extends StatefulWidget {
-  final String token;
+class SportProgramEvolutionGraphWidget extends StatelessWidget {
+  final SportProgram item;
+  final SportProgramEvolutionType evolutionType;
 
-  SportProgramScreen({this.token});
+  const SportProgramEvolutionGraphWidget(
+    this.item,
+    this.evolutionType, {
+    Key key,
+  })  : assert(item != null),
+        super(key: key);
+
+  Widget _buildTile(BuildContext context) {
+    return Card(
+      child: Text(evolutionType.toString()),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _buildTile(context);
+  }
+}
+
+class SportProgramItemEvolutionGraphWidget extends StatelessWidget {
+  final SportProgramItem item;
+  final SportProgramEvolutionType evolutionType;
+
+  const SportProgramItemEvolutionGraphWidget(
+    this.item,
+    this.evolutionType, {
+    Key key,
+  })  : assert(item != null),
+        super(key: key);
+
+  Widget _buildTile(BuildContext context) {
+    return Card(
+      child: Text(evolutionType.toString()),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return _buildTile(context);
+  }
+}
+
+class SportProgramScreen extends StatefulWidget {
+  final SportProgram sportProgram;
+
+  SportProgramScreen({
+    this.sportProgram,
+  });
 
   @override
   State<SportProgramScreen> createState() {
-    if (token != null) {
-      return _SportProgramScreenItemsListingState(token);
+    if (sportProgram != null) {
+      return _SportProgramScreenItemsListingState(sportProgram);
     }
 
     return _SportProgramScreenSavedItemsListingState();
   }
 }
 
-class SportProgramImportScreen extends SportProgramScreen {
+class SportProgramImportScreen extends StatefulWidget {
+  final String token;
+
   SportProgramImportScreen(
-    String token,
-  ) : super(
-          token: token,
-        );
+    this.token,
+  ) : assert(token != null);
 
   @override
-  State<SportProgramScreen> createState() {
+  State<SportProgramImportScreen> createState() {
     return _SportProgramImportScreenItemsListingState(token);
   }
 }
 
-class _SportProgramScreenItemsListingState extends CommonRefreshableState<SportProgramScreen, SportProgramItem> {
-  final String token;
+class SportProgramEvolutionScreen extends StatefulWidget {
+  final SportProgram sportProgram;
+  final SportProgramEvolutionType evolutionType;
+
+  SportProgramEvolutionScreen(
+    this.sportProgram, {
+    this.evolutionType,
+  });
+
+  @override
+  State<SportProgramEvolutionScreen> createState() {
+    if (evolutionType != null) {
+      return _SportProgramEvolutionScreenTypeState(sportProgram, evolutionType);
+    }
+
+    return _SportProgramEvolutionScreenState(sportProgram);
+  }
+}
+
+class _SportProgramScreenItemsListingState extends State<SportProgramScreen> {
+  final SportProgram sportProgram;
 
   _SportProgramScreenItemsListingState(
-    this.token,
-  );
+    this.sportProgram,
+  ) : assert(sportProgram != null);
 
-  @override
-  Future<void> getFuture() {
-    return Managers.sportProgramManager.fetchByToken(token);
+  Widget _buildHeaderIcon(BuildContext context, IconData icon, String subtitle, void onTap()) {
+    return InkWell(
+        onTap: onTap,
+        child: SizedBox(
+          width: MediaQuery.of(context).size.width / 3.8,
+          child: Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 4.0,
+              vertical: 8.0,
+            ),
+            child: Column(
+              children: <Widget>[
+                Icon(
+                  icon,
+                  size: 40,
+                  color: Constants.colorAccent,
+                ),
+                SizedBox(
+                  height: 8.0,
+                ),
+                Text(
+                  subtitle,
+                  style: Theme.of(context).textTheme.subtitle,
+                )
+              ],
+            ),
+          ),
+        ));
   }
 
-  @override
-  List<SportProgramItem> getNewItemListState() {
-    return Managers.sportProgramManager.cachedProgram.items;
+  Widget _buildHeaderCard(BuildContext context) {
+    return Card(
+      elevation: 0.0,
+      child: Padding(
+        padding: EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          children: <Widget>[
+            _buildHeaderIcon(context, Icons.show_chart, "évolution".toUpperCase(), () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => SportProgramEvolutionScreen(sportProgram),
+                ),
+              );
+            }),
+            _buildHeaderIcon(context, Icons.play_circle_outline, "démarrer".toUpperCase(), () {}),
+            _buildHeaderIcon(context, Icons.edit, "éditer".toUpperCase(), () {}),
+          ],
+        ),
+      ),
+    );
   }
 
-  @override
-  Widget buildItem(BuildContext context, List<SportProgramItem> items, int index) {
+  Widget _buildItem(BuildContext context, int index) {
     return SizedBox(
-      child: SportProgramItemWidget(items[index]),
+      child: SportProgramItemWidget(sportProgram.items[index]),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0.0,
+        title: Text(sportProgram.name),
+        backgroundColor: Constants.colorAccent,
+        actions: <Widget>[
+          IconButton(
+            icon: Icon(Icons.delete_forever),
+            onPressed: () {},
+          ),
+        ],
+      ),
+      body: ListView(
+        children: <Widget>[
+          _buildHeaderCard(context),
+          ListView.builder(
+            shrinkWrap: true,
+            physics: ClampingScrollPhysics(),
+            itemCount: sportProgram.items.length,
+            itemBuilder: (context, index) => _buildItem(context, index),
+          )
+        ],
+      ),
     );
   }
 }
@@ -228,19 +408,27 @@ class _SportProgramScreenSavedItemsListingState extends CommonRefreshableState<S
   @override
   Widget buildItem(BuildContext context, List<SportProgram> items, int index) {
     return SizedBox(
-      child: ListTile(
-        title: Text("Programme sans nom"),
-        subtitle: Text("Contient " + Texts.exerciseCount(items[index].items.length) + "\n" + "Fait le " + formatDate(DateTime.parse(items[index].createdDate), [dd, '/', mm, '/', yyyy, ' à ', HH, ':', nn, ':', ss]) + "\n" + "Pour " + items[index].target),
-        isThreeLine: true,
-        trailing: Icon(Icons.keyboard_arrow_right),
-        onTap: () {},
-      ),
+      child: SportProgramWidget(items[index]),
     );
   }
 }
 
-class _SportProgramImportScreenItemsListingState extends _SportProgramScreenItemsListingState {
-  _SportProgramImportScreenItemsListingState(String token) : super(token);
+class _SportProgramImportScreenItemsListingState extends CommonRefreshableState<SportProgramImportScreen, SportProgramItem> {
+  final String token;
+
+  _SportProgramImportScreenItemsListingState(
+    this.token,
+  );
+
+  @override
+  Future<void> getFuture() {
+    return Managers.sportProgramManager.fetchByToken(token);
+  }
+
+  @override
+  List<SportProgramItem> getNewItemListState() {
+    return Managers.sportProgramManager.cachedProgram.items;
+  }
 
   @override
   Color getBackgroundColor(BuildContext context) => Colors.white;
@@ -273,4 +461,56 @@ class _SportProgramImportScreenItemsListingState extends _SportProgramScreenItem
       child: SimpleSportProgramItemWidget(items[index]),
     );
   }
+}
+
+class _SportProgramEvolutionScreenState extends State<SportProgramEvolutionScreen> {
+  final SportProgram sportProgram;
+
+  _SportProgramEvolutionScreenState(
+    this.sportProgram,
+  ) : assert(sportProgram != null);
+
+  @protected
+  Widget buildGraph(BuildContext context, SportProgramEvolutionType evolutionType) {
+    return SizedBox(
+      child: Text(evolutionType.toString()),
+    );
+  }
+
+  Widget _buildItem(BuildContext context, int index) {
+    return SizedBox(
+      child: SportProgramEvolutionGraphWidget(sportProgram, SportProgramEvolutionType.values[index]),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0.0,
+        title: Text(sportProgram.name),
+        backgroundColor: Constants.colorAccent,
+      ),
+      body: ListView(
+        children: <Widget>[
+          ListView.builder(
+            shrinkWrap: true,
+            physics: ClampingScrollPhysics(),
+            itemCount: SportProgramEvolutionType.values.length,
+            itemBuilder: (context, index) => _buildItem(context, index),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class _SportProgramEvolutionScreenTypeState extends _SportProgramEvolutionScreenState {
+  final SportProgramEvolutionType evolutionType;
+
+  _SportProgramEvolutionScreenTypeState(
+    SportProgram sportProgram,
+    this.evolutionType,
+  )   : assert(evolutionType != null),
+        super(sportProgram);
 }
