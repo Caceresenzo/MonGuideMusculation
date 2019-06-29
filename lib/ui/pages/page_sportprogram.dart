@@ -488,7 +488,7 @@ class _SportProgramEvolutionScreenState extends State<SportProgramEvolutionScree
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
-        title: Text(sportProgram.name),
+        title: Text(Texts.evolutionScreenTitlePrefix + sportProgram.name),
         backgroundColor: Constants.colorAccent,
       ),
       body: ListView(

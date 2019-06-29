@@ -27,6 +27,7 @@ dependencies:
   uni_links:
   path_provider:
   date_format:
+  charts_flutter:
 
 dev_dependencies:
   flutter_test:

@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:mon_guide_musculation/models/sportprogram.dart';
 
 class Constants {
   static const bool debug = false;
 
-  static const Color colorAccent = const Color(0xFFEF6C00);
+  static const int colorAccentHex = 0xFFEF6C00;
+  static const Color colorAccent = const Color(colorAccentHex);
   static const Color colorCodeblock = const Color(0xFFF2F2F2);
   
   static const Size resizeBodyBuildingMuscleImage = const Size(500, 500);
@@ -50,6 +52,7 @@ class Texts {
   static const String tooltipOpenInBrowser = "Ouvrir dans le navigateur";
   
   static const String defaultSportProgramName = "Programme sans nom";
+  static const String evolutionScreenTitlePrefix = "Évolution: ";
 
   static String answerCount(int count) => autoCount(count, "Aucune", "réponse", "réponses");
   static String exerciseCount(int count) => autoCount(count, "Aucun", "exercice", "exercices");
@@ -64,6 +67,12 @@ class Texts {
         return count.toString() + " " + countMultipleWord;
     }
   }
+
+  static const Map<SportProgramEvolutionType, String> evolutionTypeTranslations = {
+    SportProgramEvolutionType.SERIES: "Séries",
+    SportProgramEvolutionType.REPETITIONS: "Répétitions",
+    SportProgramEvolutionType.WEIGHT: "Poids (kg)",
+  };
 }
 
 class Contact {

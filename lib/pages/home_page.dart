@@ -5,6 +5,7 @@ import 'package:mon_guide_musculation/ui/pages/page_bodybuilding.dart';
 import 'package:mon_guide_musculation/ui/pages/page_contact.dart';
 import 'package:mon_guide_musculation/ui/pages/page_forum.dart';
 import 'package:mon_guide_musculation/ui/pages/page_sportprogram.dart';
+import 'package:mon_guide_musculation/ui/tests/test_charts.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -60,6 +61,9 @@ class HomePageState extends State<HomePage> {
 
       case 4:
         return new ContactScreen();
+
+      case 5:
+        return ChartsText();
     }
 
     throw Exception("Illegal State -> Position out of range.");
@@ -69,55 +73,83 @@ class HomePageState extends State<HomePage> {
   Widget build(BuildContext context) {
     MyApp.staticContext = context;
 
-    return Scaffold(
-      key: HomePage.staticScaffoldStateKey,
-      appBar: AppBar(
-        elevation: 0.0,
-        title: Text(Texts.applicationName),
-        backgroundColor: Constants.colorAccent,
-        actions: <Widget>[
-          IconButton(
-            icon: Icon(
-              MyIcons.emo_beer,
-              size: 16.0,
+    return WillPopScope(
+      onWillPop: () => _exitApp(context),
+      child: Scaffold(
+        key: HomePage.staticScaffoldStateKey,
+        appBar: AppBar(
+          elevation: 0.0,
+          title: Text(Texts.applicationName),
+          backgroundColor: Constants.colorAccent,
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(
+                MyIcons.emo_beer,
+                size: 16.0,
+              ),
+              onPressed: () {
+                MyAboutDialog.show(context);
+              },
+              tooltip: Texts.tooltipAbout,
+            )
+          ],
+        ),
+        body: Center(child: _getDrawerItemWidget(_selectedIndex)),
+        bottomNavigationBar: BottomNavigationBar(
+          items: const <BottomNavigationBarItem>[
+            BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_basket),
+              title: Text(Texts.navigationShop),
             ),
-            onPressed: () {
-              MyAboutDialog.show(context);
-            },
-            tooltip: Texts.tooltipAbout,
-          )
-        ],
-      ),
-      body: Center(child: _getDrawerItemWidget(_selectedIndex)),
-      bottomNavigationBar: BottomNavigationBar(
-        items: const <BottomNavigationBarItem>[
-          BottomNavigationBarItem(
-            icon: Icon(Icons.shopping_basket),
-            title: Text(Texts.navigationShop),
-          ),
-          BottomNavigationBarItem(
-            icon: ImageIcon(AssetImage("icons/navigation/muscle.png")),
-            title: Text(Texts.navigationBodyBuilding),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.rss_feed),
-            title: Text(Texts.navigationArticles),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.message),
-            title: Text(Texts.navigationForum),
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.mail),
-            title: Text(Texts.navigationContact),
-          ),
-        ],
-        currentIndex: _selectedIndex,
-        selectedItemColor: Constants.colorAccent,
-        showSelectedLabels: true,
-        type: BottomNavigationBarType.fixed,
-        onTap: _onItemTapped,
+            BottomNavigationBarItem(
+              icon: ImageIcon(AssetImage("icons/navigation/muscle.png")),
+              title: Text(Texts.navigationBodyBuilding),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.rss_feed),
+              title: Text(Texts.navigationArticles),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.message),
+              title: Text(Texts.navigationForum),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.mail),
+              title: Text(Texts.navigationContact),
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.mail),
+              title: Text(Texts.navigationContact),
+            ),
+          ],
+          currentIndex: _selectedIndex,
+          selectedItemColor: Constants.colorAccent,
+          showSelectedLabels: true,
+          type: BottomNavigationBarType.fixed,
+          onTap: _onItemTapped,
+        ),
       ),
     );
+  }
+
+  Future<bool> _exitApp(BuildContext context) {
+    return showDialog(
+          context: context,
+          child: new AlertDialog(
+            title: new Text('Do you want to exit this application?'),
+            content: new Text('We hate to see you leave...'),
+            actions: <Widget>[
+              new FlatButton(
+                onPressed: () => Navigator.of(context).pop(false),
+                child: new Text('No'),
+              ),
+              new FlatButton(
+                onPressed: () => Navigator.of(context).pop(true),
+                child: new Text('Yes'),
+              ),
+            ],
+          ),
+        ) ??
+        false;
   }
 }
