@@ -3,11 +3,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mon_guide_musculation/logic/managers/base_manager.dart';
 import 'package:mon_guide_musculation/models/sportprogram.dart';
+import 'package:mon_guide_musculation/pages/home_page.dart';
 import 'package:mon_guide_musculation/ui/pages/page_bodybuilding.dart';
 import 'package:mon_guide_musculation/ui/states/common_refreshable_state.dart';
 import 'package:mon_guide_musculation/ui/widgets/common_divider.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
-import 'package:date_format/date_format.dart';
 
 class SportProgramWidget extends StatelessWidget {
   final SportProgram sportProgram;
@@ -20,18 +20,31 @@ class SportProgramWidget extends StatelessWidget {
 
   Widget _buildTile(BuildContext context) {
     return ListTile(
-      title: Text("Programme sans nom"),
-      subtitle: Text("Contient " + Texts.exerciseCount(sportProgram.items.length) + "\n" + "Fait le " + formatDate(DateTime.parse(sportProgram.createdDate), [dd, '/', mm, '/', yyyy, ' à ', HH, ':', nn, ':', ss]) + "\n" + "Pour " + sportProgram.target),
+      title: Text(Texts.defaultSportProgramName),
+      subtitle: Text(Texts.formatSportProgramWidgetDescription(sportProgram)),
       isThreeLine: true,
       trailing: Icon(Icons.keyboard_arrow_right),
-      onTap: () => Navigator.push(
+      onTap: () {
+        print(Managers.bodyBuildingManager.cachedExercices.length);
+        if (Managers.bodyBuildingManager.cachedExercices.isEmpty) {
+          HomePage.showSnackBar(SnackBar(
+            content: Text(Texts.snackBarErrorNotFullyLoaded),
+            action: SnackBarAction(
+              label: Texts.snackBarButtonClose,
+              onPressed: () {},
+            ),
+          ));
+        } else {
+          Navigator.push(
             context,
             MaterialPageRoute(
               builder: (context) => SportProgramScreen(
                     sportProgram: sportProgram,
                   ),
             ),
-          ),
+          );
+        }
+      },
     );
   }
 
@@ -73,7 +86,7 @@ class SportProgramItemWidget extends StatelessWidget {
             style: TextStyle(fontSize: 24.0),
           ),
           Text(
-            /*value.toString() + "\n" + */ name,
+            name,
             textAlign: TextAlign.center,
           ),
         ],
@@ -145,19 +158,19 @@ class SportProgramItemWidget extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  _buildObjectiveWidget(" séries", item.series, Icons.repeat),
+                  _buildObjectiveWidget(Texts.itemSportProgramNumberSeries, item.series, Icons.repeat),
                   Text(
-                    "de",
+                    Texts.itemSportProgramOfRepetitions,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 12.0),
                   ),
-                  _buildObjectiveWidget(" répétitions", item.repetitions, Icons.format_list_numbered),
+                  _buildObjectiveWidget(Texts.itemSportProgramNumberRepetitions, item.repetitions, Icons.format_list_numbered),
                   Text(
-                    "à",
+                    Texts.itemSportProgramAtWeight,
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 12.0),
                   ),
-                  _buildObjectiveWidget(" kg", item.weight, Icons.line_weight),
+                  _buildObjectiveWidget(Texts.itemSportProgramNumberSeries, item.weight, Icons.line_weight),
                 ],
               ),
             )
@@ -185,7 +198,7 @@ class SimpleSportProgramItemWidget extends StatelessWidget {
   Widget _buildTile(BuildContext context) {
     return ListTile(
       title: Text(item.exercise.title),
-      subtitle: Text("${item.series} ser. de ${item.repetitions} rep. à ${item.weight} kg"),
+      subtitle: Text(Texts.formatSportProgramItemSimpleItemDescription(item)),
       trailing: GestureDetector(
         child: Icon(
           Icons.info_outline,
@@ -306,7 +319,12 @@ class _SportProgramScreenItemsListingState extends State<SportProgramScreen> {
   ) : assert(sportProgram != null);
 
   Widget _buildHeaderIcon(BuildContext context, IconData icon, String subtitle, void onTap()) {
-    return InkWell(
+    return Padding(
+      padding: EdgeInsets.symmetric(
+        horizontal: 2.0,
+        vertical: 0.0,
+      ),
+      child: InkWell(
         onTap: onTap,
         child: SizedBox(
           width: MediaQuery.of(context).size.width / 3.8,
@@ -332,7 +350,9 @@ class _SportProgramScreenItemsListingState extends State<SportProgramScreen> {
               ],
             ),
           ),
-        ));
+        ),
+      ),
+    );
   }
 
   Widget _buildHeaderCard(BuildContext context) {
@@ -341,18 +361,10 @@ class _SportProgramScreenItemsListingState extends State<SportProgramScreen> {
       child: Padding(
         padding: EdgeInsets.all(8.0),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            _buildHeaderIcon(context, Icons.show_chart, "évolution".toUpperCase(), () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => SportProgramEvolutionScreen(sportProgram),
-                ),
-              );
-            }),
-            _buildHeaderIcon(context, Icons.play_circle_outline, "démarrer".toUpperCase(), () {}),
-            _buildHeaderIcon(context, Icons.edit, "éditer".toUpperCase(), () {}),
+            _buildHeaderIcon(context, Icons.play_circle_outline, Texts.sportProgramScreenButtonStart, () {}),
+            _buildHeaderIcon(context, Icons.edit, Texts.sportProgramScreenButtonEdit, () {}),
           ],
         ),
       ),
@@ -380,16 +392,17 @@ class _SportProgramScreenItemsListingState extends State<SportProgramScreen> {
                 context: context,
                 builder: (context) {
                   return AlertDialog(
-                    content: Text("Supprimer ce programme ?"),
+                    title: Text(Texts.dialogTitleConfirm),
+                    content: Text(Texts.dialogDescriptionConfirmRemove),
                     actions: <Widget>[
                       FlatButton(
-                        child: Text("No"),
+                        child: Text(Texts.buttonCancel),
                         onPressed: () {
                           Navigator.of(context).pop(false);
                         },
                       ),
                       FlatButton(
-                        child: Text("Yes"),
+                        child: Text(Texts.buttonRemove),
                         onPressed: () {
                           Navigator.of(context).pop(true);
                         },

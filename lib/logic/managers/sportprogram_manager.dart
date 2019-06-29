@@ -24,8 +24,8 @@ class SportProgramManager extends BaseManager {
 
   @override
   void initialize() async {
-    _storageFile = await getLocalFile("sport-program.json");
-    //_storageFile.deleteSync();
+    _storageFile = await getLocalFile(AppStorage.sportProgramDataFile);
+
     _storageFile.createSync(recursive: true);
 
     savedPrograms = new List();
@@ -94,7 +94,11 @@ class SportProgramManager extends BaseManager {
 
     if (cachedProgram == null) {
       HomePage.showSnackBar(SnackBar(
-        content: Text("Erreur: A t-elle charger correctement ?"),
+        content: Text(Texts.snackBarErrorNotFullyLoaded),
+        action: SnackBarAction(
+          label: Texts.snackBarButtonClose,
+          onPressed: () {},
+        ),
       ));
       return null;
     }
@@ -112,7 +116,7 @@ class SportProgramManager extends BaseManager {
       return programs;
     }).then((programs) => _transformSportProgramListToJson(programs));
 
-    return _pushFileContent("saved", newData).then((_) => _sendContentUpdate());
+    return _pushFileContent(AppStorage.sportProgramJsonItemsKey, newData).then((_) => _sendContentUpdate());
   }
 
   List<dynamic> _transformSportProgramListToJson(List<SportProgram> programs) {
@@ -127,7 +131,7 @@ class SportProgramManager extends BaseManager {
       return programs;
     }).then((programs) => _transformSportProgramListToJson(programs));
 
-    return _pushFileContent("saved", newData).then((_) => _sendContentUpdate());
+    return _pushFileContent(AppStorage.sportProgramJsonItemsKey, newData).then((_) => _sendContentUpdate());
   }
 
   Future<Map<String, dynamic>> _retriveFileContent() {
@@ -153,7 +157,7 @@ class SportProgramManager extends BaseManager {
 
         return AlertDialog(
           title: new Text(
-            "Ajouter un programme",
+            Texts.dialogTitleImportSportProgram,
             style: const TextStyle(
               color: Constants.colorAccent,
             ),
@@ -163,10 +167,9 @@ class SportProgramManager extends BaseManager {
           contentPadding: EdgeInsets.fromLTRB(0, 8.0, 0, 0),
           content: SportProgramImportScreen(token),
           actions: <Widget>[
-            // usually buttons at the bottom of the dialog
             new RaisedButton(
               child: new Text(
-                "AJOUTER",
+                Texts.buttonImport,
                 style: const TextStyle(color: Colors.white),
               ),
               elevation: 0.0,

@@ -34,6 +34,10 @@ class BodyBuildingManager extends BaseManager {
     });
   }
 
+  void _clearCache() {
+    [cachedExercices, cachedExerciceTypes, cachedMuscles].forEach((list) => list.clear());
+  }
+
   Future<void> fetch(bool acceptCache) async {
     if (acceptCache && _cacheIsValid) {
       return null;
@@ -49,7 +53,7 @@ class BodyBuildingManager extends BaseManager {
         .then((body) => json.decode(body))
         .then((data) => data["error"] == null ? data["payload"] : throw Exception(data["error"]))
         .then((jsonPayload) {
-          [cachedExercices, cachedExerciceTypes, cachedMuscles].forEach((list) => list.clear());
+          _clearCache();
 
           Map<String, BodyBuildingExerciseType> typesMap = new Map();
           Map<String, BodyBuildingMuscle> musclesMap = new Map();
@@ -89,6 +93,9 @@ class BodyBuildingManager extends BaseManager {
           });
 
           _cacheIsValid = true;
+        })
+        .catchError((error) {
+          _clearCache();
         });
   }
 }

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mon_guide_musculation/models/sportprogram.dart';
+import 'package:date_format/date_format.dart';
 
 class Constants {
   static const bool debug = false;
@@ -7,7 +8,7 @@ class Constants {
   static const int colorAccentHex = 0xFFEF6C00;
   static const Color colorAccent = const Color(colorAccentHex);
   static const Color colorCodeblock = const Color(0xFFF2F2F2);
-  
+
   static const Size resizeBodyBuildingMuscleImage = const Size(500, 500);
 
   static const String customScheme = "mgm";
@@ -17,7 +18,7 @@ class Texts {
   static const String applicationName = "Mon Guide Musculation";
   static const String applicationVersion = "1.0.0";
   static const String applicationDeveloper = "par Enzo CACERES";
-  
+
   static const String navigationShop = "Magasin";
   static const String navigationBodyBuilding = "Muscu";
   static const String navigationArticles = "Articles";
@@ -36,21 +37,37 @@ class Texts {
   static const String pageNoAnswerSub = "(aucune réponse)";
   static const String pageFailedToLoad = "J'ai pas réussi...";
   static const String pageFailedToLoadSub = "(chargement échoué)";
-  
+
+  static const String itemSportProgramNumberSeries = " séries";
+  static const String itemSportProgramOfRepetitions = "de";
+  static const String itemSportProgramNumberRepetitions = " répétitions";
+  static const String itemSportProgramAtWeight = "à";
+  static const String itemSportProgramNumberWeight = " kg";
   static const String itemMuscleNoShortDescription = "Aucune courte description.";
   static const String itemExerciseNoRichDescription = "Aucune description.";
   static const String itemExerciseNoPicture = "Aucune image de démonstration.";
 
+  static const String sportProgramScreenButtonStart = "DÉMARRER";
+  static const String sportProgramScreenButtonEdit = "ÉDITER";
+
   static const String articleWroteBy = "Écrit par ";
 
   static const String buttonClose = "FERMER";
+  static const String buttonRemove = "SUPPRIMER";
+  static const String buttonCancel = "ANNULER";
+  static const String buttonImport = "AJOUTER";
+
+  static const String dialogTitleConfirm = "Confirmation";
+  static const String dialogTitleImportSportProgram = "Ajouter un programme";
+  static const String dialogDescriptionConfirmRemove = "Supprimer ce programme ?";
 
   static const String snackBarError = "Erreur";
   static const String snackBarButtonClose = "FERMER";
+  static const String snackBarErrorNotFullyLoaded = "Erreur: A t-elle charger correctement ?";
 
   static const String tooltipAbout = "A Propos";
   static const String tooltipOpenInBrowser = "Ouvrir dans le navigateur";
-  
+
   static const String defaultSportProgramName = "Programme sans nom";
   static const String evolutionScreenTitlePrefix = "Évolution: ";
 
@@ -62,10 +79,18 @@ class Texts {
     if (count == 0) {
       return countNone + " " + countWord;
     } else if (count == 1) {
-        return count.toString() + " " + countWord;
+      return count.toString() + " " + countWord;
     } else {
-        return count.toString() + " " + countMultipleWord;
+      return count.toString() + " " + countMultipleWord;
     }
+  }
+
+  static String formatSportProgramItemSimpleItemDescription(SportProgramItem item) {
+    return "${item.series} ser. de ${item.repetitions} rep. à ${item.weight} kg";
+  }
+
+  static String formatSportProgramWidgetDescription(SportProgram sportProgram) {
+    return "Contient " + Texts.exerciseCount(sportProgram.items.length) + "\n" + "Fait le " + formatDate(DateTime.parse(sportProgram.createdDate), [dd, '/', mm, '/', yyyy, ' à ', HH, ':', nn, ':', ss]) + "\n" + "Pour " + sportProgram.target;
   }
 
   static const Map<SportProgramEvolutionType, String> evolutionTypeTranslations = {
@@ -73,6 +98,11 @@ class Texts {
     SportProgramEvolutionType.REPETITIONS: "Répétitions",
     SportProgramEvolutionType.WEIGHT: "Poids (kg)",
   };
+}
+
+class AppStorage {
+  static const String sportProgramDataFile = "sport-program.json";
+  static const String sportProgramJsonItemsKey = "saved";
 }
 
 class Contact {
