@@ -74,7 +74,7 @@ class SportProgramManager extends BaseManager {
 
   Future<List<SportProgram>> retriveSaved() {
     return _retriveFileContent().then((data) {
-      List<dynamic> items = data["saved"];
+      List<dynamic> items = data[AppStorage.sportProgramJsonItemsKey];
 
       if (items != null) {
         return items;
@@ -83,6 +83,7 @@ class SportProgramManager extends BaseManager {
       return [];
     }).then((items) async {
       savedPrograms.clear();
+
       for (Map<String, dynamic> item in items) {
         savedPrograms.add(await _createSportProgram(item));
       }
@@ -126,10 +127,14 @@ class SportProgramManager extends BaseManager {
   }
 
   void remove(SportProgram sportProgram) async {
-    List<dynamic> newData = await retriveSaved().then((programs) {
+    await retriveSaved().then((programs) {
       programs.removeWhere((item) => item.token == sportProgram.token);
       return programs;
-    }).then((programs) => _transformSportProgramListToJson(programs));
+    }).then((programs) => _savePrograms(programs));
+  }
+
+  void _savePrograms(List<SportProgram> programs) async {
+    List<dynamic> newData = _transformSportProgramListToJson(programs);
 
     return _pushFileContent(AppStorage.sportProgramJsonItemsKey, newData).then((_) => _sendContentUpdate());
   }
@@ -142,7 +147,10 @@ class SportProgramManager extends BaseManager {
     return _retriveFileContent().then((data) {
       data[key] = content;
       return json.encode(data);
-    }).then((data) => _storageFile.writeAsStringSync(data));
+    }).then((data) {
+      _storageFile.writeAsStringSync(data);
+      print("Writing... => " + data);
+    });
   }
 
   void onReceivedToken(String token) {
@@ -207,5 +215,15 @@ class SportProgramManager extends BaseManager {
     print("Sending content update.");
 
     this._refreshIndicatorKey.currentState.show();
+  }
+
+  bool rename(SportProgram sportProgram, String newName) {
+    if (sportProgram.rename(newName)) {
+      _savePrograms(savedPrograms);
+      
+      return true;
+    }
+
+    return false;
   }
 }

@@ -12,6 +12,8 @@ class Constants {
   static const Size resizeBodyBuildingMuscleImage = const Size(500, 500);
 
   static const String customScheme = "mgm";
+
+  static const sportProgramRenameBackToDefaultIfInvalid = true;
 }
 
 class Texts {
@@ -49,6 +51,8 @@ class Texts {
 
   static const String sportProgramScreenButtonStart = "DÉMARRER";
   static const String sportProgramScreenButtonEdit = "ÉDITER";
+  static const String sportProgramRenamed = "Programme renommé.";
+  static const String sportProgramNotRenamed = "Programme non renommé.";
 
   static const String articleWroteBy = "Écrit par ";
 

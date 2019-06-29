@@ -20,7 +20,7 @@ class SportProgramWidget extends StatelessWidget {
 
   Widget _buildTile(BuildContext context) {
     return ListTile(
-      title: Text(Texts.defaultSportProgramName),
+      title: Text(sportProgram.name()),
       subtitle: Text(Texts.formatSportProgramWidgetDescription(sportProgram)),
       isThreeLine: true,
       trailing: Icon(Icons.keyboard_arrow_right),
@@ -312,6 +312,7 @@ class SportProgramEvolutionScreen extends StatefulWidget {
 }
 
 class _SportProgramScreenItemsListingState extends State<SportProgramScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldState = new GlobalKey();
   final SportProgram sportProgram;
 
   _SportProgramScreenItemsListingState(
@@ -364,7 +365,47 @@ class _SportProgramScreenItemsListingState extends State<SportProgramScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             _buildHeaderIcon(context, Icons.play_circle_outline, Texts.sportProgramScreenButtonStart, () {}),
-            _buildHeaderIcon(context, Icons.edit, Texts.sportProgramScreenButtonEdit, () {}),
+            _buildHeaderIcon(context, Icons.edit, Texts.sportProgramScreenButtonEdit, () {
+              final String currentName = sportProgram.name();
+              TextEditingController controller = new TextEditingController(
+                text: currentName,
+              );
+
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    content: TextField(
+                      controller: controller,
+                    ),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text("RENAME"),
+                        onPressed: () => Navigator.of(context).pop(),
+                      )
+                    ],
+                  );
+                },
+              ).then((_) {
+                String snackBarMessage = Texts.sportProgramNotRenamed;
+                final String newName = controller.text;
+
+                if (Managers.sportProgramManager.rename(sportProgram, newName)) {
+                  snackBarMessage = Texts.sportProgramRenamed;
+                  
+                  setState(() {});
+                }
+
+                _scaffoldState.currentState.hideCurrentSnackBar();
+                _scaffoldState.currentState.showSnackBar(SnackBar(
+                  content: Text(snackBarMessage),
+                  action: SnackBarAction(
+                    label: Texts.snackBarButtonClose,
+                    onPressed: () {},
+                  ),
+                ));
+              });
+            }),
           ],
         ),
       ),
@@ -380,9 +421,10 @@ class _SportProgramScreenItemsListingState extends State<SportProgramScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldState,
       appBar: AppBar(
         elevation: 0.0,
-        title: Text(sportProgram.name),
+        title: Text(sportProgram.name()),
         backgroundColor: Constants.colorAccent,
         actions: <Widget>[
           IconButton(
@@ -538,7 +580,7 @@ class _SportProgramEvolutionScreenState extends State<SportProgramEvolutionScree
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
-        title: Text(Texts.evolutionScreenTitlePrefix + sportProgram.name),
+        title: Text(Texts.evolutionScreenTitlePrefix + sportProgram.name()),
         backgroundColor: Constants.colorAccent,
       ),
       body: ListView(

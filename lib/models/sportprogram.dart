@@ -10,7 +10,7 @@ class SportProgram {
   final String token;
   final String target;
   final List<SportProgramItem> items;
-  String name;
+  String _name;
 
   SportProgram({
     this.source,
@@ -19,16 +19,28 @@ class SportProgram {
     this.token,
     this.target,
     this.items,
-    this.name,
+    String name,
   })  : assert(id != null),
         assert(token != null),
         assert(target != null),
-        assert(items != null);
+        assert(items != null),
+        this._name = name;
+
+  String name() {
+    if (_name == null || _name.isEmpty) {
+      return Texts.defaultSportProgramName;
+    }
+
+    return _name;
+  }
 
   factory SportProgram.fromJson(Map<String, dynamic> data, List<SportProgramItem> items, {String name}) {
     assert(data != null);
 
-    data["name"] = name != null ? name : Texts.defaultSportProgramName;
+    if (name == null) {
+      name = data["name"];
+    }
+    data["name"] = name != null ? name : (Texts.defaultSportProgramName + "hello");
 
     return new SportProgram(
       source: data,
@@ -48,6 +60,27 @@ class SportProgram {
     data["exercises"] = List.generate(items.length, (index) => items[index].source);
 
     return data;
+  }
+
+  bool rename(String newName) {
+    if (Constants.sportProgramRenameBackToDefaultIfInvalid) {
+      if (newName == null || newName.isEmpty) {
+        newName = Texts.defaultSportProgramName;
+      }
+    } else {
+      if (newName == null || newName.isEmpty) {
+        return false;
+      }
+
+      if (newName == this._name) {
+        return false;
+      }
+    }
+
+    this._name = newName;
+    this.source["name"] = newName;
+
+    return true;
   }
 }
 
