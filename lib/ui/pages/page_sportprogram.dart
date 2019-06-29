@@ -375,7 +375,39 @@ class _SportProgramScreenItemsListingState extends State<SportProgramScreen> {
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.delete_forever),
-            onPressed: () {},
+            onPressed: () {
+              showDialog(
+                context: context,
+                builder: (context) {
+                  return AlertDialog(
+                    content: Text("Supprimer ce programme ?"),
+                    actions: <Widget>[
+                      FlatButton(
+                        child: Text("No"),
+                        onPressed: () {
+                          Navigator.of(context).pop(false);
+                        },
+                      ),
+                      FlatButton(
+                        child: Text("Yes"),
+                        onPressed: () {
+                          Navigator.of(context).pop(true);
+                        },
+                      )
+                    ],
+                  );
+                },
+              ).then((result) {
+                if (result == null) {
+                  return;
+                }
+
+                if (result as bool) {
+                  Managers.sportProgramManager.remove(sportProgram);
+                  Navigator.of(context).pop();
+                }
+              });
+            },
           ),
         ],
       ),
@@ -395,6 +427,11 @@ class _SportProgramScreenItemsListingState extends State<SportProgramScreen> {
 }
 
 class _SportProgramScreenSavedItemsListingState extends CommonRefreshableState<SportProgramScreen, SportProgram> {
+  @override
+  void initialize() {
+    Managers.sportProgramManager.useRefreshIndicatorKey(refreshIndicatorKey);
+  }
+
   @override
   Future<void> getFuture() {
     return Managers.sportProgramManager.retriveSaved();

@@ -17,6 +17,7 @@ import '../../main.dart';
 class SportProgramManager extends BaseManager {
   bool _dialogCurrentlyOpen = false;
   File _storageFile;
+  GlobalKey<RefreshIndicatorState> _refreshIndicatorKey;
 
   SportProgram cachedProgram;
   List<SportProgram> savedPrograms;
@@ -109,13 +110,24 @@ class SportProgramManager extends BaseManager {
       }
 
       return programs;
-    }).then((programs) {
-      List<dynamic> sources = new List();
-      programs.forEach((program) => sources.add(program.toOriginalJson()));
-      return sources;
-    });
+    }).then((programs) => _transformSportProgramListToJson(programs));
 
-    return _pushFileContent("saved", newData);
+    return _pushFileContent("saved", newData).then((_) => _sendContentUpdate());
+  }
+
+  List<dynamic> _transformSportProgramListToJson(List<SportProgram> programs) {
+    List<dynamic> sources = new List();
+    programs.forEach((program) => sources.add(program.toOriginalJson()));
+    return sources;
+  }
+
+  void remove(SportProgram sportProgram) async {
+    List<dynamic> newData = await retriveSaved().then((programs) {
+      programs.removeWhere((item) => item.token == sportProgram.token);
+      return programs;
+    }).then((programs) => _transformSportProgramListToJson(programs));
+
+    return _pushFileContent("saved", newData).then((_) => _sendContentUpdate());
   }
 
   Future<Map<String, dynamic>> _retriveFileContent() {
@@ -178,5 +190,19 @@ class SportProgramManager extends BaseManager {
         _import(token);
       }
     });
+  }
+
+  void useRefreshIndicatorKey(GlobalKey<RefreshIndicatorState> refreshIndicatorKey) {
+    this._refreshIndicatorKey = refreshIndicatorKey;
+  }
+
+  void _sendContentUpdate() {
+    if (this._refreshIndicatorKey == null || this._refreshIndicatorKey.currentState == null) {
+      return;
+    }
+
+    print("Sending content update.");
+
+    this._refreshIndicatorKey.currentState.show();
   }
 }

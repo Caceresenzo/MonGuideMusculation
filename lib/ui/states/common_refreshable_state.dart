@@ -21,7 +21,12 @@ abstract class CommonRefreshableState<T extends StatefulWidget, K> extends State
     WidgetsBinding.instance.addPostFrameCallback((Duration duration) {
       this._refreshIndicatorKey.currentState.show();
     });
+
+    initialize();
   }
+
+  @protected
+  void initialize() {}
 
   @protected
   Future<void> getFuture();
@@ -155,7 +160,7 @@ abstract class CommonRefreshableState<T extends StatefulWidget, K> extends State
 
   bool hasInitialized() => _initialized;
   bool hasError() => _error;
-  
-  List<K> get items => _items;
 
+  List<K> get items => _items;
+  GlobalKey<RefreshIndicatorState> get refreshIndicatorKey => _refreshIndicatorKey;
 }
