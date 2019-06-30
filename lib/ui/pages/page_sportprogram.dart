@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
@@ -38,9 +40,11 @@ class SportProgramWidget extends StatelessWidget {
           Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => SportProgramScreen(
-                    sportProgram: sportProgram,
-                  ),
+              builder: (context) {
+                return SportProgramScreen(
+                  sportProgram: sportProgram,
+                );
+              },
             ),
           );
         }
@@ -311,6 +315,19 @@ class SportProgramEvolutionScreen extends StatefulWidget {
   }
 }
 
+class SportProgramStartScreen extends StatefulWidget {
+  final SportProgram sportProgram;
+
+  SportProgramStartScreen(
+    this.sportProgram,
+  ) : assert(sportProgram != null);
+
+  @override
+  State<SportProgramStartScreen> createState() {
+    return _SportProgramStartScreenMainState(sportProgram);
+  }
+}
+
 class _SportProgramScreenItemsListingState extends State<SportProgramScreen> {
   final GlobalKey<ScaffoldState> _scaffoldState = new GlobalKey();
   final SportProgram sportProgram;
@@ -364,7 +381,13 @@ class _SportProgramScreenItemsListingState extends State<SportProgramScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            _buildHeaderIcon(context, Icons.play_circle_outline, Texts.sportProgramScreenButtonStart, () {}),
+            _buildHeaderIcon(context, Icons.play_circle_outline, Texts.sportProgramScreenButtonStart, () {
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => SportProgramStartScreen(sportProgram),
+                ),
+              );
+            }),
             _buildHeaderIcon(context, Icons.edit, Texts.sportProgramScreenButtonEdit, () {
               final String currentName = sportProgram.name();
               TextEditingController controller = new TextEditingController(
@@ -624,4 +647,196 @@ class _SportProgramEvolutionScreenTypeState extends _SportProgramEvolutionScreen
     this.evolutionType,
   )   : assert(evolutionType != null),
         super(sportProgram);
+}
+
+class _SportProgramStartScreenMainState extends State<SportProgramStartScreen> {
+  final SportProgram sportProgram;
+  int _currentItemIndex;
+
+  _SportProgramStartScreenMainState(
+    this.sportProgram,
+  ) : assert(sportProgram != null);
+
+  @override
+  void initState() {
+    _currentItemIndex = 0;
+
+    super.initState();
+  }
+
+  bool canSelectNext() => currentIndex + 1 != itemCount;
+  void selectNext() => _selectIndex(_currentItemIndex + 1);
+
+  bool canSelectPrevious() => currentIndex != 0;
+  void selectPrevious() => _selectIndex(_currentItemIndex - 1);
+
+  void _selectIndex(int index) {
+    setState(() {
+      _currentItemIndex = index;
+    });
+  }
+
+  SportProgramItem get currentItem => sportProgram.items[_currentItemIndex];
+  int get currentIndex => _currentItemIndex;
+  int get itemCount => sportProgram.items.length;
+
+  Widget _buildObjectiveBoard() {
+    return Center(
+      child: Container(
+        padding: EdgeInsets.all(8.0),
+        width: double.infinity,
+        child: Column(
+          children: <Widget>[
+            Text(
+              "OBJECTIFS",
+              textAlign: TextAlign.center,
+              style: Theme.of(context).textTheme.body1,
+            ),
+            Text(
+              "       ${currentItem.series}${Texts.itemSportProgramNumberSeries}\n ${Texts.itemSportProgramOfRepetitions} ${currentItem.repetitions}${Texts.itemSportProgramNumberRepetitions}\n   ${Texts.itemSportProgramAtWeight}  ${currentItem.weight}${Texts.itemSportProgramNumberWeight}",
+              textAlign: TextAlign.left,
+              style: Theme.of(context).textTheme.display1,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildTimer() {
+    return Center(
+      child: Container(
+        padding: EdgeInsets.all(8.0),
+        child: Text(
+          "01:45",
+          textAlign: TextAlign.center,
+          style: Theme.of(context).textTheme.headline.copyWith(fontSize: 48.0, color: Constants.colorAccent),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildBottomButton(String text, TextAlign align, void onTap()) {
+    assert(align != TextAlign.left || align != TextAlign.right);
+
+    List<Widget> widgets = new List();
+    widgets.add(
+      Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: 16.0,
+          vertical: 0.0,
+        ),
+        child: Text(
+          text,
+          style: Theme.of(context).textTheme.button.copyWith(fontSize: 18, color: Constants.colorAccent),
+        ),
+      ),
+    );
+
+    bool left = align == TextAlign.left;
+
+    widgets.insert(left ? 0 : widgets.length, Icon(left ? Icons.keyboard_arrow_left : Icons.keyboard_arrow_right));
+    widgets.insert(
+        left ? 0 : widgets.length,
+        SizedBox(
+          width: 8.0,
+        ));
+
+    return InkWell(
+      child: Container(
+        height: 56,
+        width: MediaQuery.of(context).size.width / 2,
+        child: Padding(
+          padding: EdgeInsets.all(8.0),
+          child: Row(
+            children: widgets,
+            mainAxisAlignment: left ? MainAxisAlignment.start : MainAxisAlignment.end,
+          ),
+        ),
+      ),
+      onTap: onTap,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0.0,
+        title: Text(sportProgram.name()),
+        backgroundColor: Constants.colorAccent,
+      ),
+      body: ListView(
+        children: <Widget>[
+          Center(
+            child: Container(
+              padding: EdgeInsets.all(16.0),
+              child: Text(
+                "${currentIndex + 1} / $itemCount",
+                style: Theme.of(context).textTheme.body2,
+              ),
+            ),
+          ),
+          Center(
+            child: Container(
+              child: Text(
+                currentItem.exercise.muscle.title,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.subhead,
+              ),
+            ),
+          ),
+          Center(
+            child: Container(
+              padding: EdgeInsets.all(8.0),
+              child: Text(
+                currentItem.exercise.title,
+                textAlign: TextAlign.center,
+                style: Theme.of(context).textTheme.headline,
+              ),
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.symmetric(
+              horizontal: 32.0,
+              vertical: 0.0,
+            ),
+            child: CommonDivider(),
+          ),
+          _buildObjectiveBoard(),
+          SizedBox(
+            height: 18,
+          ),
+          _buildTimer(),
+        ],
+      ),
+      bottomNavigationBar: SizedBox(
+        height: 56,
+        child: Column(
+          children: <Widget>[
+            CommonDivider(
+              customHeight: 0.0,
+            ),
+            Container(
+              height: 56,
+              child: Row(
+                children: <Widget>[
+                  _buildBottomButton("Précédent", TextAlign.left, () {
+                    if (canSelectPrevious()) {
+                      selectPrevious();
+                    }
+                  }),
+                  _buildBottomButton("Suivant", TextAlign.right, () {
+                    if (canSelectNext()) {
+                      selectNext();
+                    }
+                  })
+                ],
+              ),
+            )
+          ],
+        ),
+      ),
+    );
+  }
 }
