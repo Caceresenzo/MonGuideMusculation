@@ -203,7 +203,7 @@ class _BodyBuildingScreenExerciseByMuscleListingState extends State<BodyBuilding
       items.add(new DropdownMenuItem(
         value: type,
         child: new Text(
-          type == null ? "Tous les exercices".toUpperCase() : ("Exercice " + type.title).toUpperCase(),
+          type == null ? Texts.exerciseSelectorAll : (Texts.exerciseSelectorItemPrefix + type.title).toUpperCase(),
           style: TextStyle(fontWeight: FontWeight.bold),
         ),
       ));
@@ -214,7 +214,7 @@ class _BodyBuildingScreenExerciseByMuscleListingState extends State<BodyBuilding
 
   @override
   Widget build(BuildContext context) {
-    print("building: " + items.length.toString());
+    print("Building " + items.length.toString() + " item(s).");
 
     return Scaffold(
       appBar: AppBar(

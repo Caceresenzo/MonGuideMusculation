@@ -78,6 +78,9 @@ class Texts {
   static const String evolutionScreenTitlePrefix = "Évolution: ";
   
   static const String removeSportProgramDecorationLabelName = "Nom du programme";
+  
+  static const String exerciseSelectorAll = "TOUS LES EXERCICES";
+  static const String exerciseSelectorItemPrefix = "EXERCICE ";
 
   static String answerCount(int count) => autoCount(count, "Aucune", "réponse", "réponses");
   static String exerciseCount(int count) => autoCount(count, "Aucun", "exercice", "exercices");

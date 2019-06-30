@@ -88,9 +88,13 @@ class BodyBuildingManager extends BaseManager {
           print("Invalid entry count: $invalidEntryCount");
         })
         .then((_) {
-          cachedMuscles.sort((a, b) {
-            return a.title.toLowerCase().compareTo(b.title.toLowerCase());
-          });
+          int alphabetical(a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase());
+
+          cachedMuscles.sort(alphabetical);
+          cachedExercices.sort(alphabetical);
+          
+          cachedMuscles.forEach((muscle) => muscle.exercises.sort(alphabetical));
+          cachedExerciceTypes.forEach((exerciseType) => exerciseType.exercises.sort(alphabetical));
 
           _cacheIsValid = true;
         })
