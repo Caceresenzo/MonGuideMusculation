@@ -21,7 +21,7 @@ class Texts {
   static const String applicationVersion = "1.0.0";
   static const String applicationDeveloper = "par Enzo CACERES";
 
-  static const String navigationShop = "Magasin";
+  static const String navigationSportProgram = "Progrms";
   static const String navigationBodyBuilding = "Muscu";
   static const String navigationArticles = "Articles";
   static const String navigationForum = "Forum";
@@ -60,8 +60,10 @@ class Texts {
   static const String buttonRemove = "SUPPRIMER";
   static const String buttonCancel = "ANNULER";
   static const String buttonImport = "AJOUTER";
+  static const String buttonRename = "RENOMMER";
 
   static const String dialogTitleConfirm = "Confirmation";
+  static const String dialogTitleEdit = "Édition";
   static const String dialogTitleImportSportProgram = "Ajouter un programme";
   static const String dialogDescriptionConfirmRemove = "Supprimer ce programme ?";
 
@@ -74,6 +76,8 @@ class Texts {
 
   static const String defaultSportProgramName = "Programme sans nom";
   static const String evolutionScreenTitlePrefix = "Évolution: ";
+  
+  static const String removeSportProgramDecorationLabelName = "Nom du programme";
 
   static String answerCount(int count) => autoCount(count, "Aucune", "réponse", "réponses");
   static String exerciseCount(int count) => autoCount(count, "Aucun", "exercice", "exercices");

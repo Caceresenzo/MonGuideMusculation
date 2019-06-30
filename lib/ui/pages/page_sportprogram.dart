@@ -375,12 +375,31 @@ class _SportProgramScreenItemsListingState extends State<SportProgramScreen> {
                 context: context,
                 builder: (context) {
                   return AlertDialog(
-                    content: TextField(
-                      controller: controller,
+                    title: Text(
+                      Texts.dialogTitleEdit,
+                      style: const TextStyle(
+                        color: Constants.colorAccent,
+                      ),
+                      textAlign: TextAlign.center,
+                    ),
+                    content: new Theme(
+                      data: new ThemeData(
+                        primaryColor: Constants.colorAccent,
+                        accentColor: Constants.colorAccent,
+                      ),
+                      child: TextFormField(
+                        controller: controller,
+                        cursorColor: Constants.colorAccent,
+                        maxLines: 1,
+                        maxLength: 100,
+                        decoration: InputDecoration(
+                          labelText: Texts.removeSportProgramDecorationLabelName,
+                        ),
+                      ),
                     ),
                     actions: <Widget>[
                       FlatButton(
-                        child: Text("RENAME"),
+                        child: Text(Texts.buttonRename),
                         onPressed: () => Navigator.of(context).pop(),
                       )
                     ],
@@ -392,7 +411,7 @@ class _SportProgramScreenItemsListingState extends State<SportProgramScreen> {
 
                 if (Managers.sportProgramManager.rename(sportProgram, newName)) {
                   snackBarMessage = Texts.sportProgramRenamed;
-                  
+
                   setState(() {});
                 }
 

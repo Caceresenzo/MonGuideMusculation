@@ -63,18 +63,16 @@ class SportProgram {
   }
 
   bool rename(String newName) {
-    if (Constants.sportProgramRenameBackToDefaultIfInvalid) {
-      if (newName == null || newName.isEmpty) {
+    if (newName == null || newName.isEmpty) {
+      if (Constants.sportProgramRenameBackToDefaultIfInvalid) {
         newName = Texts.defaultSportProgramName;
-      }
-    } else {
-      if (newName == null || newName.isEmpty) {
+      } else {
         return false;
       }
+    }
 
-      if (newName == this._name) {
-        return false;
-      }
+    if (newName == this._name) {
+      return false;
     }
 
     this._name = newName;

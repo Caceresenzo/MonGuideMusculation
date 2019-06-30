@@ -98,8 +98,8 @@ class HomePageState extends State<HomePage> {
         bottomNavigationBar: BottomNavigationBar(
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
-              icon: Icon(Icons.shopping_basket),
-              title: Text(Texts.navigationShop),
+              icon: Icon(Icons.format_list_bulleted),
+              title: Text(Texts.navigationSportProgram),
             ),
             BottomNavigationBarItem(
               icon: ImageIcon(AssetImage("icons/navigation/muscle.png")),
