@@ -28,6 +28,8 @@ dependencies:
   path_provider:
   date_format:
   charts_flutter:
+  sqflite:
+  path:
 
 dev_dependencies:
   flutter_test:

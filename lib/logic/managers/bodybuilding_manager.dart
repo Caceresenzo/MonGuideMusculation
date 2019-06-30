@@ -92,11 +92,14 @@ class BodyBuildingManager extends BaseManager {
 
           cachedMuscles.sort(alphabetical);
           cachedExercices.sort(alphabetical);
-          
+
           cachedMuscles.forEach((muscle) => muscle.exercises.sort(alphabetical));
           cachedExerciceTypes.forEach((exerciseType) => exerciseType.exercises.sort(alphabetical));
 
           _cacheIsValid = true;
+        })
+        .then((_) {
+          Managers.sportProgramManager.notifyBodyBuildingExerciseReceived(cachedExercices);
         })
         .catchError((error) {
           _clearCache();

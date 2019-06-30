@@ -3,6 +3,9 @@ import 'dart:developer';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:mon_guide_musculation/models/bodybuilding.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:http/http.dart' as http;
 import 'package:mon_guide_musculation/logic/managers/base_manager.dart';
 import 'package:mon_guide_musculation/models/sportprogram.dart';
@@ -15,8 +18,14 @@ import 'package:mon_guide_musculation/utils/wix_utils.dart';
 import '../../main.dart';
 
 class SportProgramManager extends BaseManager {
+  static const String columnId = "_id";
+  static const String columnDate = "exercise";
+  static const String columnType = "type";
+  static const String columnValue = "value";
+
   bool _dialogCurrentlyOpen = false;
   File _storageFile;
+  Database _evolutionDatabase;
   GlobalKey<RefreshIndicatorState> _refreshIndicatorKey;
 
   SportProgram cachedProgram;
@@ -25,10 +34,35 @@ class SportProgramManager extends BaseManager {
   @override
   void initialize() async {
     _storageFile = await getLocalFile(AppStorage.sportProgramDataFile);
+    _initializeDatabase();
 
-    _storageFile.createSync(recursive: true);
+    [_storageFile].forEach((file) => file.createSync(recursive: true));
 
     savedPrograms = new List();
+  }
+
+  void _initializeDatabase() async {
+    _evolutionDatabase = await openDatabase(
+      join(await getDatabasesPath(), AppStorage.sportProgramEvolutionDatabaseFile),
+      version: 1,
+    );
+  }
+
+  void notifyBodyBuildingExerciseReceived(List<BodyBuildingExercise> received) {
+    received.forEach((program) {
+      String md5Key = toMd5(program.key);
+      print("Trying to create evolution table: $md5Key (original key is \"${program.key}\")");
+
+      _evolutionDatabase.execute(
+        "" + //
+            "CREATE TABLE IF NOT EXISTS `$md5Key` (" + //
+            "    `$columnId` INTEGER PRIMARY KEY AUTOINCREMENT," + //
+            "    `$columnDate` DATE NOT NULL," + //
+            "    `$columnType` VARCHAR(64) NOT NULL," + //
+            "    `$columnValue` INT(11) NOT NULL" + //
+            ");", //
+      );
+    });
   }
 
   Future<SportProgram> fetchByToken(String token, {bool acceptCache = false}) async {
@@ -220,7 +254,7 @@ class SportProgramManager extends BaseManager {
   bool rename(SportProgram sportProgram, String newName) {
     if (sportProgram.rename(newName)) {
       _savePrograms(savedPrograms);
-      
+
       return true;
     }
 

@@ -114,6 +114,8 @@ class Texts {
 class AppStorage {
   static const String sportProgramDataFile = "sport-program.json";
   static const String sportProgramJsonItemsKey = "saved";
+  
+  static const String sportProgramEvolutionDatabaseFile = "sport-program-evolution.db";
 }
 
 class Contact {

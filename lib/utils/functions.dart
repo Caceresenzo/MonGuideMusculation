@@ -1,7 +1,10 @@
 import 'dart:io';
+import 'dart:convert';
 
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
+import 'package:convert/convert.dart';
+import 'package:crypto/crypto.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -48,4 +51,8 @@ dynamic getWithProcessing(List<dynamic> list, bool matcher(dynamic other)) {
   }
 
   return null;
+}
+
+String toMd5(String input) {
+  return md5.convert(utf8.encode(input)).toString();
 }
