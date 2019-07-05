@@ -56,3 +56,14 @@ dynamic getWithProcessing(List<dynamic> list, bool matcher(dynamic other)) {
 String toMd5(String input) {
   return md5.convert(utf8.encode(input)).toString();
 }
+
+String formatDuration(Duration duration) {
+  String twoDigits(int n) {
+    if (n >= 10) return "$n";
+    return "0$n";
+  }
+
+  String twoDigitMinutes = twoDigits(duration.inMinutes.remainder(60));
+  String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
+  return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
+}

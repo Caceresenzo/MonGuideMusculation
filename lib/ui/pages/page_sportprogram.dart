@@ -10,6 +10,7 @@ import 'package:mon_guide_musculation/ui/pages/page_bodybuilding.dart';
 import 'package:mon_guide_musculation/ui/states/common_refreshable_state.dart';
 import 'package:mon_guide_musculation/ui/widgets/common_divider.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
+import 'package:mon_guide_musculation/utils/functions.dart';
 
 class SportProgramWidget extends StatelessWidget {
   final SportProgram sportProgram;
@@ -649,9 +650,14 @@ class _SportProgramEvolutionScreenTypeState extends _SportProgramEvolutionScreen
         super(sportProgram);
 }
 
-class _SportProgramStartScreenMainState extends State<SportProgramStartScreen> {
+class _SportProgramStartScreenMainState extends State<SportProgramStartScreen> with WidgetsBindingObserver {
+  static const Duration tickDuration = Duration(milliseconds: 500);
+
+  final GlobalKey<ScaffoldState> _scaffoldStateKey = new GlobalKey();
   final SportProgram sportProgram;
   int _currentItemIndex;
+  Timer _tickingTimer;
+  Duration _currentDuration;
 
   _SportProgramStartScreenMainState(
     this.sportProgram,
@@ -659,9 +665,26 @@ class _SportProgramStartScreenMainState extends State<SportProgramStartScreen> {
 
   @override
   void initState() {
-    _currentItemIndex = 0;
-
     super.initState();
+    WidgetsBinding.instance.addObserver(this);
+
+    _currentItemIndex = 0;
+    _tickingTimer = Timer.periodic(tickDuration, _tickingTimerCallback);
+    _resetCurrentDuration();
+  }
+
+  void _tickingTimerCallback(timer) {
+    setState(() {
+      _currentDuration += tickDuration;
+    });
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    WidgetsBinding.instance.removeObserver(this);
+
+    _tickingTimer.cancel();
   }
 
   bool canSelectNext() => currentIndex + 1 != itemCount;
@@ -672,8 +695,38 @@ class _SportProgramStartScreenMainState extends State<SportProgramStartScreen> {
 
   void _selectIndex(int index) {
     setState(() {
+      _resetCurrentDuration();
       _currentItemIndex = index;
     });
+  }
+
+  void selectExit() {
+    _selectWayOut("Voulez vous quitter ?", "OUI", () {
+      Navigator.of(context).pop(false);
+    });
+  }
+
+  void selectEnd() {
+    _selectWayOut("Avez vous fini ?", "OUI", () {
+      Navigator.of(context).pop(true);
+    });
+  }
+
+  void _selectWayOut(String text, String buttonLabel, void onPressed()) {
+    _scaffoldStateKey.currentState.removeCurrentSnackBar(
+      reason: SnackBarClosedReason.hide,
+    );
+    _scaffoldStateKey.currentState.showSnackBar(SnackBar(
+      content: Text(text),
+      action: SnackBarAction(
+        label: buttonLabel,
+        onPressed: onPressed,
+      ),
+    ));
+  }
+
+  void _resetCurrentDuration() {
+    _currentDuration = Duration();
   }
 
   SportProgramItem get currentItem => sportProgram.items[_currentItemIndex];
@@ -681,24 +734,115 @@ class _SportProgramStartScreenMainState extends State<SportProgramStartScreen> {
   int get itemCount => sportProgram.items.length;
 
   Widget _buildObjectiveBoard() {
-    return Center(
-      child: Container(
-        padding: EdgeInsets.all(8.0),
-        width: double.infinity,
-        child: Column(
-          children: <Widget>[
-            Text(
-              "OBJECTIFS",
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.body1,
-            ),
-            Text(
+    TextStyle mainTextStyle = Theme.of(context).textTheme.headline.copyWith(fontSize: 34.0);
+
+    double screenWidth = MediaQuery.of(context).size.width;
+
+    double firstColumnWidth = screenWidth / 8;
+    double valueColumnWidth = screenWidth / 5;
+    double wordColumnWidth = screenWidth / 1.8;
+
+    return Container(
+      padding: EdgeInsets.all(8.0),
+      child: Column(
+        children: <Widget>[
+          Text(
+            "OBJECTIFS",
+            textAlign: TextAlign.center,
+            style: Theme.of(context).textTheme.body1,
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              Column(
+                children: <Widget>[
+                  SizedBox(
+                    width: firstColumnWidth,
+                    child: Text(
+                      "",
+                      style: mainTextStyle,
+                    ),
+                  ),
+                  SizedBox(
+                    width: firstColumnWidth,
+                    child: Text(
+                      Texts.itemSportProgramOfRepetitions,
+                      textAlign: TextAlign.right,
+                      style: mainTextStyle,
+                    ),
+                  ),
+                  SizedBox(
+                    width: firstColumnWidth,
+                    child: Text(
+                      Texts.itemSportProgramAtWeight,
+                      textAlign: TextAlign.right,
+                      style: mainTextStyle,
+                    ),
+                  )
+                ],
+              ),
+              Column(
+                children: <Widget>[
+                  SizedBox(
+                    width: valueColumnWidth,
+                    child: Text(
+                      currentItem.series.toString(),
+                      textAlign: TextAlign.right,
+                      style: mainTextStyle,
+                    ),
+                  ),
+                  SizedBox(
+                    width: valueColumnWidth,
+                    child: Text(
+                      currentItem.repetitions.toString(),
+                      textAlign: TextAlign.right,
+                      style: mainTextStyle,
+                    ),
+                  ),
+                  SizedBox(
+                    width: valueColumnWidth,
+                    child: Text(
+                      currentItem.weight.toString(),
+                      textAlign: TextAlign.right,
+                      style: mainTextStyle,
+                    ),
+                  )
+                ],
+              ),
+              Column(
+                children: <Widget>[
+                  SizedBox(
+                    width: wordColumnWidth,
+                    child: Text(
+                      Texts.itemSportProgramNumberSeries,
+                      style: mainTextStyle,
+                    ),
+                  ),
+                  SizedBox(
+                    width: wordColumnWidth,
+                    child: Text(
+                      Texts.itemSportProgramNumberRepetitions,
+                      style: mainTextStyle,
+                    ),
+                  ),
+                  SizedBox(
+                    width: wordColumnWidth,
+                    child: Text(
+                      Texts.itemSportProgramNumberWeight,
+                      style: mainTextStyle,
+                    ),
+                  )
+                ],
+              )
+            ],
+          ),
+          /*Text(
               "       ${currentItem.series}${Texts.itemSportProgramNumberSeries}\n ${Texts.itemSportProgramOfRepetitions} ${currentItem.repetitions}${Texts.itemSportProgramNumberRepetitions}\n   ${Texts.itemSportProgramAtWeight}  ${currentItem.weight}${Texts.itemSportProgramNumberWeight}",
               textAlign: TextAlign.left,
               style: Theme.of(context).textTheme.display1,
-            ),
-          ],
-        ),
+            ),*/
+        ],
       ),
     );
   }
@@ -708,7 +852,7 @@ class _SportProgramStartScreenMainState extends State<SportProgramStartScreen> {
       child: Container(
         padding: EdgeInsets.all(8.0),
         child: Text(
-          "01:45",
+          formatDuration(_currentDuration),
           textAlign: TextAlign.center,
           style: Theme.of(context).textTheme.headline.copyWith(fontSize: 48.0, color: Constants.colorAccent),
         ),
@@ -761,6 +905,7 @@ class _SportProgramStartScreenMainState extends State<SportProgramStartScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldStateKey,
       appBar: AppBar(
         elevation: 0.0,
         title: Text(sportProgram.name()),
@@ -777,23 +922,31 @@ class _SportProgramStartScreenMainState extends State<SportProgramStartScreen> {
               ),
             ),
           ),
-          Center(
-            child: Container(
-              child: Text(
-                currentItem.exercise.muscle.title,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.subhead,
-              ),
-            ),
-          ),
-          Center(
-            child: Container(
-              padding: EdgeInsets.all(8.0),
-              child: Text(
-                currentItem.exercise.title,
-                textAlign: TextAlign.center,
-                style: Theme.of(context).textTheme.headline,
-              ),
+          InkWell(
+            onTap: () {
+              BodyBuildingExerciseReadingScreen.open(context, currentItem.exercise);
+            },
+            child: Column(
+              children: <Widget>[
+                Container(
+                  child: Text(
+                    currentItem.exercise.muscle.title,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.subhead,
+                  ),
+                ),
+                Container(
+                  padding: EdgeInsets.all(8.0),
+                  child: Text(
+                    currentItem.exercise.title,
+                    textAlign: TextAlign.center,
+                    style: Theme.of(context).textTheme.headline,
+                  ),
+                ),
+                SizedBox(
+                  height: 8.0,
+                )
+              ],
             ),
           ),
           Padding(
@@ -801,22 +954,24 @@ class _SportProgramStartScreenMainState extends State<SportProgramStartScreen> {
               horizontal: 32.0,
               vertical: 0.0,
             ),
-            child: CommonDivider(),
+            child: CommonDivider(
+              customHeight: 0.0,
+            ),
+          ),
+          SizedBox(
+            height: 8.0,
           ),
           _buildObjectiveBoard(),
-          SizedBox(
-            height: 18,
-          ),
-          _buildTimer(),
         ],
       ),
       bottomNavigationBar: SizedBox(
-        height: 56,
+        height: (56.0 + 72),
         child: Column(
           children: <Widget>[
             CommonDivider(
               customHeight: 0.0,
             ),
+            _buildTimer(),
             Container(
               height: 56,
               child: Row(
@@ -824,11 +979,15 @@ class _SportProgramStartScreenMainState extends State<SportProgramStartScreen> {
                   _buildBottomButton("Précédent", TextAlign.left, () {
                     if (canSelectPrevious()) {
                       selectPrevious();
+                    } else {
+                      selectExit();
                     }
                   }),
                   _buildBottomButton("Suivant", TextAlign.right, () {
                     if (canSelectNext()) {
                       selectNext();
+                    } else {
+                      selectEnd();
                     }
                   })
                 ],
