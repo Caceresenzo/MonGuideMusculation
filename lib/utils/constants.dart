@@ -53,6 +53,13 @@ class Texts {
   static const String sportProgramScreenButtonEdit = "ÉDITER";
   static const String sportProgramRenamed = "Programme renommé.";
   static const String sportProgramNotRenamed = "Programme non renommé.";
+  static const String sportProgramObjectives = "OBJECTIFS";
+  static const String sportProgramButtonNextItem = "Suivant";
+  static const String sportProgramButtonPreviousItem = "Précédent";
+  static const String sportProgramSnackBarQuit = "Voulez vous quitter ?";
+  static const String sportProgramSnackBarFinish = "Avez vous fini ?";
+  static const String sportProgramSnackBarButtonYes = "OUI";
+
 
   static const String articleWroteBy = "Écrit par ";
 

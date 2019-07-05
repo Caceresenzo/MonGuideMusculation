@@ -701,13 +701,13 @@ class _SportProgramStartScreenMainState extends State<SportProgramStartScreen> w
   }
 
   void selectExit() {
-    _selectWayOut("Voulez vous quitter ?", "OUI", () {
+    _selectWayOut(Texts.sportProgramSnackBarQuit, Texts.sportProgramSnackBarButtonYes, () {
       Navigator.of(context).pop(false);
     });
   }
 
   void selectEnd() {
-    _selectWayOut("Avez vous fini ?", "OUI", () {
+    _selectWayOut(Texts.sportProgramSnackBarFinish, Texts.sportProgramSnackBarButtonYes, () {
       Navigator.of(context).pop(true);
     });
   }
@@ -747,7 +747,7 @@ class _SportProgramStartScreenMainState extends State<SportProgramStartScreen> w
       child: Column(
         children: <Widget>[
           Text(
-            "OBJECTIFS",
+            Texts.sportProgramObjectives,
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.body1,
           ),
@@ -976,14 +976,14 @@ class _SportProgramStartScreenMainState extends State<SportProgramStartScreen> w
               height: 56,
               child: Row(
                 children: <Widget>[
-                  _buildBottomButton("Précédent", TextAlign.left, () {
+                  _buildBottomButton(Texts.sportProgramButtonPreviousItem, TextAlign.left, () {
                     if (canSelectPrevious()) {
                       selectPrevious();
                     } else {
                       selectExit();
                     }
                   }),
-                  _buildBottomButton("Suivant", TextAlign.right, () {
+                  _buildBottomButton(Texts.sportProgramButtonNextItem, TextAlign.right, () {
                     if (canSelectNext()) {
                       selectNext();
                     } else {
