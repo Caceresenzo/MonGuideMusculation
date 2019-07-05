@@ -134,7 +134,7 @@ class SportProgramItemWidget extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => SportProgramEvolutionScreen(item.parent),
+                              builder: (context) => null, // TODO SportProgramEvolutionScreen(item.parent),
                             ),
                           );
                         },
@@ -221,52 +221,6 @@ class SimpleSportProgramItemWidget extends StatelessWidget {
   }
 }
 
-class SportProgramEvolutionGraphWidget extends StatelessWidget {
-  final SportProgram item;
-  final SportProgramEvolutionType evolutionType;
-
-  const SportProgramEvolutionGraphWidget(
-    this.item,
-    this.evolutionType, {
-    Key key,
-  })  : assert(item != null),
-        super(key: key);
-
-  Widget _buildTile(BuildContext context) {
-    return Card(
-      child: Text(evolutionType.toString()),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _buildTile(context);
-  }
-}
-
-class SportProgramItemEvolutionGraphWidget extends StatelessWidget {
-  final SportProgramItem item;
-  final SportProgramEvolutionType evolutionType;
-
-  const SportProgramItemEvolutionGraphWidget(
-    this.item,
-    this.evolutionType, {
-    Key key,
-  })  : assert(item != null),
-        super(key: key);
-
-  Widget _buildTile(BuildContext context) {
-    return Card(
-      child: Text(evolutionType.toString()),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return _buildTile(context);
-  }
-}
-
 class SportProgramScreen extends StatefulWidget {
   final SportProgram sportProgram;
 
@@ -297,25 +251,6 @@ class SportProgramImportScreen extends StatefulWidget {
   }
 }
 
-class SportProgramEvolutionScreen extends StatefulWidget {
-  final SportProgram sportProgram;
-  final SportProgramEvolutionType evolutionType;
-
-  SportProgramEvolutionScreen(
-    this.sportProgram, {
-    this.evolutionType,
-  });
-
-  @override
-  State<SportProgramEvolutionScreen> createState() {
-    if (evolutionType != null) {
-      return _SportProgramEvolutionScreenTypeState(sportProgram, evolutionType);
-    }
-
-    return _SportProgramEvolutionScreenState(sportProgram);
-  }
-}
-
 class SportProgramStartScreen extends StatefulWidget {
   final SportProgram sportProgram;
 
@@ -343,33 +278,39 @@ class _SportProgramScreenItemsListingState extends State<SportProgramScreen> {
     }
 
     showDialog(
-      context: context,
-      builder: (context) {
-        return new AlertDialog(
-          title: new Text(
-            Texts.dialogTitleWellDone,
-            style: const TextStyle(
-              color: Constants.colorAccent,
+        context: context,
+        builder: (context) {
+          return new AlertDialog(
+            title: new Text(
+              Texts.dialogTitleWellDone,
+              style: const TextStyle(
+                color: Constants.colorAccent,
+              ),
+              textAlign: TextAlign.center,
             ),
-            textAlign: TextAlign.center,
-          ),
-          elevation: 0.0,
-          content: Text(Texts.sportProgramDialogWantToSeeProgression),
-          actions: <Widget>[
-            FlatButton(
-              child: Text(Texts.buttonClose),
-              onPressed: () {
-                Navigator.of(context).pop();
-              },
-            ),
-            FlatButton(
-              child: Text(Texts.buttonShow),
-              onPressed: () {},
-            )
-          ],
-        );
-      }
-    ).then((_) => _onStartScreenFinished(true));
+            elevation: 0.0,
+            content: Text(Texts.sportProgramDialogWantToSeeProgression),
+            actions: <Widget>[
+              FlatButton(
+                child: Text(Texts.buttonClose),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              FlatButton(
+                child: Text(Texts.buttonShow),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => BodyBuildingExerciseEvolutionScreen(sportProgram.toExerciseList()),
+                    ),
+                  );
+                },
+              )
+            ],
+          );
+        }).then((_) => null /*_onStartScreenFinished(true)*/);
   }
 
   Widget _buildHeaderIcon(BuildContext context, IconData icon, String subtitle, void onTap()) {
@@ -418,11 +359,13 @@ class _SportProgramScreenItemsListingState extends State<SportProgramScreen> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             _buildHeaderIcon(context, Icons.play_circle_outline, Texts.sportProgramScreenButtonStart, () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => SportProgramStartScreen(sportProgram),
-                ),
-              ).then((result) => _onStartScreenFinished(result));
+              Navigator.of(context)
+                  .push(
+                    MaterialPageRoute(
+                      builder: (context) => SportProgramStartScreen(sportProgram),
+                    ),
+                  )
+                  .then((result) => _onStartScreenFinished(result));
             }),
             _buildHeaderIcon(context, Icons.edit, Texts.sportProgramScreenButtonEdit, () {
               final String currentName = sportProgram.name();
@@ -631,58 +574,6 @@ class _SportProgramImportScreenItemsListingState extends CommonRefreshableState<
       child: SimpleSportProgramItemWidget(items[index]),
     );
   }
-}
-
-class _SportProgramEvolutionScreenState extends State<SportProgramEvolutionScreen> {
-  final SportProgram sportProgram;
-
-  _SportProgramEvolutionScreenState(
-    this.sportProgram,
-  ) : assert(sportProgram != null);
-
-  @protected
-  Widget buildGraph(BuildContext context, SportProgramEvolutionType evolutionType) {
-    return SizedBox(
-      child: Text(evolutionType.toString()),
-    );
-  }
-
-  Widget _buildItem(BuildContext context, int index) {
-    return SizedBox(
-      child: SportProgramEvolutionGraphWidget(sportProgram, SportProgramEvolutionType.values[index]),
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        elevation: 0.0,
-        title: Text(Texts.evolutionScreenTitlePrefix + sportProgram.name()),
-        backgroundColor: Constants.colorAccent,
-      ),
-      body: ListView(
-        children: <Widget>[
-          ListView.builder(
-            shrinkWrap: true,
-            physics: ClampingScrollPhysics(),
-            itemCount: SportProgramEvolutionType.values.length,
-            itemBuilder: (context, index) => _buildItem(context, index),
-          )
-        ],
-      ),
-    );
-  }
-}
-
-class _SportProgramEvolutionScreenTypeState extends _SportProgramEvolutionScreenState {
-  final SportProgramEvolutionType evolutionType;
-
-  _SportProgramEvolutionScreenTypeState(
-    SportProgram sportProgram,
-    this.evolutionType,
-  )   : assert(evolutionType != null),
-        super(sportProgram);
 }
 
 class _SportProgramStartScreenMainState extends State<SportProgramStartScreen> with WidgetsBindingObserver {

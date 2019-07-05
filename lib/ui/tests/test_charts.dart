@@ -11,7 +11,7 @@ import 'package:mon_guide_musculation/ui/widgets/common_divider.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 
 class ChartsText extends StatelessWidget {
-  Widget _buildGraph(BuildContext context, SportProgramEvolutionType evolutionType) {
+  Widget _buildGraph(BuildContext context) {
     return Card(
       elevation: 0.0,
       child: Container(
@@ -24,7 +24,7 @@ class ChartsText extends StatelessWidget {
                 vertical: 2.0,
               ),
               child: Text(
-                Texts.evolutionTypeTranslations[evolutionType],
+                "Texts.evolutionTypeTranslations[evolutionType]",
                 style: Theme.of(context).textTheme.title,
               ),
             ),
@@ -42,9 +42,9 @@ class ChartsText extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.builder(
-      itemCount: SportProgramEvolutionType.values.length,
+      itemCount: 1,
       itemBuilder: (context, position) {
-        return _buildGraph(context, SportProgramEvolutionType.values[position]);
+        return _buildGraph(context);
       },
     );
   }

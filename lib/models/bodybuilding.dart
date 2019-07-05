@@ -84,3 +84,32 @@ class BodyBuildingMuscle {
     );
   }
 }
+
+@immutable
+class BodyBuildingExerciseValueHolder {
+  final int _id;
+  final DateTime _date;
+  final BodyBuildingExercise _exercise;
+  final BodyBuildingExerciseValueHolderType _type;
+  final double _value;
+
+  BodyBuildingExerciseValueHolder(int id, DateTime date, BodyBuildingExercise exercise, BodyBuildingExerciseValueHolderType type, double value)
+      : assert(id != null),
+        assert(date != null),
+        assert(exercise != null),
+        assert(type != null),
+        assert(value != null),
+        this._id = id,
+        this._date = date,
+        this._exercise = exercise,
+        this._type = type,
+        this._value = value;
+
+  int get id => _id;
+  DateTime get date => _date;
+  BodyBuildingExercise get exercise => _exercise;
+  BodyBuildingExerciseValueHolderType get exerciseType => _type;
+  double get value => _value;
+}
+
+enum BodyBuildingExerciseValueHolderType { series, repetitions, weight }

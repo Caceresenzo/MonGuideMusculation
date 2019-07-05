@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mon_guide_musculation/logic/managers/base_manager.dart';
+import 'package:mon_guide_musculation/logic/managers/bodybuilding_manager.dart';
 import 'package:mon_guide_musculation/models/bodybuilding.dart';
 import 'package:mon_guide_musculation/ui/states/common_refreshable_state.dart';
 import 'package:mon_guide_musculation/ui/widgets/card_info.dart';
+import 'package:mon_guide_musculation/ui/widgets/common_divider.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 import 'package:mon_guide_musculation/utils/functions.dart';
 import 'package:flutter_html/flutter_html.dart';
+import 'package:charts_flutter/flutter.dart' as charts;
 //import 'package:flutter_html_view/flutter_html_view.dart';
 
 class BodyBuildingMuscleWidget extends StatelessWidget {
@@ -307,6 +310,173 @@ class BodyBuildingExerciseReadingScreen extends StatelessWidget {
       context,
       MaterialPageRoute(
         builder: (context) => BodyBuildingExerciseReadingScreen(exercise),
+      ),
+    );
+  }
+}
+
+class BodyBuildingExerciseEvolutionScreen extends StatefulWidget {
+  final List<BodyBuildingExercise> _exercises;
+
+  const BodyBuildingExerciseEvolutionScreen(List<BodyBuildingExercise> exercises, {Key key})
+      : assert(exercises != null),
+        this._exercises = exercises,
+        super(key: key);
+
+  @override
+  State<BodyBuildingExerciseEvolutionScreen> createState() {
+    return BodyBuildingExerciseEvolutionScreenState(_exercises);
+  }
+}
+
+/********************************************************************************** */
+class TimeSeriesRangeAnnotationChart extends StatelessWidget {
+  final List<charts.Series> seriesList;
+  final bool animate;
+
+  TimeSeriesRangeAnnotationChart(this.seriesList, {this.animate});
+
+  /// Creates a [TimeSeriesChart] with sample data and no transition.
+  factory TimeSeriesRangeAnnotationChart.withSampleData() {
+    return new TimeSeriesRangeAnnotationChart(
+      _createSampleData(),
+      // Disable animations for image tests.
+      animate: false,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new charts.TimeSeriesChart(
+      seriesList,
+      animate: animate,
+      primaryMeasureAxis: new charts.NumericAxisSpec(
+        tickProviderSpec: new charts.BasicNumericTickProviderSpec(
+          desiredTickCount: 5,
+          desiredMaxTickCount: 20,
+        ),
+      ),
+      behaviors: [
+        charts.PanAndZoomBehavior(),
+      ],
+    );
+  }
+
+  /// Create one series with sample hard coded data.
+  static List<charts.Series<BodyBuildingExerciseValueHolder, DateTime>> _createSampleData() {
+    return List.generate(BodyBuildingExerciseValueHolderType.values.length, (index) {
+      final List<BodyBuildingExerciseValueHolder> data = [];
+
+      for (int i = 0; i < 52; i++) {
+        print("${(i * 7 ~/ 30) + 1} // ${((i * 7) % 30) + 1}");
+
+        DateTime date = new DateTime(2017, i * 7 ~/ 30, (i * 7) % 30);
+
+        data.add(new BodyBuildingExerciseValueHolder(i, date, Managers.bodyBuildingManager.cachedExercices[0], BodyBuildingExerciseValueHolderType.repetitions, i * 1.0));
+        //data.add(new BodyBuildingExerciseValueHolder(i, date, Managers.bodyBuildingManager.cachedExercices[0], BodyBuildingExerciseValueHolderType.series, i * 0.8));
+      }
+
+      return new charts.Series<BodyBuildingExerciseValueHolder, DateTime>(
+        id: 'Sales ' + index.toString(),
+        domainFn: (BodyBuildingExerciseValueHolder holder, _) => holder.date,
+        measureFn: (BodyBuildingExerciseValueHolder holder, _) => holder.value,
+        data: data,
+      );
+    });
+
+    return [];
+  }
+}
+
+class BodyBuildingExerciseEvolutionScreenState extends State<BodyBuildingExerciseEvolutionScreen> {
+  final List<BodyBuildingExercise> _exercises;
+  double _graphHeight;
+  Map<BodyBuildingExercise, List<BodyBuildingExerciseValueHolder>> _holders;
+
+  BodyBuildingExerciseEvolutionScreenState(List<BodyBuildingExercise> exercises)
+      : assert(exercises != null),
+        this._exercises = exercises;
+
+  @override
+  void initState() {
+    super.initState();
+
+    _holders = new Map();
+  }
+
+  Widget _buildLoadingBox(BuildContext context) {
+    return Container(
+      height: _graphHeight,
+      width: double.infinity,
+      child: Center(
+        child: CircularProgressIndicator(),
+      ),
+    );
+  }
+
+  Widget _buildGraph(BuildContext context, BodyBuildingExercise exercise) {
+    return Container(
+      height: _graphHeight,
+      width: double.infinity,
+      child: TimeSeriesRangeAnnotationChart.withSampleData(),
+    );
+  }
+
+  String get screenTitle {
+    String base = "Evolution";
+
+    if (_exercises.length > 1) {
+      base += " de ${_exercises.length} exercices";
+    }
+
+    return base;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    _graphHeight = MediaQuery.of(context).size.height / 3;
+
+    return Scaffold(
+      appBar: AppBar(
+        elevation: 0.0,
+        title: Text(screenTitle),
+        backgroundColor: Constants.colorAccent,
+      ),
+      body: ListView.builder(
+        itemCount: _exercises.length,
+        itemBuilder: (context, index) {
+          BodyBuildingExercise exercise = _exercises[index];
+          bool hasValue = _holders.containsKey(exercise);
+
+          if (!hasValue) {
+            Future.delayed(Duration(seconds: 3)).then((_) {
+              setState(() {
+                _holders[exercise] = new List();
+              });
+            });
+          }
+
+          return GestureDetector(
+            onTap: () => BodyBuildingExerciseReadingScreen.open(context, exercise),
+            child: Card(
+              elevation: 0.0,
+              child: Column(
+                children: <Widget>[
+                  Text(
+                    exercise.title,
+                    style: Theme.of(context).textTheme.title,
+                  ),
+                  CommonDivider(),
+                  Builder(
+                    builder: (context) {
+                      return hasValue ? _buildGraph(context, exercise) : _buildLoadingBox(context);
+                    },
+                  )
+                ],
+              ),
+            ),
+          );
+        },
       ),
     );
   }

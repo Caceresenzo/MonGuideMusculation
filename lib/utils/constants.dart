@@ -13,7 +13,7 @@ class Constants {
 
   static const String customScheme = "mgm";
 
-  static const sportProgramRenameBackToDefaultIfInvalid = true;
+  static const bool sportProgramRenameBackToDefaultIfInvalid = true;
 }
 
 class Texts {
@@ -113,12 +113,6 @@ class Texts {
   static String formatSportProgramWidgetDescription(SportProgram sportProgram) {
     return "Contient " + Texts.exerciseCount(sportProgram.items.length) + "\n" + "Fait le " + formatDate(DateTime.parse(sportProgram.createdDate), [dd, '/', mm, '/', yyyy, ' à ', HH, ':', nn, ':', ss]) + "\n" + "Pour " + sportProgram.target;
   }
-
-  static const Map<SportProgramEvolutionType, String> evolutionTypeTranslations = {
-    SportProgramEvolutionType.SERIES: "Séries",
-    SportProgramEvolutionType.REPETITIONS: "Répétitions",
-    SportProgramEvolutionType.WEIGHT: "Poids (kg)",
-  };
 }
 
 class AppStorage {

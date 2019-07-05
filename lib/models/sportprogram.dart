@@ -79,6 +79,12 @@ class SportProgram {
 
     return true;
   }
+
+  List<BodyBuildingExercise> toExerciseList() {
+    List<BodyBuildingExercise> exercises = new List();
+    items.forEach((item) => exercises.add(item.exercise));
+    return exercises;
+  }
 }
 
 @immutable
@@ -116,10 +122,4 @@ class SportProgramItem {
       redactorId: data["redactor_id"],
     );
   }
-}
-
-enum SportProgramEvolutionType {
-  SERIES,
-  REPETITIONS,
-  WEIGHT,
 }
