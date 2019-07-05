@@ -59,6 +59,7 @@ class Texts {
   static const String sportProgramSnackBarQuit = "Voulez vous quitter ?";
   static const String sportProgramSnackBarFinish = "Avez vous fini ?";
   static const String sportProgramSnackBarButtonYes = "OUI";
+  static const String sportProgramDialogWantToSeeProgression = "Vous avez fini un programme sportif, voulez vous consulter vos progressions ?";
 
 
   static const String articleWroteBy = "Écrit par ";
@@ -68,11 +69,13 @@ class Texts {
   static const String buttonCancel = "ANNULER";
   static const String buttonImport = "AJOUTER";
   static const String buttonRename = "RENOMMER";
+  static const String buttonShow = "AFFICHER";
 
   static const String dialogTitleConfirm = "Confirmation";
   static const String dialogTitleEdit = "Édition";
   static const String dialogTitleImportSportProgram = "Ajouter un programme";
   static const String dialogDescriptionConfirmRemove = "Supprimer ce programme ?";
+  static const String dialogTitleWellDone = "Bravo !";
 
   static const String snackBarError = "Erreur";
   static const String snackBarButtonClose = "FERMER";

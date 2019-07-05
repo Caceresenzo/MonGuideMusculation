@@ -337,6 +337,41 @@ class _SportProgramScreenItemsListingState extends State<SportProgramScreen> {
     this.sportProgram,
   ) : assert(sportProgram != null);
 
+  void _onStartScreenFinished(result) {
+    if (result == null || result == false) {
+      return;
+    }
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return new AlertDialog(
+          title: new Text(
+            Texts.dialogTitleWellDone,
+            style: const TextStyle(
+              color: Constants.colorAccent,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          elevation: 0.0,
+          content: Text(Texts.sportProgramDialogWantToSeeProgression),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(Texts.buttonClose),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            FlatButton(
+              child: Text(Texts.buttonShow),
+              onPressed: () {},
+            )
+          ],
+        );
+      }
+    ).then((_) => _onStartScreenFinished(true));
+  }
+
   Widget _buildHeaderIcon(BuildContext context, IconData icon, String subtitle, void onTap()) {
     return Padding(
       padding: EdgeInsets.symmetric(
@@ -387,7 +422,7 @@ class _SportProgramScreenItemsListingState extends State<SportProgramScreen> {
                 MaterialPageRoute(
                   builder: (context) => SportProgramStartScreen(sportProgram),
                 ),
-              );
+              ).then((result) => _onStartScreenFinished(result));
             }),
             _buildHeaderIcon(context, Icons.edit, Texts.sportProgramScreenButtonEdit, () {
               final String currentName = sportProgram.name();
