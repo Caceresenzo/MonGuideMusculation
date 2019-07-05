@@ -2,7 +2,6 @@ import 'package:meta/meta.dart';
 import 'package:mon_guide_musculation/models/bodybuilding.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 
-@immutable
 class SportProgram {
   final Map<String, dynamic> source;
   final String id;

@@ -147,14 +147,6 @@ class LinearSales {
   LinearSales(this.year, this.sales);
 }
 
-class a extends DateTimeTickFormatterSpec {
-  @override
-  charts.TickFormatter<DateTime> createTickFormatter(charts.ChartContext context) {
-    // TODO: implement createTickFormatter
-    return null;
-  }
-}
-
 class TimeSeriesRangeAnnotationChart extends StatelessWidget {
   final List<charts.Series> seriesList;
   final bool animate;
