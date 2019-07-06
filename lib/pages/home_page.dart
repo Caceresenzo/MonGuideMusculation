@@ -1,3 +1,4 @@
+import 'package:mon_guide_musculation/logic/managers/base_manager.dart';
 import 'package:mon_guide_musculation/main.dart';
 import 'package:mon_guide_musculation/ui/dialogs/about_dialog.dart';
 import 'package:mon_guide_musculation/ui/pages/page_articles.dart';
@@ -34,8 +35,22 @@ class HomePage extends StatefulWidget {
   }
 }
 
-class HomePageState extends State<HomePage> {
+class HomePageState extends State<HomePage> with WidgetsBindingObserver {
   int _selectedIndex = 2;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addObserver(this);
+  }
+
+  @override
+  void dispose() {
+    WidgetsBinding.instance.removeObserver(this);
+    super.dispose();
+
+    Managers.finish();
+  }
 
   void _onItemTapped(int index) {
     setState(() {

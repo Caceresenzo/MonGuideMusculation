@@ -7,6 +7,7 @@ import 'link_manager.dart';
 
 abstract class BaseManager {
   void initialize() {}
+  void finish() {}
 }
 
 class Managers {
@@ -19,6 +20,8 @@ class Managers {
   static LinkManager linkManager;
 
   static initialize() {
+    print("Initializing...");
+
     managers.add(articleManager = new ArticleManager());
     managers.add(forumManager = new ForumManager());
     managers.add(bodyBuildingManager = new BodyBuildingManager());
@@ -26,7 +29,17 @@ class Managers {
     managers.add(linkManager = new LinkManager());
 
     managers.forEach((manager) {
+      print("Initializing manager \"${manager.runtimeType.toString()}\"...");
+      
       manager.initialize();
+    });
+  }
+
+  static void finish() {
+    managers.forEach((manager) {
+      print("Finshing manager \"${manager.runtimeType.toString()}\"...");
+
+      manager.finish();
     });
   }
 }

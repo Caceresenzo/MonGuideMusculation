@@ -9,6 +9,8 @@ import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 
+final bool debug = false;
+
 class BodyBuildingManager extends BaseManager {
   static const String columnId = "_id";
   static const String columnDate = "exercise";
@@ -34,11 +36,30 @@ class BodyBuildingManager extends BaseManager {
     _initializeDatabase();
   }
 
+  @override
+  void finish() {
+    _evolutionDatabase.close();
+  }
+
   void _initializeDatabase() async {
     _evolutionDatabase = await openDatabase(
       join(await getDatabasesPath(), AppStorage.sportProgramEvolutionDatabaseFile),
       version: 1,
     );
+
+    if (debug) {
+      await _evolutionDatabase.rawQuery("SELECT sql FROM sqlite_master;").then((value) {
+        value.forEach((a) {
+          print(a);
+        });
+      });
+
+      await _evolutionDatabase.rawQuery("SELECT * FROM `0ef087d0ecd6cf0d491825b344623cae`;").then((value) {
+        value.forEach((a) {
+          print(a);
+        });
+      });
+    }
   }
 
   Future<BodyBuildingExercise> resolveExerciseByKey(String key, {bool acceptCache = true}) async {
@@ -130,10 +151,10 @@ class BodyBuildingManager extends BaseManager {
       String md5Key = program.md5;
       print("Trying to create evolution table: $md5Key (original key is \"${program.key}\")");
 
-       _evolutionDatabase.execute(
+      /*_evolutionDatabase.execute(
         "" + //
             "DROP TABLE `$md5Key`", //
-      );
+      );*/
 
       await _evolutionDatabase.execute(
         "" + //
@@ -146,7 +167,7 @@ class BodyBuildingManager extends BaseManager {
       );
     }
 
-    _evolutionDatabase.rawQuery("SELECT sql FROM sqlite_master;").then((value) {
+    await _evolutionDatabase.rawQuery("SELECT sql FROM sqlite_master;").then((value) {
       value.forEach((a) {
         print(a);
       });
