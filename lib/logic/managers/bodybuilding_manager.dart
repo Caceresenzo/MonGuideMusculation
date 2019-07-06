@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:mon_guide_musculation/logic/managers/base_manager.dart';
 import 'package:mon_guide_musculation/models/bodybuilding.dart';
 import 'package:http/http.dart' as http;
+import 'package:mon_guide_musculation/models/sportprogram.dart';
 import 'package:mon_guide_musculation/utils/functions.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
@@ -123,17 +124,16 @@ class BodyBuildingManager extends BaseManager {
           _clearCache();
         });
   }
-  
 
   void notifyBodyBuildingExerciseReceived(List<BodyBuildingExercise> received) {
     received.forEach((program) {
-      String md5Key = toMd5(program.key);
+      String md5Key = program.md5;
       print("Trying to create evolution table: $md5Key (original key is \"${program.key}\")");
 
-      _evolutionDatabase.execute(
+      /*_evolutionDatabase.execute(
         "" + //
             "DROP TABLE `$md5Key`", //
-      );
+      );*/
       _evolutionDatabase.execute(
         "" + //
             "CREATE TABLE IF NOT EXISTS `$md5Key` (" + //
@@ -143,6 +143,21 @@ class BodyBuildingManager extends BaseManager {
             "    `$columnValue` DOUBLE NOT NULL" + //
             ");", //
       );
+    });
+  }
+
+  void notifySportProgramFinished(SportProgram sportProgram) {
+    sportProgram.items.forEach((item) {
+      var exercise = item.exercise;
+      DateTime dateTime = DateTime.now();
+
+      BodyBuildingExerciseValueHolderType.values.forEach((type) {
+        _evolutionDatabase.insert(exercise.md5, {
+          columnDate: dateTime,
+          columnType: type,
+          columnValue: item.getValueByType(type)
+        });
+      });
     });
   }
 }

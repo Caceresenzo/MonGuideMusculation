@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:mon_guide_musculation/logic/managers/bodybuilding_manager.dart';
 import 'package:mon_guide_musculation/models/wix.dart';
+import 'package:mon_guide_musculation/utils/functions.dart';
 
 class BodyBuildingExercise {
   final String key;
@@ -9,6 +11,7 @@ class BodyBuildingExercise {
   final String shortDescription;
   final String richDescription;
   final WixImageReference pictureImageReference;
+  final String md5;
 
   BodyBuildingExercise({
     @required this.key,
@@ -21,7 +24,8 @@ class BodyBuildingExercise {
   })  : assert(key != null),
         assert(title != null),
         assert(type != null),
-        assert(muscle != null);
+        assert(muscle != null),
+        this.md5 = toMd5(key);
 
   BodyBuildingExercise finishConstruction() {
     type.exercises.add(this);

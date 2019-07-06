@@ -76,7 +76,7 @@ class SportProgramItemWidget extends StatelessWidget {
     );
   }
 
-  Widget _buildObjectiveWidget(String name, int value, IconData icon) {
+  Widget _buildObjectiveWidget(String name, num value, IconData icon) {
     return Container(
       padding: EdgeInsets.symmetric(
         vertical: 0.0,
@@ -175,7 +175,7 @@ class SportProgramItemWidget extends StatelessWidget {
                     textAlign: TextAlign.center,
                     style: TextStyle(fontSize: 12.0),
                   ),
-                  _buildObjectiveWidget(Texts.itemSportProgramNumberSeries, item.weight, Icons.line_weight),
+                  _buildObjectiveWidget(Texts.itemSportProgramNumberWeight, item.safeWeight, Icons.line_weight),
                 ],
               ),
             )
@@ -729,7 +729,7 @@ class _SportProgramStartScreenMainState extends State<SportProgramStartScreen> w
                   SizedBox(
                     width: valueColumnWidth,
                     child: Text(
-                      currentItem.weight.toString(),
+                      currentItem.safeWeight.toString(),
                       textAlign: TextAlign.right,
                       style: mainTextStyle,
                     ),

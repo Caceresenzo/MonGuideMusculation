@@ -94,7 +94,7 @@ class SportProgramItem {
   final BodyBuildingExercise exercise;
   final int series;
   final int repetitions;
-  final int weight;
+  final double weight;
   final String redactorId;
 
   SportProgramItem({
@@ -118,8 +118,31 @@ class SportProgramItem {
       exercise: exercise,
       series: int.parse(data["series"].toString()),
       repetitions: int.parse(data["repetitions"].toString()),
-      weight: int.parse(data["weight"].toString()),
+      weight: double.parse(data["weight"].toString()),
       redactorId: data["redactor_id"],
     );
+  }
+
+  num get safeWeight {
+    int intValue = weight.toInt();
+
+    if (intValue == weight) {
+      return intValue;
+    }
+
+    return weight;
+  }
+
+  getValueByType(BodyBuildingExerciseValueHolderType type) {
+    switch (type) {
+      case BodyBuildingExerciseValueHolderType.series:
+        return series;
+      case BodyBuildingExerciseValueHolderType.repetitions:
+        return repetitions;
+      case BodyBuildingExerciseValueHolderType.weight:
+        return weight;
+      default:
+        throw Exception("Illegal enum value.");
+    }
   }
 }
