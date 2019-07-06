@@ -332,24 +332,14 @@ class BodyBuildingExerciseEvolutionScreen extends StatefulWidget {
 /********************************************************************************** */
 class TimeSeriesRangeAnnotationChart extends StatelessWidget {
   final List<charts.Series> seriesList;
-  final bool animate;
 
-  TimeSeriesRangeAnnotationChart(this.seriesList, {this.animate});
-
-  /// Creates a [TimeSeriesChart] with sample data and no transition.
-  factory TimeSeriesRangeAnnotationChart.withSampleData() {
-    return new TimeSeriesRangeAnnotationChart(
-      _createSampleData(),
-      // Disable animations for image tests.
-      animate: false,
-    );
-  }
+  TimeSeriesRangeAnnotationChart(this.seriesList);
 
   @override
   Widget build(BuildContext context) {
     return new charts.TimeSeriesChart(
       seriesList,
-      animate: animate,
+      animate: true,
       primaryMeasureAxis: new charts.NumericAxisSpec(
         tickProviderSpec: new charts.BasicNumericTickProviderSpec(
           desiredTickCount: 5,
@@ -362,41 +352,8 @@ class TimeSeriesRangeAnnotationChart extends StatelessWidget {
     );
   }
 
-  /// Create one series with sample hard coded data.
-  static List<charts.Series<BodyBuildingExerciseValueHolder, DateTime>> _createSampleData() {
-    return List.generate(BodyBuildingExerciseValueHolderType.values.length, (index) {
-      final List<BodyBuildingExerciseValueHolder> data = [];
-
-      for (int i = 0; i < 52; i++) {
-        print("${(i * 7 ~/ 30) + 1} // ${((i * 7) % 30) + 1}");
-
-        DateTime date = new DateTime(2017, i * 7 ~/ 30, (i * 7) % 30);
-
-        data.add(new BodyBuildingExerciseValueHolder(i, date, Managers.bodyBuildingManager.cachedExercices[0], BodyBuildingExerciseValueHolderType.repetitions, i * (index * 0.8)));
-        //data.add(new BodyBuildingExerciseValueHolder(i, date, Managers.bodyBuildingManager.cachedExercices[0], BodyBuildingExerciseValueHolderType.series, i * 0.8));
-      }
-
-      return new charts.Series<BodyBuildingExerciseValueHolder, DateTime>(
-        id: 'Sales ' + index.toString(),
-        domainFn: (BodyBuildingExerciseValueHolder holder, _) => holder.date,
-        measureFn: (BodyBuildingExerciseValueHolder holder, _) => holder.value,
-        data: data,
-      );
-    });
-
-    return [];
-  }
-
   factory TimeSeriesRangeAnnotationChart.filterWithType(List<BodyBuildingExerciseValueHolder> holders, BodyBuildingExerciseValueHolderType currentValueHolderType) {
     final List<BodyBuildingExerciseValueHolder> data = holders.where((holder) => holder.type == currentValueHolderType).toList();
-
-    for (int i = 0; i < 52; i++) {
-      print("${(i * 7 ~/ 30) + 1} // ${((i * 7) % 30) + 1}");
-
-      DateTime date = new DateTime(2017, i * 7 ~/ 30, (i * 7) % 30);
-
-      data.add(new BodyBuildingExerciseValueHolder(i, date, Managers.bodyBuildingManager.cachedExercices[0], currentValueHolderType, i * (currentValueHolderType.index * 0.8)));
-    }
 
     return new TimeSeriesRangeAnnotationChart(
       <charts.Series<BodyBuildingExerciseValueHolder, DateTime>>[
@@ -407,7 +364,6 @@ class TimeSeriesRangeAnnotationChart extends StatelessWidget {
           data: data,
         )
       ],
-      animate: true,
     );
   }
 }
@@ -529,9 +485,9 @@ class BodyBuildingExerciseEvolutionScreenState extends State<BodyBuildingExercis
           bool hasValue = _holders.containsKey(exercise);
 
           if (!hasValue) {
-            Future.delayed(Duration(seconds: 3)).then((_) {
+            Managers.bodyBuildingManager.resolveEvolutionData(exercise.md5).then((data) {
               setState(() {
-                _holders[exercise] = new List();
+                _holders[exercise] = data;
               });
             });
           }

@@ -634,6 +634,7 @@ class _SportProgramStartScreenMainState extends State<SportProgramStartScreen> w
 
   void selectEnd() {
     _selectWayOut(Texts.sportProgramSnackBarFinish, Texts.sportProgramSnackBarButtonYes, () {
+      Managers.bodyBuildingManager.notifySportProgramFinished(sportProgram);
       Navigator.of(context).pop(true);
     });
   }

@@ -125,39 +125,67 @@ class BodyBuildingManager extends BaseManager {
         });
   }
 
-  void notifyBodyBuildingExerciseReceived(List<BodyBuildingExercise> received) {
-    received.forEach((program) {
+  void notifyBodyBuildingExerciseReceived(List<BodyBuildingExercise> received) async {
+    for (BodyBuildingExercise program in received) {
       String md5Key = program.md5;
       print("Trying to create evolution table: $md5Key (original key is \"${program.key}\")");
 
-      /*_evolutionDatabase.execute(
+       _evolutionDatabase.execute(
         "" + //
             "DROP TABLE `$md5Key`", //
-      );*/
-      _evolutionDatabase.execute(
+      );
+
+      await _evolutionDatabase.execute(
         "" + //
             "CREATE TABLE IF NOT EXISTS `$md5Key` (" + //
             "    `$columnId` INTEGER PRIMARY KEY AUTOINCREMENT," + //
             "    `$columnDate` DATE NOT NULL," + //
-            "    `$columnType` VARCHAR(64) NOT NULL," + //
+            "    `$columnType` INTEGER NOT NULL," + //
             "    `$columnValue` DOUBLE NOT NULL" + //
             ");", //
       );
+    }
+
+    _evolutionDatabase.rawQuery("SELECT sql FROM sqlite_master;").then((value) {
+      value.forEach((a) {
+        print(a);
+      });
     });
   }
 
-  void notifySportProgramFinished(SportProgram sportProgram) {
-    sportProgram.items.forEach((item) {
+  void notifySportProgramFinished(SportProgram sportProgram) async {
+    print("Finished sport program with token ${sportProgram.token} (named \"${sportProgram.name()}\")");
+
+    Batch batch = _evolutionDatabase.batch();
+
+    for (SportProgramItem item in sportProgram.items) {
       var exercise = item.exercise;
       DateTime dateTime = DateTime.now();
 
-      BodyBuildingExerciseValueHolderType.values.forEach((type) {
-        _evolutionDatabase.insert(exercise.md5, {
-          columnDate: dateTime,
-          columnType: type,
-          columnValue: item.getValueByType(type)
+      for (BodyBuildingExerciseValueHolderType type in BodyBuildingExerciseValueHolderType.values) {
+        batch.insert("`${exercise.md5}`", {
+          columnDate: dateTime.millisecondsSinceEpoch,
+          columnType: type.index,
+          columnValue: item.getValueByType(type),
         });
-      });
+      }
+    }
+
+    await batch.commit().then((results) {
+      print("Insert ids: " + results.toString());
     });
+  }
+
+  Future<List<BodyBuildingExerciseValueHolder>> resolveEvolutionData(String md5) async {
+    List<BodyBuildingExerciseValueHolder> data = new List();
+
+    await _evolutionDatabase.query("`$md5`").then((results) async {
+      for (Map<String, dynamic> result in results) {
+        data.add(await BodyBuildingExerciseValueHolder.fromSqlEntry(result));
+        print(result);
+      }
+    });
+
+    return data;
   }
 }

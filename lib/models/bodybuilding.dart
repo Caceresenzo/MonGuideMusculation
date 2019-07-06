@@ -93,27 +93,36 @@ class BodyBuildingMuscle {
 class BodyBuildingExerciseValueHolder {
   final int _id;
   final DateTime _date;
-  final BodyBuildingExercise _exercise;
   final BodyBuildingExerciseValueHolderType _type;
   final double _value;
 
-  BodyBuildingExerciseValueHolder(int id, DateTime date, BodyBuildingExercise exercise, BodyBuildingExerciseValueHolderType type, double value)
-      : assert(id != null),
+  BodyBuildingExerciseValueHolder(
+    int id,
+    DateTime date,
+    BodyBuildingExerciseValueHolderType type,
+    double value,
+  )   : assert(id != null),
         assert(date != null),
-        assert(exercise != null),
         assert(type != null),
         assert(value != null),
         this._id = id,
         this._date = date,
-        this._exercise = exercise,
         this._type = type,
         this._value = value;
 
   int get id => _id;
   DateTime get date => _date;
-  BodyBuildingExercise get exercise => _exercise;
   BodyBuildingExerciseValueHolderType get type => _type;
   double get value => _value;
+
+  static Future<BodyBuildingExerciseValueHolder> fromSqlEntry(Map<String, dynamic> result) async {
+    return BodyBuildingExerciseValueHolder(
+      result[BodyBuildingManager.columnId],
+      DateTime.fromMillisecondsSinceEpoch(result[BodyBuildingManager.columnDate]),
+      BodyBuildingExerciseValueHolderType.values[result[BodyBuildingManager.columnType]],
+      num.parse(result[BodyBuildingManager.columnValue].toString()),
+    );
+  }
 }
 
 enum BodyBuildingExerciseValueHolderType { series, repetitions, weight }

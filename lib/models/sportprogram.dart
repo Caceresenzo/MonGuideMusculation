@@ -106,7 +106,6 @@ class SportProgramItem {
     this.weight,
     this.redactorId,
   })  : assert(parent != null),
-        assert(exercise != null),
         assert(series != null),
         assert(repetitions != null),
         assert(weight != null);
