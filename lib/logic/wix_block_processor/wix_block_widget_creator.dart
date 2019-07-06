@@ -31,7 +31,14 @@ class WixBlockWidgetCreator {
   }
 
   static Widget _createAtomic(BuildContext context, WixBlockItem item) {
-    String entityId = item.rawBlockJson["entityRanges"][0]["key"].toString();
+    List<dynamic> entityRanges = item.rawBlockJson["entityRanges"];
+
+    if (entityRanges.isEmpty) {
+      print("Found an atomic Wix Block Item with an entity range empty, ignoring.");
+      return Container();
+    }
+
+    String entityId = entityRanges[0]["key"].toString();
     Map<String, dynamic> entity = item.rawContentJson["entityMap"][entityId];
 
     String entityType = entity["type"];

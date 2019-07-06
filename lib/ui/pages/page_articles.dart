@@ -4,6 +4,7 @@ import 'package:mon_guide_musculation/logic/wix_block_processor/wix_block_proces
 import 'package:mon_guide_musculation/models/article.dart';
 import 'package:mon_guide_musculation/models/wix.dart';
 import 'package:mon_guide_musculation/ui/states/common_refreshable_state.dart';
+import 'package:mon_guide_musculation/ui/widgets/card_info.dart';
 import 'package:mon_guide_musculation/ui/widgets/common_divider.dart';
 import 'package:mon_guide_musculation/ui/widgets/common_icon_value.dart';
 import 'package:mon_guide_musculation/ui/widgets/top_round_background.dart';
@@ -34,9 +35,7 @@ class ArticleItemWidget extends StatelessWidget {
             Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => ArticleScreen(
-                      article: article,
-                    ),
+                builder: (context) => ArticleScreen(article: article),
               ),
             );
           },
@@ -48,7 +47,9 @@ class ArticleItemWidget extends StatelessWidget {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.start,
                     children: <Widget>[
-                      CircleAvatar(backgroundImage: CachedNetworkImageProvider(WixUtils.formatStaticWixImageUrl(article.author.profilePictureFile))),
+                      CircleAvatar(
+                        backgroundImage: CachedNetworkImageProvider(WixUtils.formatStaticWixImageUrl(article.author.profilePictureFile)),
+                      ),
                       Expanded(
                         child: Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 20.0),
@@ -151,19 +152,76 @@ class _ArticleScreenArticlesListingState extends CommonRefreshableState<ArticleS
 }
 
 class _ArticleScreenArticleReadingState extends State<ArticleScreen> {
+  final GlobalKey<RefreshIndicatorState> _refreshIndicatorKey = new GlobalKey<RefreshIndicatorState>();
+  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+
   final WebArticle article;
+
+  bool _error = false;
+  bool _initialized = false;
+
+  List<List<WixBlockItem>> _items = new List();
 
   _ArticleScreenArticleReadingState(
     this.article,
   ) : assert(article != null);
 
   @override
-  Widget build(BuildContext context) {
-    List<List<WixBlockItem>> allItems = WixBlockProcessor(blocks: article.content.items).organize(context);
+  void initState() {
+    super.initState();
 
+    WidgetsBinding.instance.addPostFrameCallback((Duration duration) {
+      this._refreshIndicatorKey.currentState.show();
+    });
+  }
+
+  Future<void> _updateItem() {
+    return article.content.fetch().then((_) {
+      if (this.mounted) {
+        setState(() {
+          _items = WixBlockProcessor(blocks: article.content.items).organize(context);
+
+          if (_items == null) {
+            _items = [];
+          }
+        });
+
+        _error = false;
+        _initialized = true;
+
+        _scaffoldKey.currentState.hideCurrentSnackBar();
+      }
+    }).catchError((error) {
+      print(error);
+
+      setState(() {
+        _items = [];
+
+        _error = true;
+        _initialized = false;
+      });
+
+      _scaffoldKey.currentState.hideCurrentSnackBar();
+      _scaffoldKey.currentState.showSnackBar(buildErrorSnackBar());
+    });
+  }
+
+  SnackBar buildErrorSnackBar({String message}) {
+    return SnackBar(
+      content: Text(message ?? Texts.snackBarError),
+      action: SnackBarAction(
+        label: Texts.snackBarButtonClose,
+        onPressed: () {},
+      ),
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     var deviceSize = MediaQuery.of(context).size;
 
     return Scaffold(
+      key: _scaffoldKey,
       appBar: AppBar(
         title: Text(article.title),
         backgroundColor: Constants.colorAccent,
@@ -183,26 +241,39 @@ class _ArticleScreenArticleReadingState extends State<ArticleScreen> {
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: ListView(
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.symmetric(vertical: 16.0),
-                  child: Column(
+            child: Builder(
+              builder: (context) {
+                return RefreshIndicator(
+                  key: _refreshIndicatorKey,
+                  color: Constants.colorAccent,
+                  child: Container(
+                      child: ListView(
                     children: <Widget>[
-                      /*Text(
-                        'HEADER',
-                        style: Theme.of(context).textTheme.body2,
-                      ),*/
                       SizedBox(
                         height: deviceSize.height / 5,
                       ),
-                      WixBlockList(
-                        allItems: allItems,
+                      Builder(
+                        builder: (context) {
+                          if (_error) {
+                            return InfoCard.templateFailedToLoad();
+                          }
+
+                          if (_items.isEmpty && _initialized) {
+                            return InfoCard.templateNoContent();
+                          }
+
+                          return WixBlockList(
+                            allItems: _items,
+                          );
+                        },
                       ),
                     ],
-                  ),
-                ),
-              ],
+                  )),
+                  onRefresh: () async {
+                    await _updateItem();
+                  },
+                );
+              },
             ),
           ),
         ],
