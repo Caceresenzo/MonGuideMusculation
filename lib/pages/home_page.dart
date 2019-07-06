@@ -62,8 +62,8 @@ class HomePageState extends State<HomePage> {
       case 4:
         return new ContactScreen();
 
-      case 5:
-        return ChartsText();
+      /*case 5:
+        return ChartsText();*/
     }
 
     throw Exception("Illegal State -> Position out of range.");
@@ -117,10 +117,10 @@ class HomePageState extends State<HomePage> {
               icon: Icon(Icons.mail),
               title: Text(Texts.navigationContact),
             ),
-            BottomNavigationBarItem(
+            /*BottomNavigationBarItem(
               icon: Icon(Icons.mail),
               title: Text(Texts.navigationContact),
-            ),
+            ),*/
           ],
           currentIndex: _selectedIndex,
           selectedItemColor: Constants.colorAccent,

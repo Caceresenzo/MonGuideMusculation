@@ -327,6 +327,12 @@ class BodyBuildingExerciseEvolutionScreen extends StatefulWidget {
   State<BodyBuildingExerciseEvolutionScreen> createState() {
     return BodyBuildingExerciseEvolutionScreenState(_exercises);
   }
+
+  static void open(BuildContext context, List<BodyBuildingExercise> exercises) {
+    Navigator.of(context).push(MaterialPageRoute(builder: (context) {
+      return BodyBuildingExerciseEvolutionScreen(exercises);
+    }));
+  }
 }
 
 /********************************************************************************** */
@@ -450,10 +456,26 @@ class BodyBuildingExerciseEvolutionScreenState extends State<BodyBuildingExercis
   }
 
   Widget _buildGraph(BuildContext context, BodyBuildingExercise exercise) {
+    List<BodyBuildingExerciseValueHolder> holders = _holders[exercise];
+
     return Container(
       height: _graphHeight,
       width: double.infinity,
-      child: TimeSeriesRangeAnnotationChart.filterWithType(_holders[exercise], _currentValueHolderType),
+      child: Builder(
+        builder: (context) {
+          if (holders.isNotEmpty) {
+            return TimeSeriesRangeAnnotationChart.filterWithType(holders, _currentValueHolderType);
+          }
+
+          return Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            crossAxisAlignment: CrossAxisAlignment.center,
+            children: <Widget>[
+              InfoCard.templateNoContent(),
+            ],
+          );
+        },
+      ),
     );
   }
 
@@ -465,6 +487,44 @@ class BodyBuildingExerciseEvolutionScreenState extends State<BodyBuildingExercis
     }
 
     return base;
+  }
+
+  Widget _buildTile(BuildContext context, int index) {
+    BodyBuildingExercise exercise = _exercises[index];
+    bool hasValue = _holders.containsKey(exercise);
+
+    if (!hasValue) {
+      Managers.bodyBuildingManager.resolveEvolutionData(exercise.md5).then((data) {
+        setState(() {
+          _holders[exercise] = data;
+        });
+      });
+    }
+
+    return GestureDetector(
+      onTap: () => BodyBuildingExerciseReadingScreen.open(context, exercise),
+      child: Card(
+        elevation: 0.0,
+        child: Column(
+          children: <Widget>[
+            Padding(
+              padding: EdgeInsets.all(12.0),
+              child: Text(
+                exercise.title,
+                style: Theme.of(context).textTheme.title,
+                textAlign: TextAlign.center,
+              ),
+            ),
+            CommonDivider(),
+            Builder(
+              builder: (context) {
+                return hasValue ? _buildGraph(context, exercise) : _buildLoadingBox(context);
+              },
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   @override
@@ -480,42 +540,7 @@ class BodyBuildingExerciseEvolutionScreenState extends State<BodyBuildingExercis
       bottomNavigationBar: _buildBottomBar(context),
       body: ListView.builder(
         itemCount: _exercises.length,
-        itemBuilder: (context, index) {
-          BodyBuildingExercise exercise = _exercises[index];
-          bool hasValue = _holders.containsKey(exercise);
-
-          if (!hasValue) {
-            Managers.bodyBuildingManager.resolveEvolutionData(exercise.md5).then((data) {
-              setState(() {
-                _holders[exercise] = data;
-              });
-            });
-          }
-
-          return GestureDetector(
-            onTap: () => BodyBuildingExerciseReadingScreen.open(context, exercise),
-            child: Card(
-              elevation: 0.0,
-              child: Column(
-                children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.all(12.0),
-                    child: Text(
-                      exercise.title,
-                      style: Theme.of(context).textTheme.title,
-                    ),
-                  ),
-                  CommonDivider(),
-                  Builder(
-                    builder: (context) {
-                      return hasValue ? _buildGraph(context, exercise) : _buildLoadingBox(context);
-                    },
-                  )
-                ],
-              ),
-            ),
-          );
-        },
+        itemBuilder: _buildTile,
       ),
     );
   }

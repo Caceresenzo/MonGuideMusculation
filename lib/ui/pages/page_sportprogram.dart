@@ -358,6 +358,9 @@ class _SportProgramScreenItemsListingState extends State<SportProgramScreen> {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
+            _buildHeaderIcon(context, Icons.show_chart, Texts.sportProgramScreenButtonEvolution, () {
+              BodyBuildingExerciseEvolutionScreen.open(context, sportProgram.toExerciseList());
+            }),
             _buildHeaderIcon(context, Icons.play_circle_outline, Texts.sportProgramScreenButtonStart, () {
               Navigator.of(context)
                   .push(
@@ -408,23 +411,20 @@ class _SportProgramScreenItemsListingState extends State<SportProgramScreen> {
                   );
                 },
               ).then((_) {
-                String snackBarMessage = Texts.sportProgramNotRenamed;
                 final String newName = controller.text;
 
                 if (Managers.sportProgramManager.rename(sportProgram, newName)) {
-                  snackBarMessage = Texts.sportProgramRenamed;
+                  _scaffoldState.currentState.hideCurrentSnackBar();
+                  _scaffoldState.currentState.showSnackBar(SnackBar(
+                    content: Text(Texts.sportProgramRenamed),
+                    action: SnackBarAction(
+                      label: Texts.snackBarButtonClose,
+                      onPressed: () {},
+                    ),
+                  ));
 
                   setState(() {});
                 }
-
-                _scaffoldState.currentState.hideCurrentSnackBar();
-                _scaffoldState.currentState.showSnackBar(SnackBar(
-                  content: Text(snackBarMessage),
-                  action: SnackBarAction(
-                    label: Texts.snackBarButtonClose,
-                    onPressed: () {},
-                  ),
-                ));
               });
             }),
           ],
@@ -516,6 +516,44 @@ class _SportProgramScreenSavedItemsListingState extends CommonRefreshableState<S
   @override
   List<SportProgram> getNewItemListState() {
     return Managers.sportProgramManager.savedPrograms;
+  }
+
+  @override
+  Widget buildBottomBar(BuildContext context) {
+    return Row(
+      children: <Widget>[
+        _buildActionButton(Icons.show_chart, () {
+          Managers.bodyBuildingManager.fetch(true).then((_) {
+            BodyBuildingExerciseEvolutionScreen.open(context, Managers.bodyBuildingManager.cachedExercices);
+          });
+        }),
+        _buildActionButton(Icons.add, () {
+          // TODO Program creator button
+        }),
+      ],
+    );
+  }
+
+  Widget _buildActionButton(IconData icon, void onTap()) {
+    return SizedBox(
+      width: MediaQuery.of(context).size.width / 2,
+      child: Padding(
+        padding: EdgeInsets.symmetric(
+          horizontal: 8.0,
+          vertical: 0.0,
+        ),
+        child: RaisedButton(
+          elevation: 0.0,
+          onPressed: onTap,
+          highlightElevation: 0.0,
+          color: Constants.colorAccent,
+          child: Icon(
+            icon,
+            color: Colors.white,
+          ),
+        ),
+      ),
+    );
   }
 
   @override

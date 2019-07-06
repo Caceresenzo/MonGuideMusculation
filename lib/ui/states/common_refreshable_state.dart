@@ -97,6 +97,9 @@ abstract class CommonRefreshableState<T extends StatefulWidget, K> extends State
   @protected
   List<Widget> itemsAfter(BuildContext context) => null;
 
+  @protected
+  Widget floatingButtonAction(BuildContext context) => null;
+
   @override
   Widget build(BuildContext context) {
     print("Building ${_items.length.toString()} item(s).");
@@ -108,6 +111,7 @@ abstract class CommonRefreshableState<T extends StatefulWidget, K> extends State
       key: _scaffoldKey,
       appBar: buildAppBar(context),
       bottomNavigationBar: buildBottomBar(context),
+      floatingActionButton: floatingButtonAction(context),
       body: Builder(
         builder: (context) {
           return RefreshIndicator(

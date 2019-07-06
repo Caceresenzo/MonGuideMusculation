@@ -50,6 +50,7 @@ class Texts {
   static const String itemExerciseNoRichDescription = "Aucune description.";
   static const String itemExerciseNoPicture = "Aucune image de démonstration.";
 
+  static const String sportProgramScreenButtonEvolution = "ÉVOLUTION";
   static const String sportProgramScreenButtonStart = "DÉMARRER";
   static const String sportProgramScreenButtonEdit = "ÉDITER";
   static const String sportProgramRenamed = "Programme renommé.";
