@@ -131,12 +131,7 @@ class SportProgramItemWidget extends StatelessWidget {
                       ),
                       GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => null, // TODO SportProgramEvolutionScreen(item.parent),
-                            ),
-                          );
+                          BodyBuildingExerciseEvolutionScreen.open(context, [item.exercise]);
                         },
                         child: _buildIcon(Icons.show_chart),
                       ),
