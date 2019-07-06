@@ -372,7 +372,7 @@ class TimeSeriesRangeAnnotationChart extends StatelessWidget {
 
         DateTime date = new DateTime(2017, i * 7 ~/ 30, (i * 7) % 30);
 
-        data.add(new BodyBuildingExerciseValueHolder(i, date, Managers.bodyBuildingManager.cachedExercices[0], BodyBuildingExerciseValueHolderType.repetitions, i * 1.0));
+        data.add(new BodyBuildingExerciseValueHolder(i, date, Managers.bodyBuildingManager.cachedExercices[0], BodyBuildingExerciseValueHolderType.repetitions, i * (index * 0.8)));
         //data.add(new BodyBuildingExerciseValueHolder(i, date, Managers.bodyBuildingManager.cachedExercices[0], BodyBuildingExerciseValueHolderType.series, i * 0.8));
       }
 
@@ -386,12 +386,39 @@ class TimeSeriesRangeAnnotationChart extends StatelessWidget {
 
     return [];
   }
+
+  factory TimeSeriesRangeAnnotationChart.filterWithType(List<BodyBuildingExerciseValueHolder> holders, BodyBuildingExerciseValueHolderType currentValueHolderType) {
+    final List<BodyBuildingExerciseValueHolder> data = holders.where((holder) => holder.type == currentValueHolderType).toList();
+
+    for (int i = 0; i < 52; i++) {
+      print("${(i * 7 ~/ 30) + 1} // ${((i * 7) % 30) + 1}");
+
+      DateTime date = new DateTime(2017, i * 7 ~/ 30, (i * 7) % 30);
+
+      data.add(new BodyBuildingExerciseValueHolder(i, date, Managers.bodyBuildingManager.cachedExercices[0], currentValueHolderType, i * (currentValueHolderType.index * 0.8)));
+    }
+
+    return new TimeSeriesRangeAnnotationChart(
+      <charts.Series<BodyBuildingExerciseValueHolder, DateTime>>[
+        new charts.Series<BodyBuildingExerciseValueHolder, DateTime>(
+          id: Texts.valueHolderTypeTranslations[currentValueHolderType],
+          domainFn: (BodyBuildingExerciseValueHolder holder, _) => holder.date,
+          measureFn: (BodyBuildingExerciseValueHolder holder, _) => holder.value,
+          data: data,
+        )
+      ],
+      animate: true,
+    );
+  }
 }
 
 class BodyBuildingExerciseEvolutionScreenState extends State<BodyBuildingExerciseEvolutionScreen> {
   final List<BodyBuildingExercise> _exercises;
   double _graphHeight;
   Map<BodyBuildingExercise, List<BodyBuildingExerciseValueHolder>> _holders;
+
+  List<DropdownMenuItem<BodyBuildingExerciseValueHolderType>> _dropDownMenuItems;
+  BodyBuildingExerciseValueHolderType _currentValueHolderType;
 
   BodyBuildingExerciseEvolutionScreenState(List<BodyBuildingExercise> exercises)
       : assert(exercises != null),
@@ -402,6 +429,58 @@ class BodyBuildingExerciseEvolutionScreenState extends State<BodyBuildingExercis
     super.initState();
 
     _holders = new Map();
+
+    _dropDownMenuItems = getDropDownMenuItems();
+    _currentValueHolderType = _dropDownMenuItems[0].value;
+  }
+
+  List<DropdownMenuItem<BodyBuildingExerciseValueHolderType>> getDropDownMenuItems() {
+    List<DropdownMenuItem<BodyBuildingExerciseValueHolderType>> items = new List();
+
+    BodyBuildingExerciseValueHolderType.values.forEach((type) {
+      items.add(new DropdownMenuItem(
+        value: type,
+        child: new Text(
+          Texts.valueHolderTypeTranslations[type].toUpperCase(),
+          style: TextStyle(fontWeight: FontWeight.bold),
+        ),
+      ));
+    });
+
+    return items;
+  }
+
+  Widget _buildBottomBar(BuildContext context) {
+    return BottomAppBar(
+      color: Constants.colorAccent,
+      child: Padding(
+        padding: EdgeInsets.symmetric(horizontal: 16.0),
+        child: Row(
+          children: <Widget>[
+            Expanded(
+              child: new Theme(
+                data: Theme.of(context).copyWith(canvasColor: Constants.colorAccent),
+                child: DropdownButtonHideUnderline(
+                  child: new DropdownButton<BodyBuildingExerciseValueHolderType>(
+                    style: const TextStyle(
+                      color: Colors.white,
+                    ),
+                    value: _currentValueHolderType,
+                    items: _dropDownMenuItems,
+                    onChanged: (valueHolderType) {
+                      setState(() {
+                        _currentValueHolderType = valueHolderType;
+                      });
+                    },
+                    iconEnabledColor: Colors.white,
+                  ),
+                ),
+              ),
+            )
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildLoadingBox(BuildContext context) {
@@ -418,7 +497,7 @@ class BodyBuildingExerciseEvolutionScreenState extends State<BodyBuildingExercis
     return Container(
       height: _graphHeight,
       width: double.infinity,
-      child: TimeSeriesRangeAnnotationChart.withSampleData(),
+      child: TimeSeriesRangeAnnotationChart.filterWithType(_holders[exercise], _currentValueHolderType),
     );
   }
 
@@ -442,6 +521,7 @@ class BodyBuildingExerciseEvolutionScreenState extends State<BodyBuildingExercis
         title: Text(screenTitle),
         backgroundColor: Constants.colorAccent,
       ),
+      bottomNavigationBar: _buildBottomBar(context),
       body: ListView.builder(
         itemCount: _exercises.length,
         itemBuilder: (context, index) {
@@ -462,9 +542,12 @@ class BodyBuildingExerciseEvolutionScreenState extends State<BodyBuildingExercis
               elevation: 0.0,
               child: Column(
                 children: <Widget>[
-                  Text(
-                    exercise.title,
-                    style: Theme.of(context).textTheme.title,
+                  Padding(
+                    padding: EdgeInsets.all(12.0),
+                    child: Text(
+                      exercise.title,
+                      style: Theme.of(context).textTheme.title,
+                    ),
                   ),
                   CommonDivider(),
                   Builder(

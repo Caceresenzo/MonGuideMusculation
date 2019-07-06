@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mon_guide_musculation/models/bodybuilding.dart';
 import 'package:mon_guide_musculation/models/sportprogram.dart';
 import 'package:date_format/date_format.dart';
 
@@ -61,7 +62,6 @@ class Texts {
   static const String sportProgramSnackBarButtonYes = "OUI";
   static const String sportProgramDialogWantToSeeProgression = "Vous avez fini un programme sportif, voulez vous consulter vos progressions ?";
 
-
   static const String articleWroteBy = "Écrit par ";
 
   static const String buttonClose = "FERMER";
@@ -86,9 +86,9 @@ class Texts {
 
   static const String defaultSportProgramName = "Programme sans nom";
   static const String evolutionScreenTitlePrefix = "Évolution: ";
-  
+
   static const String removeSportProgramDecorationLabelName = "Nom du programme";
-  
+
   static const String exerciseSelectorAll = "TOUS LES EXERCICES";
   static const String exerciseSelectorItemPrefix = "EXERCICE ";
 
@@ -113,12 +113,18 @@ class Texts {
   static String formatSportProgramWidgetDescription(SportProgram sportProgram) {
     return "Contient " + Texts.exerciseCount(sportProgram.items.length) + "\n" + "Fait le " + formatDate(DateTime.parse(sportProgram.createdDate), [dd, '/', mm, '/', yyyy, ' à ', HH, ':', nn, ':', ss]) + "\n" + "Pour " + sportProgram.target;
   }
+
+  static const Map<BodyBuildingExerciseValueHolderType, String> valueHolderTypeTranslations = {
+    BodyBuildingExerciseValueHolderType.series: "Séries",
+    BodyBuildingExerciseValueHolderType.repetitions: "Répétitions",
+    BodyBuildingExerciseValueHolderType.weight: "Poids (kg)",
+  };
 }
 
 class AppStorage {
   static const String sportProgramDataFile = "sport-program.json";
   static const String sportProgramJsonItemsKey = "saved";
-  
+
   static const String sportProgramEvolutionDatabaseFile = "sport-program-evolution.db";
 }
 

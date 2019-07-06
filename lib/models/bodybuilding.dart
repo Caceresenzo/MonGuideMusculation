@@ -108,7 +108,7 @@ class BodyBuildingExerciseValueHolder {
   int get id => _id;
   DateTime get date => _date;
   BodyBuildingExercise get exercise => _exercise;
-  BodyBuildingExerciseValueHolderType get exerciseType => _type;
+  BodyBuildingExerciseValueHolderType get type => _type;
   double get value => _value;
 }
 

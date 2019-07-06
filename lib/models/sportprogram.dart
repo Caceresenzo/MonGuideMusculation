@@ -39,7 +39,7 @@ class SportProgram {
     if (name == null) {
       name = data["name"];
     }
-    data["name"] = name != null ? name : (Texts.defaultSportProgramName + "hello");
+    data["name"] = name != null ? name : Texts.defaultSportProgramName;
 
     return new SportProgram(
       source: data,

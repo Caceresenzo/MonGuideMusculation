@@ -146,16 +146,3 @@ class BodyBuildingManager extends BaseManager {
     });
   }
 }
-
-
-
-/*
-
-
-  static const String columnId = "_id";
-  static const String columnDate = "exercise";
-  static const String columnType = "type";
-  static const String columnValue = "value";
-
-
-*/
