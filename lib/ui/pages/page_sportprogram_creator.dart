@@ -457,53 +457,120 @@ class _SportProgramCreatorState extends State<SportProgramCreatorScreen> {
   }
 
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text("Creation"),
-        backgroundColor: Constants.colorAccent,
-        elevation: 0.0,
-      ),
-      body: ReorderableList(
-        onReorder: this._reorderCallback,
-        onReorderDone: this._reorderDone,
-        child: ListView.builder(
-          controller: _controller,
-          itemCount: _items.length,
-          itemBuilder: (BuildContext context, int index) {
-            return SportProgramItemWidget(
-              parent: this,
-              data: _items[index],
-              // first and last attributes affect border drawn during dragging
-              isFirst: index == 0,
-              isLast: index == _items.length - 1,
+    return WillPopScope(
+      onWillPop: () {
+        return showDialog(
+          context: context,
+          builder: (context) {
+            Widget _buildButton(bool raised, String text, dynamic returnValue) {
+              Text child = Text(
+                text.toUpperCase(),
+                style: Theme.of(context).textTheme.button.copyWith(color: raised ? Colors.white : Constants.colorAccent),
+              );
+
+              void onPressed() {
+                Navigator.of(context).pop(returnValue);
+              }
+
+              if (raised) {
+                return RaisedButton(
+                  onPressed: onPressed,
+                  child: child,
+                  elevation: 0.0,
+                  highlightElevation: 0.0,
+                  color: Constants.colorAccent,
+                );
+              }
+
+              return FlatButton(
+                onPressed: onPressed,
+                child: child,
+              );
+            }
+
+            return AlertDialog(
+              title: buildBasicDialogTitle(Texts.dialogTitleConfirm),
+              content: Text("Voulez vous enregistrer avant de quitter ?"),
+              elevation: 0.0,
+              actions: <Widget>[
+                _buildButton(false, "Anuler", null),
+                _buildButton(false, "Non", false),
+                _buildButton(true, "Oui", true),
+              ],
             );
           },
+        ).then((result) {
+          if (result == null) {
+            return false;
+          }
+
+          if (result as bool) {
+            _save();
+          }
+
+          return true;
+        });
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text("Creation"),
+          backgroundColor: Constants.colorAccent,
+          elevation: 0.0,
         ),
-      ),
-      bottomNavigationBar: SizedBox(
-        height: 72.0,
-        child: Column(
-          children: <Widget>[
-            CommonDivider(
-              customHeight: 0.0,
-            ),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: FloatingActionButton(
-                    elevation: 0.0,
-                    child: Icon(Icons.add),
-                    onPressed: () {
-                      _AddNewExerciseScreen.open(context, this);
-                    },
+        body: ReorderableList(
+          onReorder: this._reorderCallback,
+          onReorderDone: this._reorderDone,
+          child: ListView.builder(
+            controller: _controller,
+            itemCount: _items.length,
+            itemBuilder: (BuildContext context, int index) {
+              return SportProgramItemWidget(
+                parent: this,
+                data: _items[index],
+                // first and last attributes affect border drawn during dragging
+                isFirst: index == 0,
+                isLast: index == _items.length - 1,
+              );
+            },
+          ),
+        ),
+        bottomNavigationBar: SizedBox(
+          height: 72.0,
+          child: Column(
+            children: <Widget>[
+              CommonDivider(
+                customHeight: 0.0,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: FloatingActionButton(
+                      heroTag: null,
+                      elevation: 0.0,
+                      child: Icon(Icons.add),
+                      onPressed: () {
+                        _AddNewExerciseScreen.open(context, this);
+                      },
+                    ),
                   ),
-                )
-              ],
-            )
-          ],
+                  Padding(
+                    padding: EdgeInsets.all(8.0),
+                    child: FloatingActionButton(
+                      heroTag: null,
+                      elevation: 0.0,
+                      child: Icon(Icons.save),
+                      onPressed: () {
+                        _save();
+                      },
+                    ),
+                  )
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
@@ -545,4 +612,6 @@ class _SportProgramCreatorState extends State<SportProgramCreatorScreen> {
       _items.insert(index, modifiedItem);
     });
   }
+
+  void _save() {}
 }
