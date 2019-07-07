@@ -15,9 +15,12 @@ import 'package:charts_flutter/flutter.dart' as charts;
 class BodyBuildingMuscleWidget extends StatelessWidget {
   final BodyBuildingMuscle muscle;
 
+  final dynamic onSubItemTap;
+
   const BodyBuildingMuscleWidget(
     this.muscle, {
     Key key,
+    this.onSubItemTap,
   })  : assert(muscle != null),
         super(key: key);
 
@@ -36,14 +39,12 @@ class BodyBuildingMuscleWidget extends StatelessWidget {
         subtitle: Text(Texts.exerciseCount(muscle.exercises.length)),
         trailing: Icon(Icons.keyboard_arrow_right),
         onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => BodyBuildingScreen(
-                    muscle: muscle,
-                  ),
-            ),
-          );
+          navigatorPush(
+              context,
+              BodyBuildingScreen(
+                muscle: muscle,
+                onTapOverride: onSubItemTap,
+              ));
         },
       );
 
@@ -55,8 +56,9 @@ class BodyBuildingMuscleWidget extends StatelessWidget {
 
 class BodyBuildingExerciseWidget extends StatelessWidget {
   final BodyBuildingExercise exercise;
+  final dynamic onTap;
 
-  const BodyBuildingExerciseWidget(this.exercise, {Key key, BodyBuildingExerciseType typeFilter})
+  const BodyBuildingExerciseWidget(this.exercise, {Key key, this.onTap})
       : assert(exercise != null),
         super(key: key);
 
@@ -65,7 +67,16 @@ class BodyBuildingExerciseWidget extends StatelessWidget {
         // subtitle: Text(exercise.shortDescription ?? Texts.itemMuscleNoShortDescription),
         trailing: Icon(Icons.keyboard_arrow_right),
         onTap: () {
-          BodyBuildingExerciseReadingScreen.open(context, exercise);
+          if (onTap == null) {
+            BodyBuildingExerciseReadingScreen.open(context, exercise);
+          } else {
+            try {
+              onTap(exercise);
+            } catch (error) {
+              print("Error when executing onTap custom listener.");
+              print(error);
+            }
+          }
         },
       );
 
@@ -77,23 +88,40 @@ class BodyBuildingExerciseWidget extends StatelessWidget {
 
 class BodyBuildingScreen extends StatefulWidget {
   final BodyBuildingMuscle muscle;
+  final dynamic onTapOverride;
+  final bool forceAppBar;
 
   const BodyBuildingScreen({
     Key key,
     this.muscle,
+    this.onTapOverride,
+    this.forceAppBar = false,
   }) : super(key: key);
 
   @override
   State<BodyBuildingScreen> createState() {
     if (muscle != null) {
-      return _BodyBuildingScreenExerciseByMuscleListingState(muscle);
+      return _BodyBuildingScreenExerciseByMuscleListingState(muscle, onTap: onTapOverride);
     }
 
-    return _BodyBuildingScreenMuscleListingState();
+    return _BodyBuildingScreenMuscleListingState(
+      forceAppBar: forceAppBar,
+      onSubItemTap: onTapOverride,
+    );
   }
 }
 
 class _BodyBuildingScreenMuscleListingState extends CommonRefreshableState<BodyBuildingScreen, BodyBuildingMuscle> {
+  bool forceAppBar;
+  final dynamic onSubItemTap;
+
+  _BodyBuildingScreenMuscleListingState({this.forceAppBar = false, this.onSubItemTap}) {
+    /* Flutter suck */
+    if (forceAppBar == null) {
+      forceAppBar = false;
+    }
+  }
+
   @override
   Future<void> getFuture() {
     return Managers.bodyBuildingManager.fetch(!hasInitialized());
@@ -116,17 +144,34 @@ class _BodyBuildingScreenMuscleListingState extends CommonRefreshableState<BodyB
   }
 
   @override
+  Widget buildAppBar(BuildContext context) {
+    if (!forceAppBar) {
+      return null;
+    }
+
+    return AppBar(
+      title: Text("Liste des muscles"),
+      backgroundColor: Constants.colorAccent,
+      elevation: 0.0,
+    );
+  }
+
+  @override
   Widget buildItem(BuildContext context, List<BodyBuildingMuscle> items, int index) {
     return SizedBox(
-      child: BodyBuildingMuscleWidget(items[index]),
+      child: BodyBuildingMuscleWidget(
+        items[index],
+        onSubItemTap: onSubItemTap,
+      ),
     );
   }
 }
 
 class _BodyBuildingScreenExerciseByMuscleListingState extends State<BodyBuildingScreen> {
   final BodyBuildingMuscle muscle;
+  final dynamic onTap;
 
-  _BodyBuildingScreenExerciseByMuscleListingState(this.muscle);
+  _BodyBuildingScreenExerciseByMuscleListingState(this.muscle, {this.onTap});
 
   List<BodyBuildingExercise> items = new List();
   List<BodyBuildingExercise> _allItems = new List();
@@ -148,7 +193,7 @@ class _BodyBuildingScreenExerciseByMuscleListingState extends State<BodyBuilding
 
   Widget _buildItem(BuildContext context, List<BodyBuildingExercise> items, int index) {
     return SizedBox(
-      child: BodyBuildingExerciseWidget(items[index]),
+      child: BodyBuildingExerciseWidget(items[index], onTap: onTap),
     );
   }
 

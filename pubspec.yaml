@@ -30,6 +30,8 @@ dependencies:
   charts_flutter:
   sqflite:
   path:
+  flutter_reorderable_list:
+  random_string:
 
 dev_dependencies:
   flutter_test:

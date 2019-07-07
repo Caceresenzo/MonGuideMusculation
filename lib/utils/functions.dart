@@ -66,3 +66,27 @@ String formatDuration(Duration duration) {
   String twoDigitSeconds = twoDigits(duration.inSeconds.remainder(60));
   return "${twoDigits(duration.inHours)}:$twoDigitMinutes:$twoDigitSeconds";
 }
+
+Widget buildBasicDialogTitle(String text) {
+  return new Text(
+    text,
+    style: const TextStyle(
+      color: Constants.colorAccent,
+    ),
+    textAlign: TextAlign.center,
+  );
+}
+
+Future navigatorPush(BuildContext context, Widget widget) {
+  return Navigator.of(context).push(MaterialPageRoute(builder: (context) => widget));
+}
+
+num safeNumber(num number) {
+  int intValue = number.toInt();
+
+  if (intValue == number) {
+    return intValue;
+  }
+
+  return number;
+}

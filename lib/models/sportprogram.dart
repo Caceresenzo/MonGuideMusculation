@@ -1,6 +1,10 @@
+import 'dart:math';
+
 import 'package:meta/meta.dart';
 import 'package:mon_guide_musculation/models/bodybuilding.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
+import 'package:mon_guide_musculation/utils/functions.dart';
+import 'package:random_string/random_string.dart';
 
 class SportProgram {
   final Map<String, dynamic> source;
@@ -9,6 +13,7 @@ class SportProgram {
   final String token;
   final String target;
   final List<SportProgramItem> items;
+  final bool _isCustom;
   String _name;
 
   SportProgram({
@@ -19,11 +24,15 @@ class SportProgram {
     this.target,
     this.items,
     String name,
+    bool isCustom = false,
   })  : assert(id != null),
         assert(token != null),
         assert(target != null),
         assert(items != null),
-        this._name = name;
+        this._name = name,
+        this._isCustom = isCustom;
+
+  bool get isCustom => _isCustom;
 
   String name() {
     if (_name == null || _name.isEmpty) {
@@ -33,7 +42,7 @@ class SportProgram {
     return _name;
   }
 
-  factory SportProgram.fromJson(Map<String, dynamic> data, List<SportProgramItem> items, {String name}) {
+  factory SportProgram.fromJson(Map<String, dynamic> data, List<SportProgramItem> items, {String name, bool isCustom = false}) {
     assert(data != null);
 
     if (name == null) {
@@ -49,6 +58,19 @@ class SportProgram {
       target: data["target"],
       items: items,
       name: data["name"],
+      isCustom: isCustom,
+    );
+  }
+
+  factory SportProgram.empty() {
+    return new SportProgram(
+      source: null,
+      id: "",
+      createdDate: new DateTime.now().toString(),
+      token: "CUSTOM-" + randomAlphaNumeric(50),
+      target: "",
+      items: <SportProgramItem>[],
+      isCustom: true,
     );
   }
 
@@ -122,15 +144,7 @@ class SportProgramItem {
     );
   }
 
-  num get safeWeight {
-    int intValue = weight.toInt();
-
-    if (intValue == weight) {
-      return intValue;
-    }
-
-    return weight;
-  }
+  num get safeWeight => safeNumber(weight);
 
   getValueByType(BodyBuildingExerciseValueHolderType type) {
     switch (type) {

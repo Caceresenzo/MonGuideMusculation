@@ -108,7 +108,7 @@ class Texts {
   }
 
   static String formatSportProgramItemSimpleItemDescription(SportProgramItem item) {
-    return "${item.series} ser. de ${item.repetitions} rep. à ${item.weight} kg";
+    return "${item.series} ser. de ${item.repetitions} rep. à ${item.safeWeight} kg";
   }
 
   static String formatSportProgramWidgetDescription(SportProgram sportProgram) {
