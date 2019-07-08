@@ -384,24 +384,45 @@ class _SportProgramScreenItemsListingState extends State<SportProgramScreen> {
                       ),
                       textAlign: TextAlign.center,
                     ),
-                    content: new Theme(
-                      data: new ThemeData(
-                        primaryColor: Constants.colorAccent,
-                        accentColor: Constants.colorAccent,
-                      ),
-                      child: TextFormField(
-                        controller: controller,
-                        cursorColor: Constants.colorAccent,
-                        maxLines: 1,
-                        maxLength: 100,
-                        decoration: InputDecoration(
-                          labelText: Texts.removeSportProgramDecorationLabelName,
+                    elevation: 0.0,
+                    content: ListView(
+                      children: <Widget>[
+                        new Theme(
+                          data: new ThemeData(
+                            primaryColor: Constants.colorAccent,
+                            accentColor: Constants.colorAccent,
+                          ),
+                          child: TextFormField(
+                            controller: controller,
+                            cursorColor: Constants.colorAccent,
+                            maxLines: 1,
+                            maxLength: 100,
+                            decoration: InputDecoration(
+                              labelText: Texts.removeSportProgramDecorationLabelName,
+                            ),
+                          ),
                         ),
-                      ),
+                        RaisedButton(
+                          onPressed: sportProgram.isCustom
+                              ? () {
+                                  Navigator.of(context).pop(false);
+                                  SportProgramCreatorScreen.open(context, sportProgram: sportProgram);
+                                }
+                              : null,
+                          color: Constants.colorAccent,
+                          elevation: 0.0,
+                          disabledElevation: 0.0,
+                          highlightElevation: 0.0,
+                          child: Text(
+                            "MODIFIER",
+                            style: Theme.of(context).textTheme.button.copyWith(color: Colors.white),
+                          ),
+                        )
+                      ],
                     ),
                     actions: <Widget>[
                       FlatButton(
-                        child: Text(Texts.buttonRename),
+                        child: Text(Texts.buttonConfirm),
                         onPressed: () => Navigator.of(context).pop(),
                       )
                     ],

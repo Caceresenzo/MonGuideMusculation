@@ -428,16 +428,77 @@ class _SportProgramCreatorState extends State<SportProgramCreatorScreen> {
 
   void _save() {
     if (_canSave()) {
-      _sportProgram.items.clear();
-      _sportProgram.items.addAll(_items.map((item) => item.object).toList());
+      _sportProgram.items
+        ..clear()
+        ..addAll(_items.map((item) => item.object).toList());
 
       Managers.sportProgramManager.pushCustom(_sportProgram);
     }
 
-    _scaffoldStateKey.currentState..removeCurrentSnackBar();
-    _scaffoldStateKey.currentState.showSnackBar(SnackBar(
-      content: Text(_items.isEmpty ? "Aucune modification enregistré: aucun contenu": "Modification enregistré."),
-    ));
+    _scaffoldStateKey.currentState
+      ..removeCurrentSnackBar()
+      ..showSnackBar(SnackBar(
+        content: Text(_items.isEmpty ? "Aucune modification enregistré: aucun contenu" : "Modification enregistré."),
+      ));
+  }
+
+  void _renamePrompt() {
+    final String currentName = _sportProgram.name();
+    TextEditingController controller = new TextEditingController(
+      text: currentName,
+    );
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text(
+            Texts.dialogTitleEdit,
+            style: const TextStyle(
+              color: Constants.colorAccent,
+            ),
+            textAlign: TextAlign.center,
+          ),
+          elevation: 0.0,
+          content: new Theme(
+            data: new ThemeData(
+              primaryColor: Constants.colorAccent,
+              accentColor: Constants.colorAccent,
+            ),
+            child: TextFormField(
+              controller: controller,
+              cursorColor: Constants.colorAccent,
+              maxLines: 1,
+              maxLength: 100,
+              decoration: InputDecoration(
+                labelText: Texts.removeSportProgramDecorationLabelName,
+              ),
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(Texts.buttonRename),
+              onPressed: () => Navigator.of(context).pop(),
+            )
+          ],
+        );
+      },
+    ).then((_) {
+      final String newName = controller.text;
+
+      if (_sportProgram.rename(newName)) {
+        _scaffoldStateKey.currentState.hideCurrentSnackBar();
+        _scaffoldStateKey.currentState.showSnackBar(SnackBar(
+          content: Text(Texts.sportProgramRenamed),
+          action: SnackBarAction(
+            label: Texts.snackBarButtonClose,
+            onPressed: () {},
+          ),
+        ));
+
+        setState(() {});
+      }
+    });
   }
 
   int _indexOfKey(Key key) {
@@ -513,50 +574,67 @@ class _SportProgramCreatorState extends State<SportProgramCreatorScreen> {
     });
   }
 
+  Widget _buildFloatingActionButton(IconData icon, String tooltip, void onPressed()) {
+    return Padding(
+      padding: EdgeInsets.all(8.0),
+      child: FloatingActionButton(
+        heroTag: null,
+        elevation: 0.0,
+        highlightElevation: 0.0,
+        child: Icon(icon),
+        onPressed: onPressed,
+        tooltip: tooltip,
+      ),
+    );
+  }
+
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        return (_canSave() ? showDialog(
-          context: context,
-          builder: (context) {
-            Widget _buildButton(bool raised, String text, dynamic returnValue) {
-              Text child = Text(
-                text.toUpperCase(),
-                style: Theme.of(context).textTheme.button.copyWith(color: raised ? Colors.white : Constants.colorAccent),
-              );
+        return (_canSave()
+                ? showDialog(
+                    context: context,
+                    builder: (context) {
+                      Widget _buildButton(bool raised, String text, dynamic returnValue) {
+                        Text child = Text(
+                          text.toUpperCase(),
+                          style: Theme.of(context).textTheme.button.copyWith(color: raised ? Colors.white : Constants.colorAccent),
+                        );
 
-              void onPressed() {
-                Navigator.of(context).pop(returnValue);
-              }
+                        void onPressed() {
+                          Navigator.of(context).pop(returnValue);
+                        }
 
-              if (raised) {
-                return RaisedButton(
-                  onPressed: onPressed,
-                  child: child,
-                  elevation: 0.0,
-                  highlightElevation: 0.0,
-                  color: Constants.colorAccent,
-                );
-              }
+                        if (raised) {
+                          return RaisedButton(
+                            onPressed: onPressed,
+                            child: child,
+                            elevation: 0.0,
+                            highlightElevation: 0.0,
+                            color: Constants.colorAccent,
+                          );
+                        }
 
-              return FlatButton(
-                onPressed: onPressed,
-                child: child,
-              );
-            }
+                        return FlatButton(
+                          onPressed: onPressed,
+                          child: child,
+                        );
+                      }
 
-            return AlertDialog(
-              title: buildBasicDialogTitle(Texts.dialogTitleConfirm),
-              content: Text("Voulez vous enregistrer avant de quitter ?"),
-              elevation: 0.0,
-              actions: <Widget>[
-                _buildButton(false, "Anuler", null),
-                _buildButton(false, "Non", false),
-                _buildButton(true, "Oui", true),
-              ],
-            );
-          },
-        ) : Future(() => true)).then((result) {
+                      return AlertDialog(
+                        title: buildBasicDialogTitle(Texts.dialogTitleConfirm),
+                        content: Text("Voulez vous enregistrer avant de quitter ?"),
+                        elevation: 0.0,
+                        actions: <Widget>[
+                          _buildButton(false, "Anuler", null),
+                          _buildButton(false, "Non", false),
+                          _buildButton(true, "Oui", true),
+                        ],
+                      );
+                    },
+                  )
+                : Future(() => true))
+            .then((result) {
           if (result == null) {
             return false;
           }
@@ -615,30 +693,15 @@ class _SportProgramCreatorState extends State<SportProgramCreatorScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: FloatingActionButton(
-                      heroTag: null,
-                      elevation: 0.0,
-                      highlightElevation: 0.0,
-                      child: Icon(Icons.add),
-                      onPressed: () {
-                        _AddNewExerciseScreen.open(context, this);
-                      },
-                    ),
-                  ),
-                  Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: FloatingActionButton(
-                      heroTag: null,
-                      elevation: 0.0,
-                      highlightElevation: 0.0,
-                      child: Icon(Icons.save),
-                      onPressed: () {
-                        _save();
-                      },
-                    ),
-                  )
+                  _buildFloatingActionButton(Icons.add, "Ajouter", () {
+                    _AddNewExerciseScreen.open(context, this);
+                  }),
+                  _buildFloatingActionButton(Icons.save, "Sauvegarder", () {
+                    _save();
+                  }),
+                  _buildFloatingActionButton(Icons.text_fields, "Renomer", () {
+                    _renamePrompt();
+                  }),
                 ],
               )
             ],

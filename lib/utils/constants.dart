@@ -72,6 +72,7 @@ class Texts {
   static const String buttonCancel = "ANNULER";
   static const String buttonImport = "AJOUTER";
   static const String buttonRename = "RENOMMER";
+  static const String buttonConfirm = "CONFIRMER";
   static const String buttonShow = "AFFICHER";
 
   static const String dialogTitleConfirm = "Confirmation";

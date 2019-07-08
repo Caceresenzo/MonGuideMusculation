@@ -25,7 +25,7 @@ class SportProgramManager extends BaseManager {
   void initialize() async {
     _storageFile = await getLocalFile(AppStorage.sportProgramDataFile);
 
-    _storageFile.deleteSync();
+    // _storageFile.deleteSync();
     [_storageFile].forEach((file) => file.createSync(recursive: true));
 
     savedPrograms = new List();
@@ -241,7 +241,18 @@ class SportProgramManager extends BaseManager {
   void pushCustom(SportProgram sportProgram) {
     assert(sportProgram.isCustom);
 
-    savedPrograms.add(sportProgram);
+    SportProgram oldInstance;
+    savedPrograms.forEach((program) {
+      if (sportProgram.token == program.token) {
+        oldInstance = program;
+      }
+    });
+
+    if (oldInstance != null) {
+      savedPrograms.remove(oldInstance);
+    }
+
+    savedPrograms.insert(0, sportProgram);
     _savePrograms(savedPrograms);
   }
 }
