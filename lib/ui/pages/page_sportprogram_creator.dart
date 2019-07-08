@@ -8,6 +8,7 @@ import 'package:mon_guide_musculation/logic/managers/base_manager.dart';
 import 'package:mon_guide_musculation/models/bodybuilding.dart';
 import 'package:mon_guide_musculation/models/sportprogram.dart';
 import 'package:mon_guide_musculation/ui/pages/page_bodybuilding.dart';
+import 'package:mon_guide_musculation/ui/widgets/card_info.dart';
 import 'package:mon_guide_musculation/ui/widgets/common_divider.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 import 'package:mon_guide_musculation/utils/functions.dart';
@@ -166,7 +167,7 @@ class SportProgramItemWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ReorderableItem(
-      key: data.key, //
+      key: data.key,
       childBuilder: _buildChild,
     );
   }
@@ -398,6 +399,7 @@ class SportProgramCreatorScreen extends StatefulWidget {
 }
 
 class _SportProgramCreatorState extends State<SportProgramCreatorScreen> {
+  final GlobalKey<ScaffoldState> _scaffoldStateKey = GlobalKey();
   final ScrollController _controller = ScrollController();
 
   final SportProgram _sportProgram;
@@ -418,6 +420,18 @@ class _SportProgramCreatorState extends State<SportProgramCreatorScreen> {
 
   Key _getNextKey() {
     return ValueKey(itemKeyIncrement++);
+  }
+
+  void _save() {
+    _sportProgram.items.clear();
+    _sportProgram.items.addAll(_items.map((item) => item.object).toList());
+
+    Managers.sportProgramManager.pushCustom(_sportProgram);
+
+    _scaffoldStateKey.currentState..removeCurrentSnackBar();
+    _scaffoldStateKey.currentState.showSnackBar(SnackBar(
+      content: Text("Modification enregistré."),
+    ));
   }
 
   int _indexOfKey(Key key) {
@@ -454,6 +468,43 @@ class _SportProgramCreatorState extends State<SportProgramCreatorScreen> {
       this,
       edit: sportProgramItemWidget.data,
     );
+  }
+
+  void newItem(BodyBuildingExercise selectedExercise, int series, int repetitions, double weight) {
+    _items.add(new SportProgramItemData(
+        new SportProgramItem(
+          parent: _sportProgram,
+          exercise: selectedExercise,
+          series: series,
+          repetitions: repetitions,
+          weight: weight,
+        ),
+        _getNextKey()));
+
+    setState(() {});
+
+    Future.delayed(Duration(milliseconds: 10)).then((_) {
+      _controller.jumpTo(_controller.position.maxScrollExtent);
+    });
+  }
+
+  void modifiedItem(SportProgramItemData originalItem, BodyBuildingExercise selectedExercise, int series, int repetitions, double weight) {
+    int index = _items.indexOf(originalItem);
+
+    SportProgramItemData modifiedItem = SportProgramItemData(
+        new SportProgramItem(
+          parent: _sportProgram,
+          exercise: selectedExercise,
+          series: series,
+          repetitions: repetitions,
+          weight: weight,
+        ),
+        _getNextKey());
+
+    setState(() {
+      _items.removeAt(index);
+      _items.insert(index, modifiedItem);
+    });
   }
 
   Widget build(BuildContext context) {
@@ -512,6 +563,7 @@ class _SportProgramCreatorState extends State<SportProgramCreatorScreen> {
         });
       },
       child: Scaffold(
+        key: _scaffoldStateKey,
         appBar: AppBar(
           title: Text("Creation"),
           backgroundColor: Constants.colorAccent,
@@ -520,16 +572,28 @@ class _SportProgramCreatorState extends State<SportProgramCreatorScreen> {
         body: ReorderableList(
           onReorder: this._reorderCallback,
           onReorderDone: this._reorderDone,
-          child: ListView.builder(
-            controller: _controller,
-            itemCount: _items.length,
-            itemBuilder: (BuildContext context, int index) {
-              return SportProgramItemWidget(
-                parent: this,
-                data: _items[index],
-                // first and last attributes affect border drawn during dragging
-                isFirst: index == 0,
-                isLast: index == _items.length - 1,
+          child: Builder(
+            builder: (context) {
+              if (_items.isEmpty) {
+                return ListView(
+                  children: <Widget>[
+                    InfoCard.templateEmpty(),
+                  ],
+                );
+              }
+
+              return ListView.builder(
+                controller: _controller,
+                itemCount: _items.length,
+                itemBuilder: (BuildContext context, int index) {
+                  return SportProgramItemWidget(
+                    parent: this,
+                    data: _items[index],
+                    // first and last attributes affect border drawn during dragging
+                    isFirst: index == 0,
+                    isLast: index == _items.length - 1,
+                  );
+                },
               );
             },
           ),
@@ -550,6 +614,7 @@ class _SportProgramCreatorState extends State<SportProgramCreatorScreen> {
                     child: FloatingActionButton(
                       heroTag: null,
                       elevation: 0.0,
+                      highlightElevation: 0.0,
                       child: Icon(Icons.add),
                       onPressed: () {
                         _AddNewExerciseScreen.open(context, this);
@@ -561,6 +626,7 @@ class _SportProgramCreatorState extends State<SportProgramCreatorScreen> {
                     child: FloatingActionButton(
                       heroTag: null,
                       elevation: 0.0,
+                      highlightElevation: 0.0,
                       child: Icon(Icons.save),
                       onPressed: () {
                         _save();
@@ -575,43 +641,4 @@ class _SportProgramCreatorState extends State<SportProgramCreatorScreen> {
       ),
     );
   }
-
-  void newItem(BodyBuildingExercise selectedExercise, int series, int repetitions, double weight) {
-    _items.add(new SportProgramItemData(
-        new SportProgramItem(
-          parent: _sportProgram,
-          exercise: selectedExercise,
-          series: series,
-          repetitions: repetitions,
-          weight: weight,
-        ),
-        _getNextKey()));
-
-    setState(() {});
-
-    Future.delayed(Duration(milliseconds: 10)).then((_) {
-      _controller.jumpTo(_controller.position.maxScrollExtent);
-    });
-  }
-
-  void modifiedItem(SportProgramItemData originalItem, BodyBuildingExercise selectedExercise, int series, int repetitions, double weight) {
-    int index = _items.indexOf(originalItem);
-
-    SportProgramItemData modifiedItem = SportProgramItemData(
-        new SportProgramItem(
-          parent: _sportProgram,
-          exercise: selectedExercise,
-          series: series,
-          repetitions: repetitions,
-          weight: weight,
-        ),
-        _getNextKey());
-
-    setState(() {
-      _items.removeAt(index);
-      _items.insert(index, modifiedItem);
-    });
-  }
-
-  void _save() {}
 }

@@ -40,6 +40,8 @@ class Texts {
   static const String pageNoAnswerSub = "(aucune réponse)";
   static const String pageFailedToLoad = "J'ai pas réussi...";
   static const String pageFailedToLoadSub = "(chargement échoué)";
+  static const String pageEmpty = "Y'a rien a voir.";
+  static const String pageEmptySub = "(contenu vide)";
 
   static const String itemSportProgramNumberSeries = " séries";
   static const String itemSportProgramOfRepetitions = "de";
@@ -112,7 +114,7 @@ class Texts {
   }
 
   static String formatSportProgramWidgetDescription(SportProgram sportProgram) {
-    return "Contient " + Texts.exerciseCount(sportProgram.items.length) + "\n" + "Fait le " + formatDate(DateTime.parse(sportProgram.createdDate), [dd, '/', mm, '/', yyyy, ' à ', HH, ':', nn, ':', ss]) + "\n" + "Pour " + sportProgram.target;
+    return "Contient " + Texts.exerciseCount(sportProgram.items.length).toLowerCase() + "\n" + "Fait le " + formatDate(DateTime.parse(sportProgram.createdDate), [dd, '/', mm, '/', yyyy, ' à ', HH, ':', nn, ':', ss]) + "\n" + (sportProgram.isCustom ? "Crée par vous" : "Pour " + sportProgram.target);
   }
 
   static const Map<BodyBuildingExerciseValueHolderType, String> valueHolderTypeTranslations = {

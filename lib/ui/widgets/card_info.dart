@@ -68,4 +68,12 @@ class InfoCard extends StatelessWidget {
       subText: Texts.pageFailedToLoadSub,
     );
   }
+
+  static InfoCard templateEmpty() {
+    return InfoCard(
+      icon: MyIcons.emo_displeased,
+      text: Texts.pageEmpty,
+      subText: Texts.pageEmptySub,
+    );
+  }
 }

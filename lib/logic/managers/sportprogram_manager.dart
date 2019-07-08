@@ -25,6 +25,7 @@ class SportProgramManager extends BaseManager {
   void initialize() async {
     _storageFile = await getLocalFile(AppStorage.sportProgramDataFile);
 
+    _storageFile.deleteSync();
     [_storageFile].forEach((file) => file.createSync(recursive: true));
 
     savedPrograms = new List();
@@ -53,22 +54,29 @@ class SportProgramManager extends BaseManager {
 
     print(data);
 
-    SportProgram program = SportProgram.fromJson(data["program"], items);
+    try {
+      SportProgram program = SportProgram.fromJson(data["program"], items);
 
-    for (dynamic item in (data["exercises"] as List<dynamic>)) {
-      try {
-        items.add(SportProgramItem.fromJson(
-          item,
-          program,
-          await Managers.bodyBuildingManager.resolveExerciseByKey(item["exercise"]["key"]),
-        ));
-      } catch (error) {
-        print("Invalid entry with redactor id: ${item["redactor_id"]}");
-        print(error);
+      for (dynamic item in (data["exercises"] as List<dynamic>)) {
+        try {
+          items.add(SportProgramItem.fromJson(
+            item,
+            program,
+            await Managers.bodyBuildingManager.resolveExerciseByKey(item["exercise"]["key"]),
+          ));
+        } catch (error) {
+          print("Invalid entry with redactor id: ${item["redactor_id"]}");
+          print(error);
+        }
       }
-    }
 
-    return program;
+      return program;
+    } catch (error) {
+      print("An error occured when creating a SportProgram item.");
+      print(error);
+
+      return null;
+    }
   }
 
   Future<List<SportProgram>> retriveSaved() {
@@ -84,7 +92,11 @@ class SportProgramManager extends BaseManager {
       savedPrograms.clear();
 
       for (Map<String, dynamic> item in items) {
-        savedPrograms.add(await _createSportProgram(item));
+        SportProgram program = await _createSportProgram(item);
+
+        if (program != null) {
+          savedPrograms.add(program);
+        }
       }
     }).then((_) => savedPrograms);
   }
@@ -224,5 +236,12 @@ class SportProgramManager extends BaseManager {
     }
 
     return false;
+  }
+
+  void pushCustom(SportProgram sportProgram) {
+    assert(sportProgram.isCustom);
+
+    savedPrograms.add(sportProgram);
+    _savePrograms(savedPrograms);
   }
 }

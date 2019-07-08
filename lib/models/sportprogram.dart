@@ -7,7 +7,6 @@ import 'package:mon_guide_musculation/utils/functions.dart';
 import 'package:random_string/random_string.dart';
 
 class SportProgram {
-  final Map<String, dynamic> source;
   final String id;
   final String createdDate;
   final String token;
@@ -17,7 +16,6 @@ class SportProgram {
   String _name;
 
   SportProgram({
-    this.source,
     this.id,
     this.createdDate,
     this.token,
@@ -27,10 +25,9 @@ class SportProgram {
     bool isCustom = false,
   })  : assert(id != null),
         assert(token != null),
-        assert(target != null),
         assert(items != null),
         this._name = name,
-        this._isCustom = isCustom;
+        this._isCustom = (isCustom ?? false);
 
   bool get isCustom => _isCustom;
 
@@ -42,45 +39,53 @@ class SportProgram {
     return _name;
   }
 
-  factory SportProgram.fromJson(Map<String, dynamic> data, List<SportProgramItem> items, {String name, bool isCustom = false}) {
+  factory SportProgram.fromJson(Map<String, dynamic> data, List<SportProgramItem> items, {String name, bool isCustom}) {
     assert(data != null);
 
-    if (name == null) {
-      name = data["name"];
-    }
-    data["name"] = name != null ? name : Texts.defaultSportProgramName;
-
     return new SportProgram(
-      source: data,
       id: data["_id"],
       createdDate: data["created_date"],
       token: data["token"],
       target: data["target"],
       items: items,
       name: data["name"],
-      isCustom: isCustom,
+      isCustom: isCustom ?? data["isCustom"],
     );
   }
 
   factory SportProgram.empty() {
     return new SportProgram(
-      source: null,
       id: "",
       createdDate: new DateTime.now().toString(),
       token: "CUSTOM-" + randomAlphaNumeric(50),
-      target: "",
       items: <SportProgramItem>[],
       isCustom: true,
     );
   }
 
   Map<String, dynamic> toOriginalJson() {
-    Map<String, dynamic> data = new Map();
+    print({
+      "program": {
+        "_id": id,
+        "created_date": createdDate,
+        "token": token,
+        "target": isCustom ? null : target,
+        "name": name(),
+      },
+      "exercises": List.generate(items.length, (index) => items[index].toOriginalJson())
+    });
 
-    data["program"] = source;
-    data["exercises"] = List.generate(items.length, (index) => items[index].source);
-
-    return data;
+    return {
+      "program": {
+        "_id": id,
+        "created_date": createdDate,
+        "token": token,
+        "target": isCustom ? null : target,
+        "name": name(),
+        "isCustom": isCustom,
+      },
+      "exercises": List.generate(items.length, (index) => items[index].toOriginalJson())
+    };
   }
 
   bool rename(String newName) {
@@ -97,7 +102,6 @@ class SportProgram {
     }
 
     this._name = newName;
-    this.source["name"] = newName;
 
     return true;
   }
@@ -157,5 +161,15 @@ class SportProgramItem {
       default:
         throw Exception("Illegal enum value.");
     }
+  }
+
+  toOriginalJson() {
+    return {
+      "exercise": {"key": exercise.key},
+      "series": series,
+      "repetitions": repetitions,
+      "weight": weight,
+      "redactor_id": redactorId,
+    };
   }
 }
