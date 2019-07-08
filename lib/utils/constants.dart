@@ -19,7 +19,7 @@ class Constants {
 
 class Texts {
   static const String applicationName = "Mon Guide Musculation";
-  static const String applicationVersion = "1.0.0";
+  static const String applicationVersion = "BETA 0.0.1";
   static const String applicationDeveloper = "par Enzo CACERES";
 
   static const String navigationSportProgram = "Progrms";
