@@ -422,15 +422,21 @@ class _SportProgramCreatorState extends State<SportProgramCreatorScreen> {
     return ValueKey(itemKeyIncrement++);
   }
 
-  void _save() {
-    _sportProgram.items.clear();
-    _sportProgram.items.addAll(_items.map((item) => item.object).toList());
+  bool _canSave() {
+    return _items.isNotEmpty;
+  }
 
-    Managers.sportProgramManager.pushCustom(_sportProgram);
+  void _save() {
+    if (_canSave()) {
+      _sportProgram.items.clear();
+      _sportProgram.items.addAll(_items.map((item) => item.object).toList());
+
+      Managers.sportProgramManager.pushCustom(_sportProgram);
+    }
 
     _scaffoldStateKey.currentState..removeCurrentSnackBar();
     _scaffoldStateKey.currentState.showSnackBar(SnackBar(
-      content: Text("Modification enregistré."),
+      content: Text(_items.isEmpty ? "Aucune modification enregistré: aucun contenu": "Modification enregistré."),
     ));
   }
 
@@ -510,7 +516,7 @@ class _SportProgramCreatorState extends State<SportProgramCreatorScreen> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () {
-        return showDialog(
+        return (_canSave() ? showDialog(
           context: context,
           builder: (context) {
             Widget _buildButton(bool raised, String text, dynamic returnValue) {
@@ -550,7 +556,7 @@ class _SportProgramCreatorState extends State<SportProgramCreatorScreen> {
               ],
             );
           },
-        ).then((result) {
+        ) : Future(() => true)).then((result) {
           if (result == null) {
             return false;
           }
