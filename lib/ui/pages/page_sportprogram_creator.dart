@@ -21,8 +21,8 @@ class SportProgramItemData {
 }
 
 class _CustomPopupMenu {
-  static _CustomPopupMenu delete = _CustomPopupMenu(title: "SUPPRIMER", icon: Icons.delete);
-  static _CustomPopupMenu edit = _CustomPopupMenu(title: "EDITER", icon: Icons.edit);
+  static _CustomPopupMenu delete = _CustomPopupMenu(title: Texts.buttonRemove, icon: Icons.delete);
+  static _CustomPopupMenu edit = _CustomPopupMenu(title: Texts.buttonEdit, icon: Icons.edit);
 
   static List<_CustomPopupMenu> items = <_CustomPopupMenu>[edit, delete];
 
@@ -230,7 +230,7 @@ class _AddNewExerciseScreenState extends State<_AddNewExerciseScreen> {
         builder: (context) {
           if (_selectedExercise == null) {
             return ListTile(
-              title: Text("Choisir un exercice"),
+              title: Text(Texts.sportProgramCreatorSelectExerciseEmpty),
               trailing: Icon(Icons.keyboard_arrow_right),
               onTap: onTap,
             );
@@ -238,7 +238,7 @@ class _AddNewExerciseScreenState extends State<_AddNewExerciseScreen> {
 
           return ListTile(
             title: Text(_selectedExercise.title),
-            subtitle: Text("Cliquez pour changer l'exercice"),
+            subtitle: Text(Texts.sportProgramCreatorSelectExerciseChange),
             trailing: GestureDetector(
               child: Icon(
                 Icons.info,
@@ -300,24 +300,24 @@ class _AddNewExerciseScreenState extends State<_AddNewExerciseScreen> {
       },
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Ajouter un exercice"),
+          title: Text(Texts.screenSportProgramCreatorAddExercise),
           backgroundColor: Constants.colorAccent,
           elevation: 0.0,
         ),
         body: ListView(
           children: <Widget>[
             _buildSelectedExerciseTile(context),
-            _buildSlider(context, "Séries", _series.toDouble(), (newValue) {
+            _buildSlider(context, Texts.sportProgramCreatorSliderSeries, _series.toDouble(), (newValue) {
               setState(() {
                 _series = newValue.toInt();
               });
             }, min: 1),
-            _buildSlider(context, "Répétitions", _repetitions.toDouble(), (newValue) {
+            _buildSlider(context, Texts.sportProgramCreatorSliderRepetitions, _repetitions.toDouble(), (newValue) {
               setState(() {
                 _repetitions = newValue.toInt();
               });
             }, min: 1),
-            _buildSlider(context, "Poids (kg)", _weight, (newValue) {
+            _buildSlider(context, Texts.sportProgramCreatorSliderWeight, _weight, (newValue) {
               setState(() {
                 _weight = (newValue * 10).round() / 10;
               });
@@ -339,7 +339,7 @@ class _AddNewExerciseScreenState extends State<_AddNewExerciseScreen> {
                     }
                   },
             child: Text(
-              inEditItem != null ? "MODIFIER" : "AJOUTER",
+              inEditItem != null ? Texts.buttonEdit : Texts.buttonAdd,
               style: Theme.of(context).textTheme.button.copyWith(color: Colors.white),
             ),
             elevation: 0.0,
@@ -438,7 +438,7 @@ class _SportProgramCreatorState extends State<SportProgramCreatorScreen> {
     _scaffoldStateKey.currentState
       ..removeCurrentSnackBar()
       ..showSnackBar(SnackBar(
-        content: Text(_items.isEmpty ? "Aucune modification enregistré: aucun contenu" : "Modification enregistré."),
+        content: Text(_items.isEmpty ? Texts.sportProgramCreatorNotSavedNoContent : Texts.sportProgramCreatorSaved),
       ));
   }
 
@@ -471,7 +471,7 @@ class _SportProgramCreatorState extends State<SportProgramCreatorScreen> {
               maxLines: 1,
               maxLength: 100,
               decoration: InputDecoration(
-                labelText: Texts.removeSportProgramDecorationLabelName,
+                labelText: Texts.remameSportProgramDecorationLabelName,
               ),
             ),
           ),
@@ -623,12 +623,12 @@ class _SportProgramCreatorState extends State<SportProgramCreatorScreen> {
 
                       return AlertDialog(
                         title: buildBasicDialogTitle(Texts.dialogTitleConfirm),
-                        content: Text("Voulez vous enregistrer avant de quitter ?"),
+                        content: Text(Texts.sportProgramCreatorSavePrompt),
                         elevation: 0.0,
                         actions: <Widget>[
-                          _buildButton(false, "Anuler", null),
-                          _buildButton(false, "Non", false),
-                          _buildButton(true, "Oui", true),
+                          _buildButton(false, Texts.buttonCancel, null),
+                          _buildButton(false, Texts.buttonNo, false),
+                          _buildButton(true, Texts.buttonYes, true),
                         ],
                       );
                     },
@@ -649,7 +649,7 @@ class _SportProgramCreatorState extends State<SportProgramCreatorScreen> {
       child: Scaffold(
         key: _scaffoldStateKey,
         appBar: AppBar(
-          title: Text("Creation"),
+          title: Text(Texts.screenSportProgramCreator),
           backgroundColor: Constants.colorAccent,
           elevation: 0.0,
         ),
@@ -693,13 +693,13 @@ class _SportProgramCreatorState extends State<SportProgramCreatorScreen> {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
-                  _buildFloatingActionButton(Icons.add, "Ajouter", () {
+                  _buildFloatingActionButton(Icons.add, Texts.tooltipAdd, () {
                     _AddNewExerciseScreen.open(context, this);
                   }),
-                  _buildFloatingActionButton(Icons.save, "Sauvegarder", () {
+                  _buildFloatingActionButton(Icons.save, Texts.tooltipSave, () {
                     _save();
                   }),
-                  _buildFloatingActionButton(Icons.text_fields, "Renomer", () {
+                  _buildFloatingActionButton(Icons.text_fields, Texts.tooltipRename, () {
                     _renamePrompt();
                   }),
                 ],

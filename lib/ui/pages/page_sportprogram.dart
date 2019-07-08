@@ -398,7 +398,7 @@ class _SportProgramScreenItemsListingState extends State<SportProgramScreen> {
                             maxLines: 1,
                             maxLength: 100,
                             decoration: InputDecoration(
-                              labelText: Texts.removeSportProgramDecorationLabelName,
+                              labelText: Texts.remameSportProgramDecorationLabelName,
                             ),
                           ),
                         ),
@@ -414,7 +414,7 @@ class _SportProgramScreenItemsListingState extends State<SportProgramScreen> {
                           disabledElevation: 0.0,
                           highlightElevation: 0.0,
                           child: Text(
-                            "MODIFIER",
+                            Texts.buttonEdit,
                             style: Theme.of(context).textTheme.button.copyWith(color: Colors.white),
                           ),
                         )

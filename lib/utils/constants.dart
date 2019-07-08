@@ -34,6 +34,11 @@ class Texts {
   static const String ruisiAddress = "Bourges\nFrance";
   static const String ruisiBackgroundContactImageUrl = "https://static.wixstatic.com/media/1bf8c6_896e6f814a7644fd93a44de8db1d8791~mv2_d_1957_2081_s_2.jpg";
 
+  static const String screenMuscleList = "Liste des Muscles";
+  static const String screenEvolution = "Evolution";
+  static const String screenSportProgramCreator = "Crée un programme";
+  static const String screenSportProgramCreatorAddExercise = "Ajouter un Exercice";
+
   static const String pageNoContent = "Rien à dire frère";
   static const String pageNoContentSub = "(aucun contenu disponible)";
   static const String pageNoAnswer = "C'est la sèche ici";
@@ -74,6 +79,14 @@ class Texts {
   static const String buttonRename = "RENOMMER";
   static const String buttonConfirm = "CONFIRMER";
   static const String buttonShow = "AFFICHER";
+  static const String buttonEdit = "MODIFIER";
+  static const String buttonAdd = "AJOUTER";
+  static const String buttonYes = "OUI";
+  static const String buttonNo = "NON";
+  
+  static const String tooltipAdd = "Ajouter";
+  static const String tooltipSave = "Sauvegarder les modifs.";
+  static const String tooltipRename = "Renommer";
 
   static const String dialogTitleConfirm = "Confirmation";
   static const String dialogTitleEdit = "Édition";
@@ -91,10 +104,19 @@ class Texts {
   static const String defaultSportProgramName = "Programme sans nom";
   static const String evolutionScreenTitlePrefix = "Évolution: ";
 
-  static const String removeSportProgramDecorationLabelName = "Nom du programme";
+  static const String remameSportProgramDecorationLabelName = "Nom du programme";
 
   static const String exerciseSelectorAll = "TOUS LES EXERCICES";
   static const String exerciseSelectorItemPrefix = "EXERCICE ";
+  
+  static const String sportProgramCreatorSelectExerciseEmpty = "Choisir un Exercice...";
+  static const String sportProgramCreatorSelectExerciseChange = "Changer l'Exercice...";
+  static const String sportProgramCreatorSavePrompt = "Voulez vous enregistrer avant de quitter ?";
+  static const String sportProgramCreatorSliderSeries = "Séries";
+  static const String sportProgramCreatorSliderRepetitions = "Répétitions";
+  static const String sportProgramCreatorSliderWeight = "Poids (kg)";
+  static const String sportProgramCreatorSaved = "Modification enregistré.";
+  static const String sportProgramCreatorNotSavedNoContent = "Aucune modification enregistré: aucun contenu.";
 
   static String answerCount(int count) => autoCount(count, "Aucune", "réponse", "réponses");
   static String exerciseCount(int count) => autoCount(count, "Aucun", "exercice", "exercices");

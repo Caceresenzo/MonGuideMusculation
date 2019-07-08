@@ -150,7 +150,7 @@ class _BodyBuildingScreenMuscleListingState extends CommonRefreshableState<BodyB
     }
 
     return AppBar(
-      title: Text("Liste des muscles"),
+      title: Text(Texts.screenMuscleList),
       backgroundColor: Constants.colorAccent,
       elevation: 0.0,
     );
@@ -524,16 +524,6 @@ class BodyBuildingExerciseEvolutionScreenState extends State<BodyBuildingExercis
     );
   }
 
-  String get screenTitle {
-    String base = "Evolution";
-
-    if (_exercises.length > 1) {
-      base += " de ${_exercises.length} exercices";
-    }
-
-    return base;
-  }
-
   Widget _buildTile(BuildContext context, int index) {
     BodyBuildingExercise exercise = _exercises[index];
     bool hasValue = _holders.containsKey(exercise);
@@ -579,7 +569,7 @@ class BodyBuildingExerciseEvolutionScreenState extends State<BodyBuildingExercis
     return Scaffold(
       appBar: AppBar(
         elevation: 0.0,
-        title: Text(screenTitle),
+        title: Text(Texts.screenEvolution),
         backgroundColor: Constants.colorAccent,
       ),
       bottomNavigationBar: _buildBottomBar(context),
