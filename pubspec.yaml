@@ -32,6 +32,7 @@ dependencies:
   path:
   flutter_reorderable_list:
   random_string:
+  video_player:
 
 dev_dependencies:
   flutter_test:

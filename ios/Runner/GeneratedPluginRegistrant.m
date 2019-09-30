@@ -9,6 +9,7 @@
 #import <sqflite/SqflitePlugin.h>
 #import <uni_links/UniLinksPlugin.h>
 #import <url_launcher/UrlLauncherPlugin.h>
+#import <video_player/VideoPlayerPlugin.h>
 #import <youtube_player/YoutubePlayerPlugin.h>
 
 @implementation GeneratedPluginRegistrant
@@ -20,6 +21,7 @@
   [SqflitePlugin registerWithRegistrar:[registry registrarForPlugin:@"SqflitePlugin"]];
   [UniLinksPlugin registerWithRegistrar:[registry registrarForPlugin:@"UniLinksPlugin"]];
   [FLTUrlLauncherPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTUrlLauncherPlugin"]];
+  [FLTVideoPlayerPlugin registerWithRegistrar:[registry registrarForPlugin:@"FLTVideoPlayerPlugin"]];
   [YoutubePlayerPlugin registerWithRegistrar:[registry registrarForPlugin:@"YoutubePlayerPlugin"]];
 }
 
