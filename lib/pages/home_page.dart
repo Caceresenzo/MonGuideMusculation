@@ -6,9 +6,9 @@ import 'package:mon_guide_musculation/ui/pages/page_bodybuilding.dart';
 import 'package:mon_guide_musculation/ui/pages/page_contact.dart';
 import 'package:mon_guide_musculation/ui/pages/page_forum.dart';
 import 'package:mon_guide_musculation/ui/pages/page_sportprogram.dart';
-import 'package:mon_guide_musculation/ui/tests/test_charts.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:mon_guide_musculation/utils/functions.dart';
 
 class HomePage extends StatefulWidget {
   static final GlobalKey<ScaffoldState> staticScaffoldStateKey = new GlobalKey();
@@ -76,9 +76,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
 
       case 4:
         return new ContactScreen();
-
-      /*case 5:
-        return ChartsText();*/
     }
 
     throw Exception("Illegal State -> Position out of range.");
@@ -132,10 +129,6 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
               icon: Icon(Icons.mail),
               title: Text(Texts.navigationContact),
             ),
-            /*BottomNavigationBarItem(
-              icon: Icon(Icons.mail),
-              title: Text(Texts.navigationContact),
-            ),*/
           ],
           currentIndex: _selectedIndex,
           selectedItemColor: Constants.colorAccent,
@@ -152,16 +145,16 @@ class HomePageState extends State<HomePage> with WidgetsBindingObserver {
           context: context,
           builder: (context) {
             return new AlertDialog(
-              title: new Text('Do you want to exit this application?'),
-              content: new Text('We hate to see you leave...'),
+              title: buildBasicDialogTitle(Texts.exitConfirmDialogTitle),
+              content: new Text(Texts.exitConfirmDialogMessage),
               actions: <Widget>[
                 new FlatButton(
                   onPressed: () => Navigator.of(context).pop(false),
-                  child: new Text('No'),
+                  child: new Text(Texts.exitConfirmDialogNo),
                 ),
                 new FlatButton(
                   onPressed: () => Navigator.of(context).pop(true),
-                  child: new Text('Yes'),
+                  child: new Text(Texts.exitConfirmDialogYes),
                 ),
               ],
             );

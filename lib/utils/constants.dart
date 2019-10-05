@@ -21,8 +21,8 @@ class Constants {
 
 class Texts {
   static const String applicationName = "Mon Guide Musculation";
-  static const String applicationVersion = "BETA 0.0.1";
-  static const String applicationDeveloper = "par Enzo CACERES";
+  static const String applicationVersion = "BETA 0.1";
+  static const String applicationDeveloper = "dev. par Enzo CACERES";
 
   static const String navigationSportProgram = "Progrms";
   static const String navigationBodyBuilding = "Muscu";
@@ -119,6 +119,12 @@ class Texts {
   static const String sportProgramCreatorSliderWeight = "Poids (kg)";
   static const String sportProgramCreatorSaved = "Modification enregistré.";
   static const String sportProgramCreatorNotSavedNoContent = "Aucune modification enregistré: aucun contenu.";
+
+  static const String exitConfirmDialogTitle = "Vous partez ?";
+  static const String exitConfirmDialogMessage = "Vous voulez fermer l'application ?";
+  static const String exitConfirmDialogYes = "OUI";
+  static const String exitConfirmDialogNo = "NON";
+  
 
   static String answerCount(int count) => autoCount(count, "Aucune", "réponse", "réponses");
   static String exerciseCount(int count) => autoCount(count, "Aucun", "exercice", "exercices");
