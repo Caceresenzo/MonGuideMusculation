@@ -88,7 +88,7 @@ class ArticleItemWidget extends StatelessWidget {
                 SizedBox(
                   height: 10.0,
                 ),
-                article.coverImageSource != null ? networkImage(WixUtils.formatStaticWixImageUrl(article.coverImageSource)) : CommonDivider(),
+                article.coverImageSource != null ? networkImage(WixUtils.formatStaticWixImageUrl(article.coverImageSource, resize: Constants.articleImageApiResize)) : CommonDivider(),
                 FittedBox(
                   fit: BoxFit.contain,
                   child: ButtonBar(
@@ -237,7 +237,7 @@ class _ArticleScreenArticleReadingState extends State<ArticleScreen> {
         fit: StackFit.expand,
         children: <Widget>[
           TopRoundBackground(
-            widget: networkImage(WixUtils.formatStaticWixImageUrl(article.coverImageSource)),
+            widget: networkImage(WixUtils.formatStaticWixImageUrl(article.coverImageSource, resize: Constants.articleImageApiResize)),
           ),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),

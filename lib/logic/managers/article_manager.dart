@@ -102,30 +102,5 @@ class ArticleManager extends BaseManager {
             return parentArticle.content.items = WixBlockExtractor.extractFromJson(verifiedData["content"]);
           });
     });
-
-    /* 
-        .then((body) {
-          return articleJsonExtractionRegex.firstMatch(body).group(1);
-        })
-        .then((rawJson) => json.decode(rawJson))
-        .then((data) {
-          Map<String, dynamic> verifiedData;
-
-          (data["posts"] as Map<String, dynamic>).forEach((key, value) {
-            if (verifiedData != null) {
-              return;
-            }
-
-            if (value["slug"] == parentArticle.slug) {
-              verifiedData = value;
-            }
-          });
-
-          return verifiedData;
-        })
-        .then((verifiedData) {
-          return parentArticle.content.items = WixBlockExtractor.extractFromJson(verifiedData["content"]);
-        })
-         */
   }
 }

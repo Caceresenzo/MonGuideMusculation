@@ -15,6 +15,8 @@ class Constants {
   static const String customScheme = "mgm";
 
   static const bool sportProgramRenameBackToDefaultIfInvalid = true;
+
+  static const Size articleImageApiResize = Size(5000, 500);
 }
 
 class Texts {

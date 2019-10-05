@@ -68,21 +68,22 @@ class WixBasicStatistics {
 class WixImageReference {
   static final RegExp extractRegex = new RegExp(r"wix:image:\/\/v[\d]\/(.*?)\/");
   final String wixRessource;
+  final bool supportResize;
 
   WixImageReference(
-    this.wixRessource,
-  ) : assert(wixRessource != null);
+    this.wixRessource, {
+    this.supportResize = true,
+  }) : assert(wixRessource != null);
 
   /// Get a full url to the read file.
   String toFullUrl({Size resize}) {
     Match match = extractRegex.firstMatch(wixRessource);
 
     if (match != null) {
-      String fullUrl = WixUtils.formatStaticWixImageUrl(match.group(1));
-
-      if (resize != null) {
-        fullUrl += "/v1/fit/w_" + resize.width.toInt().toString() + ",h_" + resize.height.toInt().toString() + ",al_c,q_90/image.jpg";
-      }
+      String fullUrl = WixUtils.formatStaticWixImageUrl(
+        match.group(1),
+        resize: supportResize ? resize : null,
+      );
 
       return fullUrl;
     }

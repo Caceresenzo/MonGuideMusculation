@@ -50,7 +50,7 @@ class WixBlockWidgetCreator {
       case WixData.typeAtomicImage:
         String fileName = entity["data"]["src"]["file_name"];
 
-        return networkImage(WixUtils.formatStaticWixImageUrl(fileName));
+        return networkImage(WixUtils.formatStaticWixImageUrl(fileName, resize: Constants.articleImageApiResize));
 
       case WixData.typeAtomicDevider:
         return CommonDivider();
