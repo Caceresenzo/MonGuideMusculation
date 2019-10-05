@@ -8,6 +8,18 @@ import 'dart:convert';
 import 'package:mon_guide_musculation/utils/constants.dart';
 
 class ArticleManager extends BaseManager {
+  final RegExp blogUrlExtractionRegex = RegExp(
+    r'<iframe .*?title="Blog".*?src="(.*?)".*?><\/iframe>',
+    multiLine: true,
+    caseSensitive: false,
+  );
+
+  final RegExp postUrlExtractionRegex = RegExp(
+    r'<iframe.*?title="Post".*?src="(.*?)".*?><\/iframe>',
+    multiLine: true,
+    caseSensitive: false,
+  );
+
   final RegExp articleJsonExtractionRegex = RegExp(
     r'window\.__INITIAL_STATE__ = ([\w\W]*?);[\n\t ]*window\.__CONFIG__',
     multiLine: true,
@@ -28,22 +40,28 @@ class ArticleManager extends BaseManager {
 
     cachedArticles.clear();
 
-    return http
-        .get(WixUrls.articlesPage)
-        .then((response) {
-          return response.statusCode == 200 ? response.body : throw 'Error when getting data';
-        })
-        .then((body) {
-          return articleJsonExtractionRegex.firstMatch(body).group(1);
-        })
-        .then((rawJson) => json.decode(rawJson))
-        .then((data) {
-          (data["posts"] as Map<String, dynamic>).forEach((key, value) {
-            cachedArticles.add(WebArticle.fromJson(value));
-          });
+    return http.get(WixUrls.baseUrl).then((response) {
+      return response.statusCode == 200 ? response.body : throw 'Error when blog link';
+    }).then((body) {
+      return blogUrlExtractionRegex.firstMatch(body).group(1);
+    }).then((blogUrl) {
+      return http
+          .get(blogUrl.replaceAll("&amp;", "&"))
+          .then((response) {
+            return response.statusCode == 200 ? response.body : throw 'Error when getting data';
+          })
+          .then((body) {
+            return articleJsonExtractionRegex.firstMatch(body).group(1);
+          })
+          .then((rawJson) => json.decode(rawJson))
+          .then((data) {
+            (data["posts"] as Map<String, dynamic>).forEach((key, value) {
+              cachedArticles.add(WebArticle.fromJson(value));
+            });
 
-          return cachedArticles;
-        });
+            return cachedArticles;
+          });
+    });
   }
 
   Future<List<WixBlockItem>> fetchArticleContent(WebArticle parentArticle, bool acceptCache) async {
@@ -51,11 +69,41 @@ class ArticleManager extends BaseManager {
       return parentArticle.content.items;
     }
 
-    return http
-        .get(WixUrls.formatArticleContentPage(parentArticle.slug))
-        .then((response) {
-          return response.statusCode == 200 ? response.body : throw 'Error when getting data';
-        })
+    return http.get(WixUrls.formatArticleContentPage(parentArticle.slug)).then((response) {
+      return response.statusCode == 200 ? response.body : throw 'Error when getting data';
+    }).then((body) {
+      return postUrlExtractionRegex.firstMatch(body).group(1);
+    }).then((postUrl) {
+      return http
+          .get(postUrl.replaceAll("&amp;", "&"))
+          .then((response) {
+            return response.statusCode == 200 ? response.body : throw 'Error when getting data';
+          })
+          .then((body) {
+            return articleJsonExtractionRegex.firstMatch(body).group(1);
+          })
+          .then((rawJson) => json.decode(rawJson))
+          .then((data) {
+            Map<String, dynamic> verifiedData;
+
+            (data["posts"] as Map<String, dynamic>).forEach((key, value) {
+              if (verifiedData != null) {
+                return;
+              }
+
+              if (value["slug"] == parentArticle.slug) {
+                verifiedData = value;
+              }
+            });
+
+            return verifiedData;
+          })
+          .then((verifiedData) {
+            return parentArticle.content.items = WixBlockExtractor.extractFromJson(verifiedData["content"]);
+          });
+    });
+
+    /* 
         .then((body) {
           return articleJsonExtractionRegex.firstMatch(body).group(1);
         })
@@ -77,6 +125,7 @@ class ArticleManager extends BaseManager {
         })
         .then((verifiedData) {
           return parentArticle.content.items = WixBlockExtractor.extractFromJson(verifiedData["content"]);
-        });
+        })
+         */
   }
 }

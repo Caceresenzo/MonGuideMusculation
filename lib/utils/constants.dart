@@ -208,11 +208,7 @@ class WixUrls {
   static const String backendGetExercices = backendBase + "exercices";
   static const String backendGetSportProgramBase = backendBase + "program/";
 
-  static const String articlesPageBaseUrl = "https://social-blog.wix.com/";
-  static const String articlesPageUrlParameters = "?instance=qBGKgBQlGt7HLg9VvuowXO_5cV054mKEb9MgGRKL6DA.eyJpbnN0YW5jZUlkIjoiYmU4YzE4OTctN2ZmZS00MWYxLWI1MGItZWEzYTIwMTczMGVhIiwiYXBwRGVmSWQiOiIxNGJjZGVkNy0wMDY2LTdjMzUtMTRkNy00NjZjYjNmMDkxMDMiLCJtZXRhU2l0ZUlkIjoiNWVlNzI5ODUtMGQ1Ny00YWU0LWI5YjgtYzFlZjJmY2VhMjc4Iiwic2lnbkRhdGUiOiIyMDE5LTA3LTA2VDE1OjE4OjM3LjI4NloiLCJ1aWQiOiJkZWE1MzFmNS1mYmNmLTQxYjItOTcxOS03YjJkZjAxYTQ1MWEiLCJpcEFuZFBvcnQiOiI5MC4yMC4yMzQuMTc4LzQ5MDE0IiwidmVuZG9yUHJvZHVjdElkIjpudWxsLCJkZW1vTW9kZSI6ZmFsc2UsIm9yaWdpbkluc3RhbmNlSWQiOiI4ZGY0ZDgzMy01MTVkLTQwMTMtOWZjZC04ZDU0YWU1MWNjY2MiLCJhaWQiOiJkZWQ3NDUyNS02ODY1LTRkNjQtOTJkZC02MWM1YzY1NWVkMzEiLCJiaVRva2VuIjoiZTA2YjMxMTItNzJhOS0wYjE1LTBjYjMtMmJkNTBmZDk5MjkyIiwic2l0ZU93bmVySWQiOiJiYTgzOTE1My0wMzdmLTQwNmEtYmFlNi0zNjc0ZmZkOThhZGIiLCJleHBpcmF0aW9uRGF0ZSI6IjIwMTktMDctMDZUMTk6MTg6MzcuMjg2WiJ9&viewMode=site";
-  static const String articlesPage = articlesPageBaseUrl + articlesPageUrlParameters;
-
-  static String formatArticleContentPage(String slug) => articlesPageBaseUrl + "post/" + slug + articlesPageUrlParameters;
+  static String formatArticleContentPage(String slug) => baseUrl + "/post/" + slug;
 }
 
 class WixData {
