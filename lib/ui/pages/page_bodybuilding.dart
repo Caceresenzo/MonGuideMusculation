@@ -268,6 +268,7 @@ class _BodyBuildingScreenExerciseByMuscleListingState extends State<BodyBuilding
       appBar: AppBar(
         title: Text(muscle.title),
         backgroundColor: Constants.colorAccent,
+        elevation: 0.0,
       ),
       bottomNavigationBar: _buildBottomBar(context),
       body: items.isEmpty

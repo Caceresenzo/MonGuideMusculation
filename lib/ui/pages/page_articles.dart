@@ -225,6 +225,7 @@ class _ArticleScreenArticleReadingState extends State<ArticleScreen> {
       appBar: AppBar(
         title: Text(article.title),
         backgroundColor: Constants.colorAccent,
+        elevation: 0.0,
         actions: <Widget>[
           IconButton(
             icon: Icon(Icons.open_in_browser),
