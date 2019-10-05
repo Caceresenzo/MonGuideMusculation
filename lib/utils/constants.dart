@@ -167,7 +167,7 @@ class Contact {
   static const String mailAdress = "mailto:mahedu974@gmail.com";
   static const String websiteUrl = "https://www.monguidemusculation.com/";
 
-  static const String instagramUrl = "https://www.instagram.com/mamaheheruiruisisi/";
+  static const String instagramUrl = "https://www.instagram.com/mahe_ruisi/";
   static const String facebookUrl = "https://www.facebook.com/Monguidemusculation/";
   static const String youtubeUrl = null;
 }
