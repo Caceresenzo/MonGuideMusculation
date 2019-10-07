@@ -4,7 +4,6 @@ import 'package:mon_guide_musculation/logic/managers/base_manager.dart';
 import 'package:mon_guide_musculation/models/bodybuilding.dart';
 import 'package:http/http.dart' as http;
 import 'package:mon_guide_musculation/models/sportprogram.dart';
-import 'package:mon_guide_musculation/utils/functions.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';

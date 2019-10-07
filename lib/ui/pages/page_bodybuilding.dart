@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:mon_guide_musculation/logic/managers/base_manager.dart';
-import 'package:mon_guide_musculation/logic/managers/bodybuilding_manager.dart';
 import 'package:mon_guide_musculation/models/bodybuilding.dart';
 import 'package:mon_guide_musculation/ui/states/common_refreshable_state.dart';
 import 'package:mon_guide_musculation/ui/widgets/card_info.dart';
@@ -375,7 +374,6 @@ class BodyBuildingExerciseEvolutionScreen extends StatefulWidget {
   }
 }
 
-/********************************************************************************** */
 class TimeSeriesRangeAnnotationChart extends StatelessWidget {
   final List<charts.Series> seriesList;
 

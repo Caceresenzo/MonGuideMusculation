@@ -4,8 +4,6 @@ import 'dart:convert';
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 import 'package:crypto/crypto.dart';
-import 'package:http/http.dart';
-import 'package:mon_guide_musculation/main.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:url_launcher/url_launcher.dart';

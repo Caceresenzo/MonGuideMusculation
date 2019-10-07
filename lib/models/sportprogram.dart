@@ -1,5 +1,3 @@
-import 'dart:math';
-
 import 'package:meta/meta.dart';
 import 'package:mon_guide_musculation/models/bodybuilding.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';

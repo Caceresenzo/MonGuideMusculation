@@ -9,7 +9,6 @@ import 'package:mon_guide_musculation/pages/home_page.dart';
 import 'package:mon_guide_musculation/ui/pages/page_bodybuilding.dart';
 import 'package:mon_guide_musculation/ui/pages/page_sportprogram_creator.dart';
 import 'package:mon_guide_musculation/ui/states/common_refreshable_state.dart';
-import 'package:mon_guide_musculation/ui/tests/test_reorderable_list.dart';
 import 'package:mon_guide_musculation/ui/widgets/common_divider.dart';
 import 'package:mon_guide_musculation/utils/constants.dart';
 import 'package:mon_guide_musculation/utils/functions.dart';
