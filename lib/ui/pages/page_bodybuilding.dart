@@ -314,13 +314,7 @@ class BodyBuildingExerciseReadingScreen extends StatelessWidget {
     return Padding(
       padding: EdgeInsets.all(8.0),
       child: Center(
-        child: exercise.pictureImageReference != null
-            ? networkImage(
-                exercise.pictureImageReference.toFullUrl(),
-              )
-            : Text(
-                Texts.itemExerciseNoPicture,
-              ),
+        child: exercise.pictureImageReference != null ? networkImage(exercise.pictureImageReference.toFullUrl()) : Text(Texts.itemExerciseNoPicture),
       ),
     );
   }

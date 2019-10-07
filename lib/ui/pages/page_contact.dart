@@ -4,10 +4,14 @@ import 'package:mon_guide_musculation/utils/constants.dart';
 import 'package:mon_guide_musculation/utils/functions.dart';
 
 class ContactScreen extends StatelessWidget {
-  Widget _buildBigText(String text) {
+  Widget _buildBigText(String text, {Color color = const Color(0xFF000000)}) {
     return Text(
       text.toUpperCase(),
-      style: TextStyle(fontWeight: FontWeight.w700, fontSize: 20.0),
+      style: TextStyle(
+        fontWeight: FontWeight.w700,
+        fontSize: 20.0,
+        color: color,
+      ),
       textAlign: TextAlign.center,
     );
   }
@@ -31,6 +35,28 @@ class ContactScreen extends StatelessWidget {
     });
   }
 
+  Widget _buildCard(String title, Widget child) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 8.0),
+      child: Card(
+        elevation: 0.0,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              _buildBigText(title),
+              SizedBox(
+                height: 10.0,
+              ),
+              child,
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,80 +75,45 @@ class ContactScreen extends StatelessWidget {
                 ),
                 Column(
                   children: <Widget>[
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Card(
-                        elevation: 0.0,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
-                              _buildBigText(Texts.ruisiFullName),
-                              SizedBox(
-                                height: 10.0,
-                              ),
-                              Center(
-                                child: Text(
-                                  Texts.ruisiAddress,
-                                  textAlign: TextAlign.center,
-                                ),
-                              ),
-                            ],
-                          ),
+                    _buildCard(
+                      Texts.ruisiFullName,
+                      Center(
+                        child: Text(
+                          Texts.ruisiAddress,
+                          textAlign: TextAlign.center,
                         ),
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Card(
-                        elevation: 0.0,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
-                              _buildBigText(Texts.contactCoatching),
-                              SizedBox(
-                                height: 10.0,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-                                  _buildLinkIcon(Icons.call, Contact.phoneNumber),
-                                  _buildLinkIcon(Icons.mail, Contact.mailAdress),
-                                  _buildLinkIcon(Icons.web, Contact.websiteUrl),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
+                    _buildCard(
+                      Texts.contactCoatching,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          _buildLinkIcon(Icons.call, Contact.phoneNumber),
+                          _buildLinkIcon(Icons.mail, Contact.mailAdress),
+                          _buildLinkIcon(Icons.web, Contact.websiteUrl),
+                        ],
                       ),
                     ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Card(
-                        elevation: 0.0,
-                        child: Padding(
-                          padding: const EdgeInsets.all(16.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.stretch,
-                            children: <Widget>[
-                              _buildBigText(Texts.contactSocialNetworks),
-                              SizedBox(
-                                height: 10.0,
-                              ),
-                              Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                children: <Widget>[
-                                  _buildLinkIcon(MyIcons.instagram, Contact.instagramUrl),
-                                  _buildLinkIcon(MyIcons.facebook, Contact.facebookUrl),
-                                  _buildLinkIcon(MyIcons.youtube, Contact.youtubeUrl),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
+                    _buildCard(
+                      Texts.contactSocialNetworks,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                          _buildLinkIcon(MyIcons.instagram, Contact.instagramUrl),
+                          _buildLinkIcon(MyIcons.facebook, Contact.facebookUrl),
+                          _buildLinkIcon(MyIcons.youtube, Contact.youtubeUrl),
+                        ],
+                      ),
+                    ),
+                    _buildCard(
+                      Texts.contactSupport,
+                      FlatButton(
+                        child: _buildBigText(Texts.makeADonation, color: Color(0xFFFFFFFF)),
+                        color: Constants.colorAccent,
+                        onPressed: () {
+                          openInBrowser(Contact.donationUrl);
+                        },
                       ),
                     ),
                   ],

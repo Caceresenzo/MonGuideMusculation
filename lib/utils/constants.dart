@@ -32,14 +32,16 @@ class Texts {
 
   static const String contactCoatching = "COATCHING";
   static const String contactSocialNetworks = "RÉSEAUX SOCIAUX";
+  static const String contactSupport = "ME SOUTENIR";
   static const String ruisiFullName = "Mahé RUISI";
   static const String ruisiAddress = "Bourges\nFrance";
   static const String ruisiBackgroundContactImageUrl = "https://static.wixstatic.com/media/1bf8c6_896e6f814a7644fd93a44de8db1d8791~mv2_d_1957_2081_s_2.jpg";
+  static const String makeADonation = "ME FAIRE UNE DONATION";
 
   static const String screenMuscleList = "Liste des Muscles";
   static const String screenEvolution = "Evolution";
-  static const String screenSportProgramCreator = "Crée un programme";
-  static const String screenSportProgramCreatorAddExercise = "Ajouter un Exercice";
+  static const String screenSportProgramCreator = "Créer un programme";
+  static const String screenSportProgramCreatorAddExercise = "Ajouter un exercice";
 
   static const String pageNoContent = "Rien à dire frère";
   static const String pageNoContentSub = "(aucun contenu disponible)";
@@ -111,14 +113,14 @@ class Texts {
   static const String exerciseSelectorAll = "TOUS LES EXERCICES";
   static const String exerciseSelectorItemPrefix = "EXERCICE ";
   
-  static const String sportProgramCreatorSelectExerciseEmpty = "Choisir un Exercice...";
-  static const String sportProgramCreatorSelectExerciseChange = "Changer l'Exercice...";
+  static const String sportProgramCreatorSelectExerciseEmpty = "Choisir un exercice...";
+  static const String sportProgramCreatorSelectExerciseChange = "Changer l'exercice...";
   static const String sportProgramCreatorSavePrompt = "Voulez vous enregistrer avant de quitter ?";
   static const String sportProgramCreatorSliderSeries = "Séries";
   static const String sportProgramCreatorSliderRepetitions = "Répétitions";
   static const String sportProgramCreatorSliderWeight = "Poids (kg)";
-  static const String sportProgramCreatorSaved = "Modification enregistré.";
-  static const String sportProgramCreatorNotSavedNoContent = "Aucune modification enregistré: aucun contenu.";
+  static const String sportProgramCreatorSaved = "Modification enregistrée.";
+  static const String sportProgramCreatorNotSavedNoContent = "Aucune modification enregistrée: aucun contenu.";
 
   static const String exitConfirmDialogTitle = "Vous partez ?";
   static const String exitConfirmDialogMessage = "Vous voulez fermer l'application ?";
@@ -170,6 +172,8 @@ class Contact {
   static const String instagramUrl = "https://www.instagram.com/mahe_ruisi/";
   static const String facebookUrl = "https://www.facebook.com/Monguidemusculation/";
   static const String youtubeUrl = null;
+
+  static const String donationUrl = "https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=9SATHTTHK8FSN";
 }
 
 class MyIcons {
